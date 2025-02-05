@@ -5,8 +5,6 @@ __epx_self_update() {
     return
   fi
 
-  echo $EPX_PATH
-
   cd $EPX_PATH
 
   git pull
