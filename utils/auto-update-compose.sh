@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # directory: /storage/configs/compose
 # compose file: /storage/configs/compose/pihole.yml
 # container: pihole
@@ -34,7 +32,7 @@ update_compose() {
   docker compose -f $COMPOSE_FILE -p $CONTAINER up -d >/dev/null 2>&1
 }
 
-__auto_update_compose() {
+__epx_auto_update_compose() {
   echo "> Updating compose files"
   for COMPOSE_DIR in $COMPOSE_DIRECTORY/*.yml; do
     update_compose $COMPOSE_DIR "false"
