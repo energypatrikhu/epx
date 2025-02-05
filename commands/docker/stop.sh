@@ -22,4 +22,4 @@ d.stop() {
 }
 
 . $EPX_PATH/commands/docker/_autocomplete.sh
-complete -F _d_autocomplete d.stop
+complete -F _d_autocomplete_all d.stop

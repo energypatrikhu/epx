@@ -22,4 +22,4 @@ d.start() {
 }
 
 . $EPX_PATH/commands/docker/_autocomplete.sh
-complete -F _d_autocomplete d.start
+complete -F _d_autocomplete_all d.start
