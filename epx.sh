@@ -8,6 +8,17 @@ export EPX_PATH="/opt/epx"
 . $EPX_PATH/aliases.sh
 
 # Load custom commands
+for dir in $EPX_PATH/commands/*; do
+  if [ -d $dir ]; then
+    for file in $dir/*.sh; do
+      # skip file if start with an underscore
+      [[ $(basename $file) =~ ^_ ]] && continue
+
+      . $file
+    done
+  fi
+done
+
 for file in $EPX_PATH/commands/*.sh; do
   . $file
 done
