@@ -1,16 +1,38 @@
+# Description: Main script for the EPX CLI
+# Author: EnergyPatrikHU
+
+# Set the EPX path
+export EPX_PATH="/opt/epx"
+
+# Load aliases
+. $EPX_PATH/aliases.sh
+
+# Load custom commands
+for file in $EPX_PATH/commands/*.sh; do
+  . $file
+done
+
+# Load all utils
 UTILS=()
-for file in /opt/epx/utils/*.sh; do
+for file in $EPX_PATH/utils/*.sh; do
   . $file
   UTILS+=($(basename $file .sh))
 done
 
+# Declare commands
 declare -A COMMANDS
 COMMANDS=(
   ["update-bees"]=""
   ["auto-update-compose"]=""
-  ["self-update"]="<path>"
+  ["self-update"]=""
 )
 
+# Get EPX path
+epx_path() {
+  echo "EPX path: $EPX_PATH"
+}
+
+# Main function
 epx() {
   COMMAND=$1
   shift
@@ -18,7 +40,7 @@ epx() {
 
   for cmd in "${UTILS[@]}"; do
     if [[ "$COMMAND" == "$cmd" ]]; then
-      "__${cmd//-/_}" "${ARGS[@]}"
+      "__epx_${cmd//-/_}" "${ARGS[@]}"
       return
     fi
   done
@@ -29,6 +51,7 @@ epx() {
   done
 }
 
+# Autocomplete
 _epx_completions() {
   local cur
   COMPREPLY=()
