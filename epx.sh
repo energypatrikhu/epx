@@ -1,8 +1,6 @@
 # Description: Main script for the EPX CLI
 # Author: EnergyPatrikHU
 
-echo "EPX CLI"
-
 # Set the EPX path
 export EPX_PATH="/opt/epx"
 
