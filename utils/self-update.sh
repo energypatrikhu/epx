@@ -9,7 +9,5 @@ __epx_self_update() {
 
   git pull
 
-  source ~/.bashrc
-
   cd -
 }
