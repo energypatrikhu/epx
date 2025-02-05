@@ -1,21 +1,20 @@
-#!/bin/bash
+__epx_update_bees() {
+  . $EPX_PATH/.config/update-bees.config
 
-APP_NAME=bees
-BASE_BUILD_DIR=/storage/builds/$APP_NAME
-REPOSITORY=Zygo/$APP_NAME
+  APP_NAME=bees
+  REPOSITORY=Zygo/$APP_NAME
 
-__update_bees() {
   # Check if the build directory exists
-  if [ ! -d $BASE_BUILD_DIR ]; then
+  if [ ! -d $EPX_BEES_SOURCE_PATH ]; then
     echo "
 > Creating the build directory"
-    mkdir -p $BASE_BUILD_DIR
+    mkdir -p $EPX_BEES_SOURCE_PATH
   fi
 
   # Check if the '.version' file exists
-  if [ -f $BASE_BUILD_DIR/.version ]; then
+  if [ -f $EPX_BEES_SOURCE_PATH/.version ]; then
     # Get the version number from the '.-version' file
-    CURRENT_VERSION=$(cat $BASE_BUILD_DIR/.version)
+    CURRENT_VERSION=$(cat $EPX_BEES_SOURCE_PATH/.version)
     echo "
 > Current version: $CURRENT_VERSION"
   else
@@ -37,21 +36,22 @@ __update_bees() {
   if [ "$LATEST_VERSION" == "$CURRENT_VERSION" ]; then
     echo "
 > $APP_NAME is already up to date"
+    cd -
     return
   fi
 
   # Set the build directory based on the latest version, remove the 'v' prefix
-  BUILD_DIR=$BASE_BUILD_DIR/$APP_NAME-${LATEST_VERSION:1}
+  BUILD_DIR=$EPX_BEES_SOURCE_PATH/$APP_NAME-${LATEST_VERSION:1}
 
   # Download the latest release
   echo "
 > Downloading the latest release: $LATEST_VERSION"
-  wget -O $BASE_BUILD_DIR/$LATEST_VERSION.tar.gz "https://github.com/$REPOSITORY/archive/refs/tags/$LATEST_VERSION.tar.gz"
+  wget -O $EPX_BEES_SOURCE_PATH/$LATEST_VERSION.tar.gz "https://github.com/$REPOSITORY/archive/refs/tags/$LATEST_VERSION.tar.gz"
 
   # Extract the tarball
   echo "
 > Extracting the tarball"
-  tar -xzf $BASE_BUILD_DIR/$LATEST_VERSION.tar.gz -C $BASE_BUILD_DIR
+  tar -xzf $EPX_BEES_SOURCE_PATH/$LATEST_VERSION.tar.gz -C $EPX_BEES_SOURCE_PATH
 
   # Change to the app directory
   echo "
@@ -79,11 +79,13 @@ __update_bees() {
   rm -rf $BUILD_DIR
 
   # Remove the tarball
-  rm $BASE_BUILD_DIR/$LATEST_VERSION.tar.gz
+  rm $EPX_BEES_SOURCE_PATH/$LATEST_VERSION.tar.gz
 
   # Write version number to '.version' file
-  echo $LATEST_VERSION >$BASE_BUILD_DIR/.version
+  echo $LATEST_VERSION >$EPX_BEES_SOURCE_PATH/.version
 
   echo "
 > $APP_NAME has been successfully updated to version $LATEST_VERSION"
+
+  cd -
 }
