@@ -1,14 +1,18 @@
 d.list() {
-  state_filter=$1
+  state_filter=$@
 
   if [ -z "$state_filter" ]; then
     data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
   else
-    data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" --filter "status=$state_filter")
+    filters=""
+    for filter in $state_filter; do
+      filters="$filters --filter status=$filter"
+    done
+    data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" $filters)
   fi
 
   if [ -z "$data" ]; then
-    printf "[${EPX_COLORS["LIGHT_BLUE"]}Docker${EPX_COLORS["NC"]}] ${EPX_COLORS["LIGHT_YELLOW"]}No containers found${EPX_COLORS["NC"]}\n"
+    printf "[${EPX_COLORS["LIGHT_BLUE"]}Docker - List${EPX_COLORS["NC"]}] ${EPX_COLORS["LIGHT_YELLOW"]}No containers found${EPX_COLORS["NC"]}\n"
     return
   fi
 
