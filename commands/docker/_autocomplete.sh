@@ -1,12 +1,11 @@
-_d.autocomplete() {
-  local cur prev opts
+_d_autocomplete() {
+  local cur opts
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
-  prev="${COMP_WORDS[COMP_CWORD - 1]}"
+
+  # Get the list of all stopped containers and "all" option
   opts="all $(docker container ls -a --format '{{.Names}}')"
 
-  if [[ ${cur} == -* ]]; then
-    COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
-    return 0
-  fi
+  # Generate autocomplete suggestions
+  COMPREPLY=($(compgen -W "${opts}" -- "$cur"))
 }
