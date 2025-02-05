@@ -3,10 +3,8 @@ _d_autocomplete_all() {
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
 
-  # Get the list of all containers and the "all" keyword
   opts="all $(docker container ls -a --format '{{.Names}}')"
 
-  # Generate autocomplete suggestions
   COMPREPLY=($(compgen -W "${opts}" -- "$cur"))
 }
 
@@ -15,9 +13,17 @@ _d_autocomplete() {
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
 
-  # Get the list of all containers and the "all" keyword
   opts="$(docker container ls -a --format '{{.Names}}')"
 
-  # Generate autocomplete suggestions
+  COMPREPLY=($(compgen -W "${opts}" -- "$cur"))
+}
+
+_d_autocomplete_list() {
+  local cur opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+
+  opts="created restarting running removing paused exited dead"
+
   COMPREPLY=($(compgen -W "${opts}" -- "$cur"))
 }
