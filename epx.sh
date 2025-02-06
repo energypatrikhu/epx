@@ -5,7 +5,7 @@
 export EPX_PATH="/opt/epx"
 
 # Load helpers
-. $EPX_PATH/_helpers.sh
+. $EPX_PATH/helpers.sh
 
 # Load aliases
 . $EPX_PATH/aliases.sh
