@@ -3,9 +3,13 @@
 
 # Set the EPX path
 export EPX_PATH="/opt/epx"
+# export EPX_PATH="/storage/scripts/shell/epx"
+
+# Load autocomplete
+. $EPX_PATH/_autocomplete.sh
 
 # Load helpers
-. $EPX_PATH/helpers.sh
+. $EPX_PATH/_helpers.sh
 
 # Load aliases
 . $EPX_PATH/aliases.sh
@@ -67,11 +71,7 @@ epx() {
 
 # Autocomplete
 _epx_completions() {
-  local cur
-  COMPREPLY=()
-  cur="${COMP_WORDS[COMP_CWORD]}"
-
-  COMPREPLY=($(compgen -W "${UTILS[*]}" -- "$cur"))
+  _autocomplete $UTILS[*]
 }
 
 complete -F _epx_completions epx
