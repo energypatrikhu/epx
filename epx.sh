@@ -71,7 +71,7 @@ epx() {
 
 # Autocomplete
 _epx_completions() {
-  _autocomplete $UTILS[*]
+  _autocomplete "${UTILS[*]}"
 }
 
 complete -F _epx_completions epx
