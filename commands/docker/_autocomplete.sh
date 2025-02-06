@@ -1,5 +1,3 @@
-. $EPX_PATH/_autocomplete.sh
-
 _d_autocomplete() {
   _autocomplete "$(docker container ls --format '{{.Names}}')"
 }
