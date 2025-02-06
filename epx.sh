@@ -37,7 +37,6 @@ done
 declare -A COMMANDS
 COMMANDS=(
   ["update-bees"]=""
-  ["auto-update-compose"]=""
   ["self-update"]=""
 )
 
