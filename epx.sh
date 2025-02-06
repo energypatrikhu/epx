@@ -26,10 +26,6 @@ for dir in $EPX_PATH/commands/*; do
   fi
 done
 
-for file in $EPX_PATH/commands/*.sh; do
-  . $file
-done
-
 # Load all utils
 UTILS=()
 for file in $EPX_PATH/utils/*.sh; do
@@ -73,5 +69,4 @@ epx() {
 _epx_completions() {
   _autocomplete "${UTILS[*]}"
 }
-
 complete -F _epx_completions epx
