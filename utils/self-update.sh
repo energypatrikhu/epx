@@ -1,7 +1,6 @@
 __epx_self_update() {
   if [ ! -d $EPX_PATH ]; then
-    echo "
-  > The '$EPX_PATH' directory does not exist"
+    printf "\n[$(_c LIGHT_BLUE "Self Update")] $(_c LIGHT_RED "The '$EPX_PATH' directory does not exist")\n"
     return
   fi
 

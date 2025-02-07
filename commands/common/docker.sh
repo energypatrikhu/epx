@@ -21,10 +21,10 @@ dcf() {
   fbasename=$(basename -- "$@")
 
   docker compose -f "/storage/configs/compose/${fbasename}.yml" pull
-  echo ""
+  printf "\n"
 
   docker compose -p "${fbasename}" -f "/storage/configs/compose/${fbasename}.yml" up -d
-  echo ""
+  printf "\n"
 }
 dcf-all() {
   for f in /storage/configs/compose/*.yml; do
@@ -38,10 +38,9 @@ __dcf-mc() {
   fbasename=$(basename -- "$3")
   project_name=$(echo "${fbasename}" | sed -e 's/[][]//g' | sed -e 's/,/-/g' | sed -e 's/ /_/g' | sed -e 's/^_//g' | sed -e 's/_$//g')
 
-  echo "
-Starting $2 Minecraft Server"
+  printf "\nStarting $2 Minecraft Server\n"
   docker compose -p "${project_name}" --env-file "/storage/games/minecraft/@modpacks/${fbasename}.env" -f "/storage/configs/compose/custom/itzg-minecraft-server-$1.yml" up -d
-  echo ""
+  printf "\n"
 }
 mc-curseforge() {
   __dcf-mc "curseforge" "CurseForge" "$1"
@@ -60,44 +59,38 @@ mc-forge() {
 }
 
 h() {
-  echo "
-h	  -> Help (This command)
-dhelp	  -> Docker commands
-mc-help	  -> Minecraft commands
-move	  -> Move files with rsync
-copy	  -> Copy files with rsync
-zst	  -> Compress dir/file to zstd archive format
-unzst	  -> Decompress zstd archive
-archive	  -> Compress dir/file to .tar archive
-unarchive -> Decompress .tar file
-"
+  printf "h    -> Help (This command)\n"
+  printf "dhelp    -> Docker commands\n"
+  printf "mc-help    -> Minecraft commands\n"
+  printf "move    -> Move files with rsync\n"
+  printf "copy    -> Copy files with rsync\n"
+  printf "zst    -> Compress dir/file to zstd archive format\n"
+  printf "unzst    -> Decompress zstd archive\n"
+  printf "archive    -> Compress dir/file to .tar archive\n"
+  printf "unarchive    -> Decompress .tar file\n"
 }
 
 dhelp() {
-  echo "
-h	-> Help
-dhelp	-> Docker commands (This command)
-mc-help	-> Minecraft commands
-du-all	-> Update all docker image to latest
-dps	-> List running containers
-dls	-> List containers
-dup	-> Start container ( dup <id or name> )
-ds	-> Stop container ( ds <id or name> )
-dcu	-> Alias for 'docker compose up -d'
-dcf	-> Alias for 'docker compose -f \"/storage/configs/compose/<filename>.yml\" -d'
-dcf-all	-> Check and update all compose files located in '/storage/configs/compose'
-"
+  printf "h   -> Help\n"
+  printf "dhelp   -> Docker commands (This command)\n"
+  printf "mc-help   -> Minecraft commands\n"
+  printf "du-all   -> Update all docker image to latest\n"
+  printf "dps   -> List running containers\n"
+  printf "dls   -> List containers\n"
+  printf "dup   -> Start container ( dup <id or name> )\n"
+  printf "ds   -> Stop container ( ds <id or name> )\n"
+  printf "dcu   -> Alias for 'docker compose up -d'\n"
+  printf "dcf   -> Alias for 'docker compose -f \"/storage/configs/compose/<filename>.yml\" -d'\n"
+  printf "dcf-all   -> Check and update all compose files located in '/storage/configs/compose'\n"
 }
 
 mc-help() {
-  echo "
-h	        -> Help
-dhelp	        -> Docker commands
-mc-help	        -> Minecraft commands (This command)
-mc-curseforge	-> Start CurseForge Minecraft Server (mc-curseforge <server.env>)
-mc-feedthebeast	-> Start Feed The Beast Minecraft Server (mc-feedthebeast <server.env>)
-mc-modrinth	-> Start Modrinth Minecraft Server (mc-modrinth <server.env>)
-mc-vanilla	-> Start Vanilla Minecraft Server (mc-vanilla <server.env>)
-mc-forge	-> Start Forge Minecraft Server (mc-forge <server.env>)
-"
+  printf "h   -> Help\n"
+  printf "dhelp   -> Docker commands\n"
+  printf "mc-help   -> Minecraft commands (This command)\n"
+  printf "mc-curseforge   -> Start CurseForge Minecraft Server (mc-curseforge <server.env>)\n"
+  printf "mc-feedthebeast   -> Start Feed The Beast Minecraft Server (mc-feedthebeast <server.env>)\n"
+  printf "mc-modrinth   -> Start Modrinth Minecraft Server (mc-modrinth <server.env>)\n"
+  printf "mc-vanilla   -> Start Vanilla Minecraft Server (mc-vanilla <server.env>)\n"
+  printf "mc-forge   -> Start Forge Minecraft Server (mc-forge <server.env>)\n"
 }

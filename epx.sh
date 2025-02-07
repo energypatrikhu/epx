@@ -41,7 +41,7 @@ COMMANDS=(
 
 # Get EPX path
 epx_path() {
-  echo "EPX path: $EPX_PATH"
+  printf "EPX path: %s\n" "$EPX_PATH"
 }
 
 # Main function
@@ -57,9 +57,9 @@ epx() {
     fi
   done
 
-  echo "Usage: epx <command> [args]"
+  printf "Usage: epx <command> [args]\n"
   for cmd in "${!COMMANDS[@]}"; do
-    echo "  $cmd ${COMMANDS[$cmd]}"
+    printf "  $cmd ${COMMANDS[$cmd]}\n"
   done
 }
 

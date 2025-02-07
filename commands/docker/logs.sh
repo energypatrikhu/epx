@@ -1,6 +1,6 @@
 d.logs() {
   if [[ -z $1 ]]; then
-    printf "[${EPX_COLORS["LIGHT_BLUE"]}Docker - Logs${EPX_COLORS["NC"]}] ${EPX_COLORS["LIGHT_YELLOW"]}Usage: d.logs <container>${EPX_COLORS["NC"]}\n"
+    printf "[$(_c LIGHT_BLUE "Docker - Logs")] $(_c LIGHT_YELLOW "Usage: d.logs <container>")\n"
     return
   fi
 

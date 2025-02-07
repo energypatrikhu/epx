@@ -1,6 +1,6 @@
 ufw.del() {
   if [ -z "$1" ]; then
-    printf "[${EPX_COLORS["LIGHT_CYAN"]}UFW${EPX_COLORS["NC"]}] ${EPX_COLORS["LIGHT_YELLOW"]}Usage: ufw.del <rule_number> / port <port>${EPX_COLORS["NC"]}\n"
+    printf "$(_c LIGHT_CYAN "UFW") $(_c LIGHT_YELLOW "Usage: ufw.del <rule_number> / port <port>")\n"
     return 1
   fi
 
@@ -12,7 +12,7 @@ ufw.del() {
   # if $1 is 'port'
   if [ "$1" == "port" ]; then
     if [ -z "$2" ]; then
-      printf "[${EPX_COLORS["LIGHT_CYAN"]}UFW${EPX_COLORS["NC"]}] ${EPX_COLORS["LIGHT_YELLOW"]}Usage: ufw.del port <port>${EPX_COLORS["NC"]}\n"
+      printf "$(_c LIGHT_CYAN "UFW") $(_c LIGHT_YELLOW "Usage: ufw.del port <port>")\n"
       return 1
     fi
 

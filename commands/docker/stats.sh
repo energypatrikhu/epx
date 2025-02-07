@@ -23,21 +23,21 @@ d.stats() {
   local container_info=$(docker inspect "$container_name" 2>/dev/null)
 
   if [ -z "$container_info" ]; then
-    echo "Error: Container '$container_name' not found."
+    printf "Error: Container '%s' not found.\n" "$container_name"
     return 1
   fi
 
   # Extract relevant fields with null checks
-  local name=$(echo "$container_info" | jq -r '.[0].Name | sub("^/"; "")')
-  local image=$(echo "$container_info" | jq -r '.[0].Config.Image')
+  local name=$(printf "%s" "$container_info" | jq -r '.[0].Name | sub("^/"; "")')
+  local image=$(printf "%s" "$container_info" | jq -r '.[0].Config.Image')
 
-  local start_date=$(echo "$container_info" | jq -r '.[0].State.StartedAt')
-  local workdir=$(echo "$container_info" | jq -r '.[0].Config.WorkingDir // "n/a"')
-  local state=$(echo "$container_info" | jq -r '.[0].State.Status')
-  local network_mode=$(echo "$container_info" | jq -r '.[0].HostConfig.NetworkMode')
+  local start_date=$(printf "%s" "$container_info" | jq -r '.[0].State.StartedAt')
+  local workdir=$(printf "%s" "$container_info" | jq -r '.[0].Config.WorkingDir // "n/a"')
+  local state=$(printf "%s" "$container_info" | jq -r '.[0].State.Status')
+  local network_mode=$(printf "%s" "$container_info" | jq -r '.[0].HostConfig.NetworkMode')
 
   # Extract volumes (handle null and empty arrays)
-  local volumes=$(echo "$container_info" | jq -r '
+  local volumes=$(printf "%s" "$container_info" | jq -r '
         if (.[0].Mounts | length) == 0 then "n/a"
         else .[0].Mounts[] | "\(.Source) -> \(.Destination)"
         end
@@ -48,7 +48,7 @@ d.stats() {
   if [ "$network_mode" = "host" ]; then
     networks="Host network mode (no container-specific IPs)"
   else
-    networks=$(echo "$container_info" | jq -r '
+    networks=$(printf "%s" "$container_info" | jq -r '
             .[0].NetworkSettings.Networks
             | if . == null or length == 0 then "n/a"
               else to_entries[] | "\(.key): \(
@@ -61,7 +61,7 @@ d.stats() {
   fi
 
   # Extract port mappings (handle null and empty objects)
-  local ports=$(echo "$container_info" | jq -r '
+  local ports=$(printf "%s" "$container_info" | jq -r '
         .[0].NetworkSettings.Ports
         | if . == null or length == 0 then "n/a"
             else to_entries[] | "\(.key) -> \(.value[]?.HostPort // "n/a")"
@@ -86,7 +86,7 @@ d.stats() {
       local len=${#str}
       ((len > max)) && max=$len
     done
-    echo "$max"
+    printf "%d" "$max"
   }
 
   # Colorize state

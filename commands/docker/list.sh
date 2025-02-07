@@ -12,7 +12,7 @@ d.list() {
   fi
 
   if [ -z "$data" ]; then
-    printf "[${EPX_COLORS["LIGHT_BLUE"]}Docker - List${EPX_COLORS["NC"]}] ${EPX_COLORS["LIGHT_YELLOW"]}No containers found${EPX_COLORS["NC"]}\n"
+    printf "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")\n"
     return
   fi
 
@@ -33,13 +33,13 @@ EOF
   names_width=$((names_width + 2))
   separator=$(printf "+%-${id_width}s--+%-${names_width}s--+%-${image_width}s--+%-${status_width}s--+\n" | tr ' ' '-')
 
-  echo "$separator"
+  printf "%s\n" "$separator"
   printf "| %-${id_width}s | %-${names_width}s | %-${image_width}s | %-${status_width}s |\n" "CONTAINER ID" "NAMES" "IMAGE" "STATUS"
-  echo "$separator"
+  printf "%s\n" "$separator"
 
   while IFS=$'\t' read -r id names image status; do
 
-    if echo "$status" | grep -q "Up"; then
+    if printf "%s" "$status" | grep -q "Up"; then
       bullet=$(_c GREEN $EPX_BULLET)
     else
       bullet=$(_c RED $EPX_BULLET)
@@ -54,7 +54,7 @@ EOF
 $data
 EOF
 
-  echo "$separator"
+  printf "%s\n" "$separator"
 }
 
 . $EPX_PATH/commands/docker/_autocomplete.sh

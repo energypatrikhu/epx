@@ -1,13 +1,13 @@
 d.start() {
   if [[ -z $1 ]]; then
-    printf "[${EPX_COLORS["LIGHT_BLUE"]}Docker - Start${EPX_COLORS["NC"]}] ${EPX_COLORS["LIGHT_YELLOW"]}Usage: d.start <all / container>${EPX_COLORS["NC"]}\n"
+    printf "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_YELLOW "Usage: d.start <all / container>")\n"
     return
   fi
 
   if [[ $1 == "all" ]]; then
     docker container start $(docker container ls -a -q) >/dev/null 2>&1
 
-    printf "[${EPX_COLORS["LIGHT_BLUE"]}Docker - Start${EPX_COLORS["NC"]}] All containers ${EPX_COLORS["LIGHT_GREEN"]}started${EPX_COLORS["NC"]}\n"
+    printf "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "All containers started")\n"
   else
     docker container start "$@" >/dev/null 2>&1
 
@@ -16,8 +16,8 @@ d.start() {
     else
       container_text="Containers"
     fi
-    containers=$(printf "${EPX_COLORS["LIGHT_BLUE"]}%s${EPX_COLORS["NC"]}, " "$@" | sed 's/, $//')
-    printf "[${EPX_COLORS["LIGHT_BLUE"]}Docker - Start${EPX_COLORS["NC"]}] ${container_text} %s ${EPX_COLORS["LIGHT_GREEN"]}started${EPX_COLORS["NC"]}\n" "$containers"
+    containers=$(printf "$(_c LIGHT_BLUE "%s"), " "$@" | sed 's/, $//')
+    printf "[$(_c LIGHT_BLUE "Docker - Start")] $container_text $containers $(_c LIGHT_GREEN "started")\n"
   fi
 }
 

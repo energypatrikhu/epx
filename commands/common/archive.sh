@@ -1,5 +1,5 @@
 archive() {
-  [ "$#" -eq 0 ] && echo "No input files" && return
+  [ "$#" -eq 0 ] && printf "No input files\n" && return
 
   fbasename=$(basename -- "$@")
 
@@ -7,7 +7,7 @@ archive() {
 }
 
 unarchive() {
-  [ "$#" -eq 0 ] && echo "No input files" && return
+  [ "$#" -eq 0 ] && printf "No input files\n" && return
 
   fbasename=$(basename -- "$@")
 
