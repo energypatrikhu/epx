@@ -9,7 +9,7 @@ py.remove() {
 
   # check if no arguments are provided
   if [ -z "$1" ]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.remove <package>")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.<uninstall, remove, rm> <package>")"
     return 1
   fi
 
@@ -17,4 +17,12 @@ py.remove() {
   packages=$(printf "%s, " "$@" | sed 's/, $//')
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] Removing $(_c LIGHT_YELLOW "$packages")"
   pip uninstall "$@"
+}
+
+py.rm() {
+  py.remove "$@"
+}
+
+py.uninstall() {
+  py.remove "$@"
 }
