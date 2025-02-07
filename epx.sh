@@ -5,11 +5,10 @@
 export EPX_PATH="/opt/epx"
 # export EPX_PATH="/storage/scripts/shell/epx"
 
-# Load autocomplete
-. $EPX_PATH/_autocomplete.sh
-
 # Load helpers
-. $EPX_PATH/_helpers.sh
+for file in $EPX_PATH/helpers/*.sh; do
+  . $file
+done
 
 # Load aliases
 . $EPX_PATH/aliases.sh
