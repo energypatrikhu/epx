@@ -9,7 +9,11 @@ py.remove() {
 
   # check if no arguments are provided
   if [ -z "$1" ]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.<uninstall, remove, rm> <package>")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.remove <package>")"
+
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Alias:")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "  py.rm <package>")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "  py.uninstall <package>")"
     return 1
   fi
 

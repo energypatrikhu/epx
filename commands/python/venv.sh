@@ -3,8 +3,11 @@
 py.venv() {
   # help message
   if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "Usage: py.<venv, env>")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "Usage: py.venv")"
     printf "%s\n" "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "Description: Activate, deactivate or create a Python virtual environment")"
+
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "Alias:")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "  py.env")"
     return 0
   fi
 
