@@ -39,10 +39,10 @@ EOF
 
   while IFS=$'\t' read -r id names image status; do
 
-    if echo "$status" | grep -q "Exited" || echo "$status" | grep -q "Dead"; then
-      bullet="$(printf '\033[31m●\033[0m')"
+    if echo "$status" | grep -q "Up"; then
+      bullet=$(_c GREEN $EPX_BULLET)
     else
-      bullet="$(printf '\033[32m●\033[0m')"
+      bullet=$(_c RED $EPX_BULLET)
     fi
 
     names="$bullet $names"
