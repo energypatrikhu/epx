@@ -1,6 +1,13 @@
 #!/bin/bash
 
 py.venv() {
+  # help message
+  if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    printf "%s\n" "Usage: py.venv"
+    printf "%s\n" "Description: Activate or deactivate Python virtual environment"
+    return 0
+  fi
+
   # check if Python is installed
   if ! command -v python3 &>/dev/null; then
     printf "%s\n" "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_RED "Python is not installed")"
@@ -28,7 +35,7 @@ py.venv() {
     # activate virtual environment
     printf "%s\n" "[$(_c LIGHT_BLUE "Python - VENV")] Activating virtual environment"
     source .venv/bin/activate
-    return 1
+    return 0
   fi
 
   # activate virtual environment
