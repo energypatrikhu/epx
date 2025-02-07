@@ -1,6 +1,8 @@
+#!/bin/bash
+
 d.logs() {
   if [[ -z $1 ]]; then
-    printf "[$(_c LIGHT_BLUE "Docker - Logs")] $(_c LIGHT_YELLOW "Usage: d.logs <container>")\n"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Logs")] $(_c LIGHT_YELLOW "Usage: d.logs <container>")"
     return
   fi
 

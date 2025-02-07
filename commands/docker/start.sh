@@ -1,13 +1,15 @@
+#!/bin/bash
+
 d.start() {
   if [[ -z $1 ]]; then
-    printf "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_YELLOW "Usage: d.start <all / container>")\n"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_YELLOW "Usage: d.start <all / container>")"
     return
   fi
 
   if [[ $1 == "all" ]]; then
-    docker container start $(docker container ls -a -q) >/dev/null 2>&1
+    docker container start "$(docker container ls -a -q)" >/dev/null 2>&1
 
-    printf "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "All containers started")\n"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "All containers started")"
   else
     docker container start "$@" >/dev/null 2>&1
 
@@ -16,8 +18,8 @@ d.start() {
     else
       container_text="Containers"
     fi
-    containers=$(printf "$(_c LIGHT_BLUE "%s"), " "$@" | sed 's/, $//')
-    printf "[$(_c LIGHT_BLUE "Docker - Start")] $container_text $containers $(_c LIGHT_GREEN "started")\n"
+    containers=$(printf "%s, " "$@" | sed 's/, $//')
+    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Start")" "$(_c LIGHT_BLUE "$container_text $containers") $(_c LIGHT_GREEN "started")"
   fi
 }
 

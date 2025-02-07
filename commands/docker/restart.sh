@@ -1,12 +1,14 @@
+#!/bin/bash
+
 d.restart() {
   if [[ -z $1 ]]; then
-    printf "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_YELLOW "Usage: d.restart <all / container>")\n"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_YELLOW "Usage: d.restart <all / container>")"
     return
   fi
 
   if [[ $1 == "all" ]]; then
-    docker container restart $(docker container ls -a -q) >/dev/null 2>&1
-    printf "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "All containers restarted")\n"
+    docker container restart "$(docker container ls -a -q)" >/dev/null 2>&1
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "All containers restarted")"
   else
     docker container restart "$@" >/dev/null 2>&1
 
@@ -15,8 +17,8 @@ d.restart() {
     else
       container_text="Containers"
     fi
-    containers=$(printf "$(_c LIGHT_BLUE "%s"), " "$@" | sed 's/, $//')
-    printf "[$(_c LIGHT_BLUE "Docker - Restart")] $container_text $containers $(_c LIGHT_CYAN "restarted")\n"
+    containers=$(printf "%s, " "$@" | sed 's/, $//')
+    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Restart")" "$(_c LIGHT_BLUE "$container_text $containers") $(_c LIGHT_CYAN "restarted")"
   fi
 }
 

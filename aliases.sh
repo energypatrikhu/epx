@@ -1,3 +1,5 @@
+#!/bin/bash
+
 alias c='clear'
 
 alias py='python'

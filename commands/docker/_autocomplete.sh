@@ -1,3 +1,5 @@
+#!/bin/bash
+
 _d_autocomplete() {
   _autocomplete "$(docker container ls --format '{{.Names}}')"
 }

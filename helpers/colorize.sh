@@ -1,3 +1,5 @@
+#!/bin/bash
+
 _c() {
   local color="$1"
   local text="$2"

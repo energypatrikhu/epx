@@ -1,3 +1,5 @@
+#!/bin/bash
+
 move() {
   [ "$#" -eq 0 ] && printf "No input files\n" && return
 

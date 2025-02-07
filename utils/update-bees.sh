@@ -1,19 +1,21 @@
+#!/bin/bash
+
 __epx_update_bees() {
-  . $EPX_PATH/.config/update-bees.config
+  . "$EPX_PATH/.config/update-bees.config"
 
   APP_NAME=bees
   REPOSITORY=Zygo/$APP_NAME
 
   # Check if the build directory exists
-  if [ ! -d $EPX_BEES_SOURCE_PATH ]; then
+  if [ ! -d "$EPX_BEES_SOURCE_PATH" ]; then
     printf "\n> Creating the build directory\n"
-    mkdir -p $EPX_BEES_SOURCE_PATH
+    mkdir -p "$EPX_BEES_SOURCE_PATH"
   fi
 
   # Check if the '.version' file exists
-  if [ -f $EPX_BEES_SOURCE_PATH/.version ]; then
+  if [ -f "$EPX_BEES_SOURCE_PATH"/.version ]; then
     # Get the version number from the '.-version' file
-    CURRENT_VERSION=$(cat $EPX_BEES_SOURCE_PATH/.version)
+    CURRENT_VERSION=$(cat "$EPX_BEES_SOURCE_PATH"/.version)
     printf "\n> Current version: %s\n" "$CURRENT_VERSION"
   else
     # Set the current version to 'unknown'
@@ -30,7 +32,8 @@ __epx_update_bees() {
   # Check if the latest version is the same as the current version
   if [ "$LATEST_VERSION" == "$CURRENT_VERSION" ]; then
     printf "\n> %s is already up to date\n" "$APP_NAME"
-    cd -
+    cd - || return
+
     return
   fi
 
@@ -39,15 +42,15 @@ __epx_update_bees() {
 
   # Download the latest release
   printf "\n> Downloading the latest release: %s\n" "$LATEST_VERSION"
-  wget -O $EPX_BEES_SOURCE_PATH/$LATEST_VERSION.tar.gz "https://github.com/$REPOSITORY/archive/refs/tags/$LATEST_VERSION.tar.gz"
+  wget -O "$EPX_BEES_SOURCE_PATH"/"$LATEST_VERSION".tar.gz "https://github.com/$REPOSITORY/archive/refs/tags/$LATEST_VERSION.tar.gz"
 
   # Extract the tarball
   printf "\n> Extracting the tarball\n"
-  tar -xzf $EPX_BEES_SOURCE_PATH/$LATEST_VERSION.tar.gz -C $EPX_BEES_SOURCE_PATH
+  tar -xzf "$EPX_BEES_SOURCE_PATH"/"$LATEST_VERSION".tar.gz -C "$EPX_BEES_SOURCE_PATH"
 
   # Change to the app directory
   printf "\n> Changing to the %s directory\n" "$APP_NAME"
-  cd $BUILD_DIR
+  cd "$BUILD_DIR" || return
 
   # Set version
   printf "\n> Setting the %s version\n" "$APP_NAME"
@@ -63,15 +66,15 @@ __epx_update_bees() {
 
   # Remove the build directory
   printf "\n> Removing the build directory\n"
-  rm -rf $BUILD_DIR
+  rm -rf "$BUILD_DIR"
 
   # Remove the tarball
-  rm $EPX_BEES_SOURCE_PATH/$LATEST_VERSION.tar.gz
+  rm "$EPX_BEES_SOURCE_PATH"/"$LATEST_VERSION".tar.gz
 
   # Write version number to '.version' file
-  printf "%s\n" "$LATEST_VERSION" >$EPX_BEES_SOURCE_PATH/.version
+  printf "%s\n" "$LATEST_VERSION" >"$EPX_BEES_SOURCE_PATH"/.version
 
   printf "\n> %s has been successfully updated to version %s\n" "$APP_NAME" "$LATEST_VERSION"
 
-  cd -
+  cd - || return
 }

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 du-all() {
   docker images | awk '(NR>1) && ($2!~/none/) {print $1":"$2}' | xargs -L1 docker pull
 }
@@ -28,7 +30,7 @@ dcf() {
 }
 dcf-all() {
   for f in /storage/configs/compose/*.yml; do
-    dcf $(basename -- "$f" .yml)
+    dcf "$(basename -- "$f" .yml)"
   done
 
   docker image prune --all --force
@@ -38,7 +40,7 @@ __dcf-mc() {
   fbasename=$(basename -- "$3")
   project_name=$(echo "${fbasename}" | sed -e 's/[][]//g' | sed -e 's/,/-/g' | sed -e 's/ /_/g' | sed -e 's/^_//g' | sed -e 's/_$//g')
 
-  printf "\nStarting $2 Minecraft Server\n"
+  printf "\nStarting %s Minecraft Server\n" "$2"
   docker compose -p "${project_name}" --env-file "/storage/games/minecraft/@modpacks/${fbasename}.env" -f "/storage/configs/compose/custom/itzg-minecraft-server-$1.yml" up -d
   printf "\n"
 }

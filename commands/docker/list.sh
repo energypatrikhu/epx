@@ -1,5 +1,7 @@
+#!/bin/bash
+
 d.list() {
-  state_filter=$@
+  state_filter="$*"
 
   if [ -z "$state_filter" ]; then
     data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
@@ -8,11 +10,11 @@ d.list() {
     for filter in $state_filter; do
       filters="$filters --filter status=$filter"
     done
-    data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" $filters)
+    data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "$filters")
   fi
 
   if [ -z "$data" ]; then
-    printf "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")\n"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")"
     return
   fi
 
@@ -40,9 +42,9 @@ EOF
   while IFS=$'\t' read -r id names image status; do
 
     if printf "%s" "$status" | grep -q "Up"; then
-      bullet=$(_c GREEN $EPX_BULLET)
+      bullet=$(_c GREEN "$EPX_BULLET")
     else
-      bullet=$(_c RED $EPX_BULLET)
+      bullet=$(_c RED "$EPX_BULLET")
     fi
 
     names="$bullet $names"

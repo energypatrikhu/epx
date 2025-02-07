@@ -1,6 +1,8 @@
+#!/bin/bash
+
 d.shell() {
   if [[ -z $1 ]]; then
-    printf "[$(_c LIGHT_BLUE "Docker - Shell")] $(_c LIGHT_YELLOW "Usage: d.shell <container>")\n"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Shell")] $(_c LIGHT_YELLOW "Usage: d.shell <container>")"
     return
   fi
 

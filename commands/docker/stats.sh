@@ -1,3 +1,5 @@
+#!/bin/bash
+
 _strip_text() {
   printf "%s" "$1" | sed 's/\x1b\[[0-9;]*m//g'
 }
@@ -7,11 +9,11 @@ _visible_length() {
 }
 
 d.stats() {
-  local container_name="$1"
+  container_name="$1"
 
   # If no container name is provided or if the container name is "all", list all containers
   if [ -z "$container_name" ] || [ "$container_name" = "all" ]; then
-    local containers=$(docker container ls -a --format "{{.Names}}")
+    containers=$(docker container ls -a --format "{{.Names}}")
     for container in $containers; do
       d.stats "$container"
     done
@@ -20,7 +22,7 @@ d.stats() {
   fi
 
   # Get container details using docker inspect
-  local container_info=$(docker inspect "$container_name" 2>/dev/null)
+  container_info=$(docker inspect "$container_name" 2>/dev/null)
 
   if [ -z "$container_info" ]; then
     printf "Error: Container '%s' not found.\n" "$container_name"
@@ -28,62 +30,65 @@ d.stats() {
   fi
 
   # Extract relevant fields with null checks
-  local name=$(printf "%s" "$container_info" | jq -r '.[0].Name | sub("^/"; "")')
-  local image=$(printf "%s" "$container_info" | jq -r '.[0].Config.Image')
+  name=$(printf "%s" "$container_info" | jq -r '.[0].Name | sub("^/"; "")')
+  image=$(printf "%s" "$container_info" | jq -r '.[0].Config.Image')
 
-  local start_date=$(printf "%s" "$container_info" | jq -r '.[0].State.StartedAt')
-  local workdir=$(printf "%s" "$container_info" | jq -r '.[0].Config.WorkingDir // "n/a"')
-  local state=$(printf "%s" "$container_info" | jq -r '.[0].State.Status')
-  local network_mode=$(printf "%s" "$container_info" | jq -r '.[0].HostConfig.NetworkMode')
+  start_date=$(printf "%s" "$container_info" | jq -r '.[0].State.StartedAt' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
+  created_date=$(printf "%s" "$container_info" | jq -r '.[0].Created' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
+  uptime=$(printf "%s" "$container_info" | jq -r '.[0].State.StartedAt' | xargs -I {} bash -c 'echo $((($(date +%s) - $(date -d "{}" +%s)) / 60))' | xargs -I {} bash -c 'echo $(({} / 60 / 24))d $(({} / 60 % 24))h $(({} % 60))m $(({} % 60))s')
+  workdir=$(printf "%s" "$container_info" | jq -r '.[0].Config.WorkingDir // "n/a"')
+  state=$(printf "%s" "$container_info" | jq -r '.[0].State.Status')
+  network_mode=$(printf "%s" "$container_info" | jq -r '.[0].HostConfig.NetworkMode')
 
   # Extract volumes (handle null and empty arrays)
-  local volumes=$(printf "%s" "$container_info" | jq -r '
-        if (.[0].Mounts | length) == 0 then "n/a"
-        else .[0].Mounts[] | "\(.Source) -> \(.Destination)"
-        end
-    ')
+  volumes=$(printf "%s" "$container_info" | jq -r '
+    if (.[0].Mounts | length) == 0 then "n/a"
+    else .[0].Mounts[] | "\(.Source) -> \(.Destination)"
+    end
+  ')
 
   # Extract network details (handle null and empty objects)
-  local networks
   if [ "$network_mode" = "host" ]; then
     networks="Host network mode (no container-specific IPs)"
   else
     networks=$(printf "%s" "$container_info" | jq -r '
-            .[0].NetworkSettings.Networks
-            | if . == null or length == 0 then "n/a"
-              else to_entries[] | "\(.key): \(
-                  .value.IPAddress // "n/a"
-              ) (IPv4), \(
-                  .value.GlobalIPv6Address // "n/a"
-              ) (IPv6)"
-              end
-        ')
+      .[0].NetworkSettings.Networks
+      | if . == null or length == 0 then "n/a"
+        else to_entries[] | "\(.key): \(
+          .value.IPAddress // "n/a"
+        ) (IPv4), \(
+          .value.GlobalIPv6Address // "n/a"
+        ) (IPv6)"
+        end
+    ')
   fi
 
   # Extract port mappings (handle null and empty objects)
-  local ports=$(printf "%s" "$container_info" | jq -r '
-        .[0].NetworkSettings.Ports
-        | if . == null or length == 0 then "n/a"
-            else to_entries[] | "\(.key) -> \(.value[]?.HostPort // "n/a")"
-          end
-    ' | sort -u)
+  ports=$(printf "%s" "$container_info" | jq -r '
+    .[0].NetworkSettings.Ports
+    | if . == null or length == 0 then "n/a"
+        else to_entries[] | "\(.key) -> \(.value[]?.HostPort // "n/a")"
+      end
+  ' | sort -u)
 
   # check if attr has value
   [ -z "$name" ] && name="-"
   [ -z "$image" ] && image="-"
   [ -z "$ports" ] && ports="-"
-  [ -z "$start_date" ] && start_date="-"
+  [ -z "$start_date" ] || [ "$state" != "running" ] && start_date="-"
+  [ -z "$created_date" ] && created_date="-"
+  [ -z "$uptime" ] || [ "$state" != "running" ] && uptime="-"
   [ -z "$workdir" ] && workdir="-"
   [ -z "$state" ] && state="-"
   [ -z "$network_mode" ] && network_mode="-"
   [ -z "$volumes" ] && volumes="-"
-  [ -z "$networks" ] && networks="-"
+  [ -z "$networks" ] || [ "$state" != "running" ] && networks="-"
 
   # Calculate dynamic column widths
   max_width() {
-    local max=0
+    max=0
     for str in "$@"; do
-      local len=${#str}
+      len=${#str}
       ((len > max)) && max=$len
     done
     printf "%d" "$max"
@@ -91,13 +96,13 @@ d.stats() {
 
   # Colorize state
   if [ "$state" = "running" ]; then
-    state="$(_c GREEN $EPX_BULLET) $state"
+    state="$(_c GREEN "$EPX_BULLET") $state"
   else
-    state="$(_c RED $EPX_BULLET) $state"
+    state="$(_c RED "$EPX_BULLET") $state"
   fi
 
-  local attributes=("Name" "Image" "Start Date" "WorkDir" "State" "Ports" "Volumes" "Networks")
-  local values=("$name" "$image" "$start_date" "$workdir" "$state")
+  attributes=("Name" "Image" "Start Date" "Created" "Up time" "WorkDir" "State" "Ports" "Volumes" "Networks")
+  values=("$name" "$image" "$start_date" "$uptime" "$created_date" "$workdir" "$state")
 
   # Add volumes and networks to values for width calculation
   if [ -z "$volumes" ]; then
@@ -125,8 +130,8 @@ d.stats() {
   fi
 
   # Calculate widths with padding, compensating for color codes
-  local attribute_width=$(max_width "${attributes[@]}")
-  local value_width=$(max_width "${values[@]}")
+  attribute_width=$(max_width "${attributes[@]}")
+  value_width=$(max_width "${values[@]}")
 
   # Print functions
   print_separator() {
@@ -134,13 +139,13 @@ d.stats() {
   }
 
   print_row() {
-    local attr="$1"
-    local val="$2"
+    attr="$1"
+    val="$2"
 
-    local visible_len=$(_visible_length "$val")
-    local invisible_len=$((${#val} - visible_len))
-    ((invisible_len > 1)) && invisible_len=$(($invisible_len + 2))
-    local len=$((value_width + invisible_len))
+    visible_len=$(_visible_length "$val")
+    invisible_len=$((${#val} - visible_len))
+    ((invisible_len > 1)) && invisible_len=$((invisible_len + 2))
+    len=$((value_width + invisible_len))
 
     printf "| %-${attribute_width}s | %-${len}s |\n" "$attr" "$val"
   }
@@ -151,40 +156,57 @@ d.stats() {
   # Main attributes
   print_row "Name" "$name"
   print_row "Image" "$image"
-  print_row "Start Date" "$start_date"
+  print_row "Created" "$created_date"
+  print_row "Started" "$start_date"
+  print_row "Up time" "$uptime"
   print_row "WorkDir" "$workdir"
   print_row "State" "$state"
   print_separator
 
   # Ports
-  print_row "Ports" ""
   if [ "$ports" = "n/a" ]; then
-    print_row "" "n/a"
+    print_row "Ports" "n/a"
   else
+    first_port=true
     while IFS= read -r port; do
-      print_row "" "$port"
+      if $first_port; then
+        print_row "Ports" "$port"
+        first_port=false
+      else
+        print_row "" "$port"
+      fi
     done <<<"$ports"
   fi
   print_separator
 
   # Volumes
-  print_row "Volumes" ""
   if [ "$volumes" = "n/a" ]; then
-    print_row "" "n/a"
+    print_row "Volumes" "n/a"
   else
+    first_volume=true
     while IFS= read -r volume; do
-      print_row "" "$volume"
+      if $first_volume; then
+        print_row "Volumes" "$volume"
+        first_volume=false
+      else
+        print_row "" "$volume"
+      fi
     done <<<"$volumes"
   fi
   print_separator
 
   # Networks
-  print_row "Networks" ""
   if [ "$network_mode" = "host" ]; then
-    print_row "" "$networks"
+    print_row "Networks" "$networks"
   else
+    first_network=true
     while IFS= read -r network; do
-      print_row "" "$network"
+      if $first_network; then
+        print_row "Networks" "$network"
+        first_network=false
+      else
+        print_row "" "$network"
+      fi
     done <<<"$networks"
   fi
   print_separator
