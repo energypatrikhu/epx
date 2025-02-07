@@ -9,7 +9,8 @@ _visible_length() {
 d.stats() {
   local container_name="$1"
 
-  if [ -z "$container_name" ]; then
+  # If no container name is provided or if the container name is "all", list all containers
+  if [ -z "$container_name" ] || [ "$container_name" = "all" ]; then
     local containers=$(docker container ls -a --format "{{.Names}}")
     for container in $containers; do
       d.stats "$container"
@@ -190,4 +191,4 @@ d.stats() {
 }
 
 . $EPX_PATH/commands/docker/_autocomplete.sh
-complete -F _d_autocomplete d.stats
+complete -F _d_autocomplete_all d.stats
