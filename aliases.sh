@@ -1,3 +1,5 @@
+alias c='clear'
+
 alias py='python'
 alias py3='python3'
 
@@ -8,3 +10,6 @@ alias mv='mv -fvi'
 
 alias lock='chattr +i'
 alias unlock='chattr -i'
+
+alias freeze='chattr +a'
+alias unfreeze='chattr -a'
