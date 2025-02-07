@@ -1,6 +1,13 @@
 #!/bin/bash
 
 py.pm2() {
+  # help message
+  if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_YELLOW "Usage: py.pm2")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_YELLOW "Description: Start Python script with PM2")"
+    return 0
+  fi
+
   # check if Python is installed
   if ! command -v python3 &>/dev/null; then
     printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_RED "Python is not installed")"
