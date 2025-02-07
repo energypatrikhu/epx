@@ -17,7 +17,3 @@ export EPX_COLORS=(
   ["WHITE"]="\033[0;37m"
   ["NC"]="\033[0m" # No color
 )
-
-export EPX_IFS=', '
-
-export EPX_BULLET="●"
