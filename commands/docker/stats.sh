@@ -188,3 +188,6 @@ d.stats() {
   fi
   print_separator
 }
+
+. $EPX_PATH/commands/docker/_autocomplete.sh
+complete -F _d_autocomplete d.stats
