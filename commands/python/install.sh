@@ -25,4 +25,11 @@ py.install() {
   packages=$(printf "%s, " "$@" | sed 's/, $//')
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - Install")] Installing $(_c LIGHT_YELLOW "$packages")"
   pip install "$@"
+
+  # check if installation was successful, then add to requirements.txt, line by line
+  if [ $? -eq 0 ]; then
+    for package in "$@"; do
+      echo "$package" >>requirements.txt
+    done
+  fi
 }
