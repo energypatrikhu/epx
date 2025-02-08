@@ -2,8 +2,8 @@
 
 py.pm2() {
   # help message
-  if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_YELLOW "Usage: py.pm2")"
+  if [ -z "$1" ]; then
+    printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_YELLOW "Usage: py.pm2 <script> [name]")"
     printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_YELLOW "Description: Start Python script with PM2")"
     return 0
   fi
@@ -22,7 +22,7 @@ py.pm2() {
 
   # start Python script with PM2
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] Starting Python script with PM2"
-  pm2 start main.py --interpreter="$PWD/.venv/bin/python" &>/dev/null
+  pm2 start "$1" --interpreter="$PWD/.venv/bin/python" --name="${2:-$1}" &>/dev/null
 
   # save process list
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] Saving process list"
