@@ -20,10 +20,10 @@ py.pm2() {
     return 1
   fi
 
-  # start Python script with PM2, for name use "$2" if not available use "$1"
+  # start Python script with PM2, for name use "$2" if not available use $PWD last directory name
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] Starting Python script with PM2"
   if [ -z "$2" ]; then
-    pm2 start "$1" --interpreter="$PWD/.venv/bin/python" &>/dev/null
+    pm2 start "$1" --interpreter="$PWD/.venv/bin/python" --name="$(basename "$PWD")" &>/dev/null
   else
     pm2 start "$1" --interpreter="$PWD/.venv/bin/python" --name="$2" &>/dev/null
   fi
