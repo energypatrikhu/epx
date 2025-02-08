@@ -20,9 +20,13 @@ py.pm2() {
     return 1
   fi
 
-  # start Python script with PM2
+  # start Python script with PM2, for name use "$2" if not available use "$1"
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] Starting Python script with PM2"
-  pm2 start "$1" --interpreter="$PWD/.venv/bin/python" --name="${2:-$1}" &>/dev/null
+  if [ -z "$2" ]; then
+    pm2 start "$1" --interpreter="$PWD/.venv/bin/python" &>/dev/null
+  else
+    pm2 start "$1" --interpreter="$PWD/.venv/bin/python" --name="$2" &>/dev/null
+  fi
 
   # save process list
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - PM2")] Saving process list"
