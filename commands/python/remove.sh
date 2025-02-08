@@ -21,6 +21,13 @@ py.remove() {
   packages=$(printf "%s, " "$@" | sed 's/, $//')
   printf "%s\n" "[$(_c LIGHT_BLUE "Python - Remove")] Removing $(_c LIGHT_YELLOW "$packages")"
   pip uninstall "$@"
+
+  # check if removal was successful, then remove from requirements.txt, line by line
+  if [ $? -eq 0 ]; then
+    for package in "$@"; do
+      sed -i "/$package/d" requirements.txt
+    done
+  fi
 }
 
 py.rm() {
