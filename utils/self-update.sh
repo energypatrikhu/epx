@@ -8,6 +8,8 @@ __epx_self_update() {
 
   cd "$EPX_PATH" || return
 
+  git reset --hard HEAD
+  git clean -f -d
   git pull
 
   cd - || return
