@@ -5,6 +5,9 @@
     ```
 2. Add `. /opt/epx/epx.sh` to the beginning of `~/.bashrc`
     ```bash
+    . /opt/epx/epx.sh
+    ```
+    ```bash
     nano ~/.bashrc
     ```
 4. Run source
