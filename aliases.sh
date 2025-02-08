@@ -5,6 +5,8 @@ alias c='clear'
 alias py='python'
 alias py3='python3'
 
+alias gtop='nvidia-smi'
+
 alias ls='ls -lah'
 alias rm='rm -rfvI'
 alias cp='cp -fvir'
