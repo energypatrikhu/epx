@@ -39,6 +39,7 @@ declare -A COMMANDS
 COMMANDS=(
   ["update-bees"]=""
   ["self-update"]=""
+  ["backup"]="<input_path> <output_path> <num_of_backups> [excluded directories, files separated with (,)]"
 )
 
 # Get EPX path
