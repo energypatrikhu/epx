@@ -5,15 +5,15 @@ __epx_backup_copy() {
   local output_path=$2
   local excluded_array=$3
 
-  rsync -rxzvuahP --stats --exclude-from=<(for i in "${excluded_array[@]}"; do echo "$i"; done) "$input_path" "$output_path"
+  rsync -rxzvuahP --stats --exclude-from=<(for i in "${excluded_array[@]}"; do echo "$i"; done) "$input_path/" "$output_path"
 }
 
 __epx_backup_compress() {
-  local input_path=$1
+  local input_dir=$1
   local output_path=$2
   local backup_dir=$3
 
-  tar -I "zstd -T0 --ultra -22 -v --auto-threads=logical --long -M8192" -cf "${backup_dir}.tar.zst" -C "$output_path" "$input_path"
+  tar -I "zstd -T0 --ultra -22 -v --auto-threads=logical --long -M8192" -cf "${backup_dir}.tar.zst" -C "$output_path" "$input_dir"
 }
 
 __epx_backup() {
@@ -48,7 +48,7 @@ __epx_backup() {
   __epx_backup_copy "$input_path" "$backup_dir" "${excluded_array[@]}"
 
   printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
-  __epx_backup_compress "$input_path" "$backup_dir" "$backup_dir"
+  __epx_backup_compress "$current_timestamp" "$output_path" "$backup_dir"
 
   printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing backup directory: $backup_dir")"
   rm -rf "$backup_dir"
