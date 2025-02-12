@@ -19,6 +19,7 @@ __epx_backup__log_status_to_file() {
 
   echo "$status (${input_path}) (${backup_size}) (${num_of_backups}/${backups_to_keep}) (${current_date})" >"$logfile"
 
+  # Start all beesd processes after creating a backup
   printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
   systemctl start beesd@* --all || true
 }
@@ -28,6 +29,7 @@ __epx_backup__copy() {
   local output_path=$2
   local excluded_array=$3
 
+  # Copy files to the backup directory via rsync
   rsync -rxzvuahP --stats --exclude-from=<(for i in "${excluded_array[@]}"; do echo "$i"; done) "$input_path/" "$output_path" || return 1
   return 0
 }
@@ -37,6 +39,7 @@ __epx_backup__compress() {
   local output_path=$2
   local backup_file=$3
 
+  # Compress the backup directory with tar and zstd (ultra compression)
   tar -I "zstd -T0 --ultra -22 -v --auto-threads=logical --long -M8192" -cf "${backup_file}" -C "$output_path" "$input_dir" || return 1
   return 0
 }
