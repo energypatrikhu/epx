@@ -59,7 +59,9 @@ d.up() {
 
 if [[ -f "$EPX_PATH/.config/d.up.config" ]]; then
   _d.up_autocomplete() {
-    . $EPX_PATH/commands/docker/_autocomplete.sh
+    . "$EPX_PATH/.config/d.up.config"
+    . ""$EPX_PATH/commands/docker/_autocomplete.sh""
+
     _autocomplete "$(dir "$CONTAINERS_DIR")"
   }
   complete -F _d.up_autocomplete d.up
