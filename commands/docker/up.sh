@@ -42,8 +42,6 @@ d.up() {
     fi
 
     docker compose -f "$dirname/docker-compose.yml" pull
-    printf "\n"
-
     docker compose -p "$fbasename" -f "$dirname/docker-compose.yml" up -d
     printf "\n"
     return
@@ -55,11 +53,9 @@ d.up() {
     return
   fi
 
-  docker compose -f docker-compose.yml pull
-  printf "\n"
-
   fbasename=$(basename -- "$(pwd)")
 
+  docker compose -f docker-compose.yml pull
   docker compose -p "$fbasename" -f docker-compose.yml up -d
   printf "\n"
 }
