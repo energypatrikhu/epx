@@ -25,7 +25,7 @@ d.up() {
   fi
 
   # check if container name is provided
-  if [[ -n $1 ]]; then
+  if [[ -n $* ]]; then
     if [[ ! -f "$EPX_PATH/.config/d.up.config" ]]; then
       printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_PATH/.config/d.up.config")"
       return
@@ -33,17 +33,18 @@ d.up() {
 
     . "$EPX_PATH/.config/d.up.config"
 
-    fbasename=$(basename -- "$1")
-    dirname="$CONTAINERS_DIR/$fbasename"
+    for c in "$@"; do
+      dirname="$CONTAINERS_DIR/$c"
 
-    if [[ ! -f "$dirname/docker-compose.yml" ]]; then
-      printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in $dirname")"
-      return
-    fi
+      if [[ ! -f "$dirname/docker-compose.yml" ]]; then
+        printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in $dirname")"
+        return
+      fi
 
-    docker compose -f "$dirname/docker-compose.yml" pull
-    docker compose -p "$fbasename" -f "$dirname/docker-compose.yml" up -d
-    printf "\n"
+      docker compose -f "$dirname/docker-compose.yml" pull
+      docker compose -p "$c" -f "$dirname/docker-compose.yml" up -d
+      printf "\n"
+    done
     return
   fi
 
