@@ -2,7 +2,7 @@
 
 d.up() {
   if [[ $1 = "--help" ]] || [[ $1 = "-h" ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [all / container]")"
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [all / [container1, container2, ...]]")"
     return
   fi
 
