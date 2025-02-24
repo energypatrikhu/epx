@@ -3,11 +3,8 @@
 du-all() {
   docker images | awk '(NR>1) && ($2!~/none/) {print $1":"$2}' | xargs -L1 docker pull
 }
-dps() {
-  docker ps
-}
 dls() {
-  docker container ls
+  docker ps
 }
 dup() {
   docker container start "$@"
@@ -35,7 +32,6 @@ dhelp() {
   printf "h   -> Help\n"
   printf "dhelp   -> Docker commands (This command)\n"
   printf "du-all   -> Update all docker image to latest\n"
-  printf "dps   -> List running containers\n"
   printf "dls   -> List containers\n"
   printf "dup   -> Start container ( dup <id or name> )\n"
   printf "ds   -> Stop container ( ds <id or name> )\n"
