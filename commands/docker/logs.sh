@@ -9,5 +9,5 @@ d.logs() {
   docker container logs -f "$@"
 }
 
-. $EPX_PATH/commands/docker/_autocomplete.sh
+. "$EPX_PATH/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete d.logs

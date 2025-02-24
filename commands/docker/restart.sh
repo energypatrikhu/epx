@@ -24,5 +24,5 @@ d.restart() {
   fi
 }
 
-. $EPX_PATH/commands/docker/_autocomplete.sh
+. "$EPX_PATH/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete_all d.restart
