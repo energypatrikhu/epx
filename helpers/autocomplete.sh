@@ -6,5 +6,5 @@ _autocomplete() {
   cur="${COMP_WORDS[COMP_CWORD]}"
   opts=$*
 
-  COMPREPLY=("$(compgen -W "${opts}" -- "$cur")")
+  mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
 }
