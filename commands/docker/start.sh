@@ -11,16 +11,15 @@ d.start() {
 
     printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "All containers started")"
   else
-    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Start")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_GREEN "starting...")"
-
-    docker container start "$@" >/dev/null 2>&1
-
     if [ $# -eq 1 ]; then
       container_text="Container"
     else
       container_text="Containers"
     fi
     containers=$(printf "%s, " "$@" | sed 's/, $//')
+
+    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Start")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_GREEN "starting...")"
+    docker container start "$@" >/dev/null 2>&1
     printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Start")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_GREEN "started")"
   fi
 }
