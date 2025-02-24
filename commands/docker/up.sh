@@ -16,7 +16,9 @@ d.up() {
 
     for d in "$CONTAINERS_DIR"/*; do
       if [ -d "$d" ]; then
-        d.up "$(basename -- "$d")"
+        if [[ -f "$d/docker-compose.yml" ]]; then
+          d.up "$(basename -- "$d")"
+        fi
       fi
     done
     return
@@ -60,9 +62,18 @@ d.up() {
 if [[ -f "$EPX_PATH/.config/d.up.config" ]]; then
   _d.up_autocomplete() {
     . "$EPX_PATH/.config/d.up.config"
-    . ""$EPX_PATH/commands/docker/_autocomplete.sh""
+    . "$EPX_PATH/commands/docker/_autocomplete.sh"
 
-    _autocomplete "$(dir "$CONTAINERS_DIR")"
+    container_dirs=()
+    for d in "$CONTAINERS_DIR"/*; do
+      if [ -d "$d" ]; then
+        if [[ -f "$d/docker-compose.yml" ]]; then
+          container_dirs+=("$(basename -- "$d")")
+        fi
+      fi
+    done
+
+    _autocomplete "${container_dirs[@]}"
   }
   complete -F _d.up_autocomplete d.up
 fi
