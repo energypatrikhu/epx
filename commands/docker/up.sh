@@ -36,6 +36,11 @@ d.up() {
     fbasename=$(basename -- "$1")
     dirname="/$CONTAINERS_DIR/$fbasename"
 
+    if [[ ! -f "$dirname/docker-compose.yml" ]]; then
+      printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in $dirname")"
+      return
+    fi
+
     docker compose -f "$dirname/docker-compose.yml" pull
     printf "\n"
 
