@@ -34,7 +34,7 @@ d.up() {
     . "$EPX_PATH/.config/d.up.config"
 
     fbasename=$(basename -- "$1")
-    dirname="/$CONTAINERS_DIR/$fbasename"
+    dirname="$CONTAINERS_DIR/$fbasename"
 
     if [[ ! -f "$dirname/docker-compose.yml" ]]; then
       printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in $dirname")"
