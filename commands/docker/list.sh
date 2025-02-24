@@ -4,13 +4,13 @@ d.list() {
   state_filter="$*"
 
   if [ -z "$state_filter" ]; then
-    data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
+    data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
   else
     filters=""
     for filter in $state_filter; do
       filters="$filters --filter status=$filter"
     done
-    data=$(docker container ls -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "$filters")
+    data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "$filters")
   fi
 
   if [ -z "$data" ]; then

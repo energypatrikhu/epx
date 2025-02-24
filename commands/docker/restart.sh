@@ -7,8 +7,8 @@ d.restart() {
   fi
 
   if [[ $1 == "all" ]]; then
-    docker container restart "$(docker container ls -a -q)" >/dev/null 2>&1
-
+    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "Restarting all containers...")"
+    docker container restart "$(docker ps -aq)" >/dev/null 2>&1
     printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "All containers restarted")"
   else
     if [ $# -eq 1 ]; then

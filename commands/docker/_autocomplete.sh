@@ -1,11 +1,11 @@
 #!/bin/bash
 
 _d_autocomplete() {
-  _autocomplete "$(docker container ls --format '{{.Names}}')"
+  _autocomplete "$(docker ps -a --format '{{.Names}}')"
 }
 
 _d_autocomplete_all() {
-  _autocomplete "all $(docker container ls -a --format '{{.Names}}')"
+  _autocomplete "all $(docker ps -a --format '{{.Names}}')"
 }
 
 _d_autocomplete_list() {

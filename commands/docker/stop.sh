@@ -7,8 +7,8 @@ d.stop() {
   fi
 
   if [[ $1 == "all" ]]; then
-    docker container stop "$(docker container ls -a -q)" >/dev/null 2>&1
-
+    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Stop")" "$(_c LIGHT_RED "Stopping all containers...")"
+    docker container stop "$(docker ps -aq)" >/dev/null 2>&1
     printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Stop")" "$(_c LIGHT_RED "All containers stopped")"
   else
     if [ $# -eq 1 ]; then
