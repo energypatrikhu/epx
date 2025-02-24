@@ -11,6 +11,8 @@ d.stop() {
 
     printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Stop")" "$(_c LIGHT_RED "All containers stopped")"
   else
+    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Stop")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_RED "stoping...")"
+
     docker container stop "$@" >/dev/null 2>&1
 
     if [ $# -eq 1 ]; then
@@ -19,7 +21,7 @@ d.stop() {
       container_text="Containers"
     fi
     containers=$(printf "%s, " "$@" | sed 's/, $//')
-    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Stop")" "$(_c LIGHT_BLUE "$container_text $containers") $(_c LIGHT_RED "stopped")"
+    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Stop")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_RED "stopped")"
   fi
 }
 
