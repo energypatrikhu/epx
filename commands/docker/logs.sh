@@ -6,7 +6,7 @@ d.logs() {
     return
   fi
 
-  docker container logs -f "$@"
+  docker container logs -f "$@" --since "$(docker inspect "$@" | jq .[0].State.StartedAt | sed 's/\"//g')"
 }
 
 . "$EPX_PATH/commands/docker/_autocomplete.sh"
