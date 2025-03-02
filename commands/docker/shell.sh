@@ -6,7 +6,12 @@ d.shell() {
     return
   fi
 
-  docker exec -it "$1" /bin/bash
+  for shell in bash sh /bin/bash /bin/sh /usr/bin/bash /usr/bin/sh; do
+    if docker exec -it "$1" "$shell" 2>/dev/null; then
+      return
+    fi
+  done
+  printf "%s\n" "[$(_c LIGHT_RED "Error")] $(_c LIGHT_YELLOW "No suitable shell found in container $1")"
 }
 
 . "$EPX_PATH/commands/docker/_autocomplete.sh"
