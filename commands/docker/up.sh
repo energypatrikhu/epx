@@ -1,9 +1,15 @@
 #!/bin/bash
 
 d.up() {
+  local pull=false
+
   if [[ $1 = "--help" ]] || [[ $1 = "-h" ]]; then
     printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [all / [container1, container2, ...]]")"
     return
+  fi
+
+  if [[ $1 = "--pull" ]] || [[ $1 = "-p" ]]; then
+    pull=true
   fi
 
   if [ "$1" = "all" ]; then
@@ -41,7 +47,9 @@ d.up() {
         return
       fi
 
-      docker compose -f "$dirname/docker-compose.yml" pull
+      if [ "$pull" = true ]; then
+        docker compose -f "$dirname/docker-compose.yml" pull
+      fi
       docker compose -p "$c" -f "$dirname/docker-compose.yml" up -d
       printf "\n"
     done
@@ -56,7 +64,9 @@ d.up() {
 
   fbasename=$(basename -- "$(pwd)")
 
-  docker compose -f docker-compose.yml pull
+  if [ "$pull" = true ]; then
+    docker compose -f docker-compose.yml pull
+  fi
   docker compose -p "$fbasename" -f docker-compose.yml up -d
   printf "\n"
 }
