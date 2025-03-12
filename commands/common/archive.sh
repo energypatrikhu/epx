@@ -5,7 +5,7 @@ archive() {
 
   fbasename=$(basename -- "$@")
 
-  time screen tar -cvf "${fbasename}.tar" "$@"
+  time tar -cvf "${fbasename}.tar" "$@"
 }
 
 unarchive() {
@@ -13,5 +13,5 @@ unarchive() {
 
   fbasename=$(basename -- "$@")
 
-  time screen tar -xvf "${fbasename}"
+  time tar -xvf "${fbasename}"
 }

@@ -5,7 +5,7 @@ zst() {
 
   fbasename=$(basename -- "$@")
 
-  time screen tar -I "zstd -T0 --ultra -22 -v --auto-threads=logical --long -M8192" -cf "${fbasename}.tar.zst" "$@"
+  time tar -I "zstd -T0 --ultra -22 -v --auto-threads=logical --long -M8192" -cf "${fbasename}.tar.zst" "$@"
 }
 
 unzst() {
@@ -13,5 +13,5 @@ unzst() {
 
   fbasename=$(basename -- "$@")
 
-  time screen tar --use-compress-program=unzstd -xvf "${fbasename}"
+  time tar --use-compress-program=unzstd -xvf "${fbasename}"
 }
