@@ -46,7 +46,7 @@ __epx_backup__compress() {
   local backup_file=$3
 
   # Compress the backup directory with tar and zstd (ultra compression)
-  tar -I "zstd -T0 -19 -v --auto-threads=logical --long -M8192" -cf "${backup_file}" -C "$output_path" "$input_dir"
+  tar -I "zstd -T0 -19 -v --auto-threads=physical --long -M8192" -cf "${backup_file}" -C "$output_path" "$input_dir"
   if [ $? -ne 0 ]; then
     return 1
   fi
