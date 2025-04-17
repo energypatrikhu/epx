@@ -3,7 +3,7 @@
     ```bash
     git clone https://github.com/energypatrikhu/epx.git /opt/epx
     ```
-2. Add `. /opt/epx/epx.sh` to the end of `~/.bashrc`
+2. Add `. /opt/epx/epx.sh` to the start of `~/.bashrc`
     ```bash
     . /opt/epx/epx.sh
     ```
