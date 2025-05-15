@@ -6,7 +6,7 @@ d.shell() {
     return
   fi
 
-  for shell in bash sh /bin/bash /bin/sh /usr/bin/bash /usr/bin/sh; do
+  for shell in bash sh; do
     if docker exec -it "$1" "$shell" 2>/dev/null; then
       return
     fi
