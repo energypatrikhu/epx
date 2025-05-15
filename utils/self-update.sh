@@ -13,4 +13,10 @@ __epx_self_update() {
   git pull
 
   cd - || return
+
+  if [ -f "$EPX_PATH/epx" ]; then
+    chmod +x "$EPX_PATH/epx"
+  fi
+
+  source "$HOME/.bashrc" || return
 }
