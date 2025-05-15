@@ -211,6 +211,10 @@ d.stats() {
   fi
   print_separator
 }
+d.stat() {
+  d.stats "$@"
+}
 
 . "$EPX_PATH/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete_all d.stats
+complete -F _d_autocomplete_all d.stat

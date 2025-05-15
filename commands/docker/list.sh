@@ -59,7 +59,7 @@ EOF
   __epx_echo "$separator"
 }
 d.ls() {
-  d.list "$*"
+  d.list $@
 }
 
 . "$EPX_PATH/commands/docker/_autocomplete.sh"

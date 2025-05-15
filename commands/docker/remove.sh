@@ -23,6 +23,9 @@ d.remove() {
     __epx_echo "[$(_c LIGHT_BLUE "Docker - Remove")] $container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_RED "removed")"
   fi
 }
+d.rm() {
+  d.remove $@
+}
 
 . "$EPX_PATH/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete_all d.remove

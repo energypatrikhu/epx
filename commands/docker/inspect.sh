@@ -9,6 +9,10 @@ d.inspect() {
   docker inspect "$@"
 }
 
+d.i() {
+  d.inspect $@
+}
+
 . "$EPX_PATH/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete d.inspect
 complete -F _d_autocomplete d.i
