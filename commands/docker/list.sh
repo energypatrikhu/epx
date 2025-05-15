@@ -36,19 +36,19 @@ EOF
   separator=$(printf "+%-${id_width}s--+%-${names_width}s--+%-${image_width}s--+%-${status_width}s--+\n" | tr ' ' '-')
 
   __epx_echo "$separator"
-  printf "| %-${id_width}s | %-${names_width}s | %-${image_width}s | %-${status_width}s |\n" "CONTAINER ID" "NAMES" "IMAGE" "STATUS"
+  printf "| %-${id_width}s | %-${names_width}s | %-${image_width}s | %-${status_width}s |\n" "CONTAINER ID" "NAME" "IMAGE" "STATUS"
   __epx_echo "$separator"
 
   while IFS=$'\t' read -r id names image status; do
 
-    if __epx_echo "$status" | grep -q "Up"; then
+    if printf "%s" "$status" | grep -q "Up"; then
       bullet=$(_c GREEN "$EPX_BULLET")
     else
       bullet=$(_c RED "$EPX_BULLET")
     fi
 
     names="$bullet $names"
-    visible_names_length=$(__epx_echo "$names" | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
+    visible_names_length=$(printf "%s" "$names" | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
     padding=$((names_width - visible_names_length))
 
     printf "| %-${id_width}s | %s%-${padding}s | %-${image_width}s | %-${status_width}s |\n" "$id" "$names" "" "$image" "$status"
