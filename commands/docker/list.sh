@@ -14,7 +14,7 @@ d.list() {
   fi
 
   if [ -z "$data" ]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")"
     return
   fi
 
@@ -35,20 +35,20 @@ EOF
   names_width=$((names_width + 2))
   separator=$(printf "+%-${id_width}s--+%-${names_width}s--+%-${image_width}s--+%-${status_width}s--+\n" | tr ' ' '-')
 
-  printf "%s\n" "$separator"
+  __epx_echo "$separator"
   printf "| %-${id_width}s | %-${names_width}s | %-${image_width}s | %-${status_width}s |\n" "CONTAINER ID" "NAMES" "IMAGE" "STATUS"
-  printf "%s\n" "$separator"
+  __epx_echo "$separator"
 
   while IFS=$'\t' read -r id names image status; do
 
-    if printf "%s" "$status" | grep -q "Up"; then
+    if __epx_echo "$status" | grep -q "Up"; then
       bullet=$(_c GREEN "$EPX_BULLET")
     else
       bullet=$(_c RED "$EPX_BULLET")
     fi
 
     names="$bullet $names"
-    visible_names_length=$(printf "%s" "$names" | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
+    visible_names_length=$(__epx_echo "$names" | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
     padding=$((names_width - visible_names_length))
 
     printf "| %-${id_width}s | %s%-${padding}s | %-${image_width}s | %-${status_width}s |\n" "$id" "$names" "" "$image" "$status"
@@ -56,7 +56,7 @@ EOF
 $data
 EOF
 
-  printf "%s\n" "$separator"
+  __epx_echo "$separator"
 }
 d.ls() {
   d.list "$*"

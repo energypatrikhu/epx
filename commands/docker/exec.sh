@@ -2,7 +2,7 @@
 
 d.exec() {
   if [[ -z $1 ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Exec")] $(_c LIGHT_YELLOW "Usage: d.exec <container> <command> [args]")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Exec")] $(_c LIGHT_YELLOW "Usage: d.exec <container> <command> [args]")"
     return
   fi
 

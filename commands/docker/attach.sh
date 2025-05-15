@@ -2,7 +2,7 @@
 
 d.attach() {
   if [[ -z $1 ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Attach")] $(_c LIGHT_YELLOW "Usage: d.attach <container>")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Attach")] $(_c LIGHT_YELLOW "Usage: d.attach <container>")"
     return
   fi
 

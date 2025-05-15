@@ -2,7 +2,7 @@
 
 ufw.del() {
   if [ -z "$1" ]; then
-    printf "%s\n" "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_YELLOW "Usage: ufw.add <port>")"
+    __epx_echo "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_YELLOW "Usage: ufw.add <port>")"
     return 1
   fi
 
@@ -11,5 +11,5 @@ ufw.del() {
     return
   fi
 
-  printf "%s\n" "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_RED "Error:") $(_c LIGHT_YELLOW "Invalid argument: $1")"
+  __epx_echo "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_RED "Error:") $(_c LIGHT_YELLOW "Invalid argument: $1")"
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 zst() {
-  [ "$#" -eq 0 ] && printf "No input files\n" && return
+  [ "$#" -eq 0 ] && __epx_echo "No input files" && return
 
   fbasename=$(basename -- "$@")
 
@@ -9,7 +9,7 @@ zst() {
 }
 
 unzst() {
-  [ "$#" -eq 0 ] && printf "No input files\n" && return
+  [ "$#" -eq 0 ] && __epx_echo "No input files" && return
 
   fbasename=$(basename -- "$@")
 

@@ -9,20 +9,20 @@ dcu() {
 }
 
 h() {
-  printf "h    -> Help (This command)\n"
-  printf "dhelp    -> Docker commands\n"
-  printf "mc-help    -> Minecraft commands\n"
-  printf "move    -> Move files with rsync\n"
-  printf "copy    -> Copy files with rsync\n"
-  printf "zst    -> Compress dir/file to zstd archive format\n"
-  printf "unzst    -> Decompress zstd archive\n"
-  printf "archive    -> Compress dir/file to .tar archive\n"
-  printf "unarchive    -> Decompress .tar file\n"
+  __epx_echo "h    -> Help (This command)"
+  __epx_echo "dhelp    -> Docker commands"
+  __epx_echo "mc-help    -> Minecraft commands"
+  __epx_echo "move    -> Move files with rsync"
+  __epx_echo "copy    -> Copy files with rsync"
+  __epx_echo "zst    -> Compress dir/file to zstd archive format"
+  __epx_echo "unzst    -> Decompress zstd archive"
+  __epx_echo "archive    -> Compress dir/file to .tar archive"
+  __epx_echo "unarchive    -> Decompress .tar file"
 }
 
 dhelp() {
-  printf "h   -> Help\n"
-  printf "dhelp   -> Docker commands (This command)\n"
-  printf "du-all   -> Update all docker image to latest\n"
-  printf "dcu   -> Alias for 'docker compose up -d'\n"
+  __epx_echo "h   -> Help"
+  __epx_echo "dhelp   -> Docker commands (This command)"
+  __epx_echo "du-all   -> Update all docker image to latest"
+  __epx_echo "dcu   -> Alias for 'docker compose up -d'"
 }

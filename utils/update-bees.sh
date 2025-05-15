@@ -8,7 +8,7 @@ __epx_update_bees() {
 
   # Check if the build directory exists
   if [ ! -d "$EPX_BEES_SOURCE_PATH" ]; then
-    printf "\n> Creating the build directory\n"
+    __epx_echo "\n> Creating the build directory"
     mkdir -p "$EPX_BEES_SOURCE_PATH"
   fi
 
@@ -16,22 +16,22 @@ __epx_update_bees() {
   if [ -f "$EPX_BEES_SOURCE_PATH"/.version ]; then
     # Get the version number from the '.-version' file
     CURRENT_VERSION=$(cat "$EPX_BEES_SOURCE_PATH"/.version)
-    printf "\n> Current version: %s\n" "$CURRENT_VERSION"
+    __epx_echo "\n> Current version: $CURRENT_VERSION"
   else
     # Set the current version to 'unknown'
     CURRENT_VERSION="unknown"
-    printf "\n> Current version: %s\n" "$CURRENT_VERSION"
+    __epx_echo "\n> Current version: $CURRENT_VERSION"
   fi
 
   # Get the latest release from the app repository
-  printf "\n> Getting the latest release from the %s repository\n" "$APP_NAME"
+  __epx_echo "\n> Getting the latest release from the $APP_NAME repository"
   LATEST_VERSION=$(curl "https://api.github.com/repos/$REPOSITORY/tags" | jq -r '.[0].name')
 
-  printf "\n> Latest version: %s\n" "$LATEST_VERSION"
+  __epx_echo "\n> Latest version: $LATEST_VERSION"
 
   # Check if the latest version is the same as the current version
   if [ "$LATEST_VERSION" == "$CURRENT_VERSION" ]; then
-    printf "\n> %s is already up to date\n" "$APP_NAME"
+    __epx_echo "\n> $APP_NAME is already up to date"
     cd - || return
 
     return
@@ -41,40 +41,45 @@ __epx_update_bees() {
   BUILD_DIR=$EPX_BEES_SOURCE_PATH/$APP_NAME-${LATEST_VERSION:1}
 
   # Download the latest release
-  printf "\n> Downloading the latest release: %s\n" "$LATEST_VERSION"
+  __epx_echo "\n> Downloading the latest release: $LATEST_VERSION"
   wget -O "$EPX_BEES_SOURCE_PATH"/"$LATEST_VERSION".tar.gz "https://github.com/$REPOSITORY/archive/refs/tags/$LATEST_VERSION.tar.gz"
 
   # Extract the tarball
-  printf "\n> Extracting the tarball\n"
+  __epx_echo "\n> Extracting the tarball"
   tar -xzf "$EPX_BEES_SOURCE_PATH"/"$LATEST_VERSION".tar.gz -C "$EPX_BEES_SOURCE_PATH"
 
   # Change to the app directory
-  printf "\n> Changing to the %s directory\n" "$APP_NAME"
+  __epx_echo "\n> Changing to the $APP_NAME directory"
   cd "$BUILD_DIR" || return
 
   # Set version
-  printf "\n> Setting the %s version\n" "$APP_NAME"
+  __epx_echo "\n> Setting the $APP_NAME version"
   sed -i "s/BEES_VERSION ?=.*/BEES_VERSION ?= $LATEST_VERSION/" ./Makefile
 
   # Build the project
-  printf "\n> Building the %s project\n" "$APP_NAME"
+  __epx_echo "\n> Building the $APP_NAME project"
   make
 
   # Install the project
-  printf "\n> Installing the %s project\n" "$APP_NAME"
+  __epx_echo "\n> Installing the $APP_NAME project"
   make install
 
+  # Copy service files
+  __epx_echo "\n> Copying service files"
+  cp -rf "$BUILD_DIR"/scripts/*.service /etc/systemd/system/
+
   # Remove the build directory
-  printf "\n> Removing the build directory\n"
+  __epx_echo "\n> Removing the build directory"
   rm -rf "$BUILD_DIR"
 
   # Remove the tarball
-  rm "$EPX_BEES_SOURCE_PATH"/"$LATEST_VERSION".tar.gz
+  __epx_echo "\n> Removing the tarball"
+  rm -rf "$EPX_BEES_SOURCE_PATH"/"$LATEST_VERSION".tar.gz
 
   # Write version number to '.version' file
-  printf "%s\n" "$LATEST_VERSION" >"$EPX_BEES_SOURCE_PATH"/.version
+  __epx_echo "$LATEST_VERSION" >"$EPX_BEES_SOURCE_PATH"/.version
 
-  printf "\n> %s has been successfully updated to version %s\n" "$APP_NAME" "$LATEST_VERSION"
+  __epx_echo "\n> $APP_NAME has been successfully updated to version $LATEST_VERSION"
 
   cd - || return
 }

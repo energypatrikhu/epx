@@ -2,7 +2,7 @@
 
 d.inspect() {
   if [[ -z $1 ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Inspect")] $(_c LIGHT_YELLOW "Usage: d.inspect <container>")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Inspect")] $(_c LIGHT_YELLOW "Usage: d.inspect <container>")"
     return
   fi
 

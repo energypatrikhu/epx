@@ -2,7 +2,7 @@
 
 d.logs() {
   if [[ -z $1 ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Logs")] $(_c LIGHT_YELLOW "Usage: d.logs <container> [--all | -a]")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Logs")] $(_c LIGHT_YELLOW "Usage: d.logs <container> [--all | -a]")"
     return
   fi
 

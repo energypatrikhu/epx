@@ -2,14 +2,14 @@
 
 d.start() {
   if [[ -z $1 ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_YELLOW "Usage: d.start <all / container>")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_YELLOW "Usage: d.start <all / container>")"
     return
   fi
 
   if [[ $1 == "all" ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "Starting all containers...")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "Starting all containers...")"
     docker container start $(docker ps -aq) >/dev/null 2>&1
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "All containers started")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_GREEN "All containers started")"
   else
     if [ $# -eq 1 ]; then
       container_text="Container"
@@ -18,9 +18,9 @@ d.start() {
     fi
     containers=$(printf "%s, " "$@" | sed 's/, $//')
 
-    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Start")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_GREEN "starting...")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Start")] $container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_GREEN "starting...")"
     docker container start "$@" >/dev/null 2>&1
-    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Start")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_GREEN "started")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Start")] $container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_GREEN "started")"
   fi
 }
 

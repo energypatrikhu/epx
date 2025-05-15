@@ -2,14 +2,14 @@
 
 d.restart() {
   if [[ -z $1 ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_YELLOW "Usage: d.restart <all / container>")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_YELLOW "Usage: d.restart <all / container>")"
     return
   fi
 
   if [[ $1 == "all" ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "Restarting all containers...")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "Restarting all containers...")"
     docker container restart $(docker ps -aq) >/dev/null 2>&1
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "All containers restarted")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "All containers restarted")"
   else
     if [ $# -eq 1 ]; then
       container_text="Container"
@@ -18,9 +18,9 @@ d.restart() {
     fi
     containers=$(printf "%s, " "$@" | sed 's/, $//')
 
-    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Restart")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_CYAN "restarting...")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Restart")] $container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_CYAN "restarting...")"
     docker container restart "$@" >/dev/null 2>&1
-    printf "[%s] %s\n" "$(_c LIGHT_BLUE "Docker - Restart")" "$container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_CYAN "restarted")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Restart")] $container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_CYAN "restarted")"
   fi
 }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _strip_text() {
-  printf "%s" "$1" | sed 's/\x1b\[[0-9;]*m//g'
+  __epx_echo "$1" | sed 's/\x1b\[[0-9;]*m//g'
 }
 
 _visible_length() {
@@ -25,23 +25,23 @@ d.stats() {
   container_info=$(docker inspect "$container_name" 2>/dev/null)
 
   if [ -z "$container_info" ]; then
-    printf "Error: Container '%s' not found.\n" "$container_name"
+    __epx_echo "Error: Container '$container_name' not found."
     return 1
   fi
 
   # Extract relevant fields with null checks
-  name=$(printf "%s" "$container_info" | jq -r '.[0].Name | sub("^/"; "")')
-  image=$(printf "%s" "$container_info" | jq -r '.[0].Config.Image')
+  name=$(__epx_echo "$container_info" | jq -r '.[0].Name | sub("^/"; "")')
+  image=$(__epx_echo "$container_info" | jq -r '.[0].Config.Image')
 
-  start_date=$(printf "%s" "$container_info" | jq -r '.[0].State.StartedAt' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
-  created_date=$(printf "%s" "$container_info" | jq -r '.[0].Created' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
-  uptime=$(printf "%s" "$container_info" | jq -r '.[0].State.StartedAt' | xargs -I {} bash -c 'echo $((($(date +%s) - $(date -d "{}" +%s)) / 60))' | xargs -I {} bash -c 'echo $(({} / 60 / 24))d $(({} / 60 % 24))h $(({} % 60))m $(({} % 60))s')
-  workdir=$(printf "%s" "$container_info" | jq -r '.[0].Config.WorkingDir // "n/a"')
-  state=$(printf "%s" "$container_info" | jq -r '.[0].State.Status')
-  network_mode=$(printf "%s" "$container_info" | jq -r '.[0].HostConfig.NetworkMode')
+  start_date=$(__epx_echo "$container_info" | jq -r '.[0].State.StartedAt' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
+  created_date=$(__epx_echo "$container_info" | jq -r '.[0].Created' | xargs -I {} date -d "{}" +"%Y-%m-%d %H:%M:%S")
+  uptime=$(__epx_echo "$container_info" | jq -r '.[0].State.StartedAt' | xargs -I {} bash -c 'echo $((($(date +%s) - $(date -d "{}" +%s)) / 60))' | xargs -I {} bash -c 'echo $(({} / 60 / 24))d $(({} / 60 % 24))h $(({} % 60))m $(({} % 60))s')
+  workdir=$(__epx_echo "$container_info" | jq -r '.[0].Config.WorkingDir // "n/a"')
+  state=$(__epx_echo "$container_info" | jq -r '.[0].State.Status')
+  network_mode=$(__epx_echo "$container_info" | jq -r '.[0].HostConfig.NetworkMode')
 
   # Extract volumes (handle null and empty arrays)
-  volumes=$(printf "%s" "$container_info" | jq -r '
+  volumes=$(__epx_echo "$container_info" | jq -r '
     if (.[0].Mounts | length) == 0 then "n/a"
     else .[0].Mounts[] | "\(.Source) -> \(.Destination)"
     end
@@ -51,7 +51,7 @@ d.stats() {
   if [ "$network_mode" = "host" ]; then
     networks="Host network mode (no container-specific IPs)"
   else
-    networks=$(printf "%s" "$container_info" | jq -r '
+    networks=$(__epx_echo "$container_info" | jq -r '
       .[0].NetworkSettings.Networks
       | if . == null or length == 0 then "n/a"
         else to_entries[] | "\(.key): \(
@@ -64,7 +64,7 @@ d.stats() {
   fi
 
   # Extract port mappings (handle null and empty objects)
-  ports=$(printf "%s" "$container_info" | jq -r '
+  ports=$(__epx_echo "$container_info" | jq -r '
     .[0].NetworkSettings.Ports
     | if . == null or length == 0 then "n/a"
         else to_entries[] | "\(.key) -> \(.value[]?.HostPort // "n/a")"

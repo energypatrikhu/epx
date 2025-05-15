@@ -44,7 +44,7 @@ COMMANDS=(
 
 # Get EPX path
 epx_path() {
-  printf "EPX path: $EPX_PATH\n"
+  __epx_echo "EPX path: $EPX_PATH"
 }
 
 # Main function
@@ -60,9 +60,9 @@ epx() {
     fi
   done
 
-  printf "Usage: epx <command> [args]\n"
+  __epx_echo "Usage: epx <command> [args]"
   for cmd in "${!COMMANDS[@]}"; do
-    printf "  %s\n" "$cmd ${COMMANDS[$cmd]}"
+    __epx_echo "  $cmd ${COMMANDS[$cmd]}"
   done
 }
 

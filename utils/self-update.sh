@@ -2,7 +2,7 @@
 
 __epx_self_update() {
   if [ ! -d "$EPX_PATH" ]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Self Update")] $(_c LIGHT_RED "The '$EPX_PATH' directory does not exist")\n"
+    __epx_echo "[$(_c LIGHT_BLUE "Self Update")] $(_c LIGHT_RED "The '$EPX_PATH' directory does not exist")\n"
     return
   fi
 
@@ -14,8 +14,8 @@ __epx_self_update() {
 
   cd - || return
 
-  if [ -f "$EPX_PATH/epx" ]; then
-    chmod +x "$EPX_PATH/epx"
+  if [ -f "$EPX_PATH" ]; then
+    chmod +x -R "$EPX_PATH"
   fi
 
   source "$HOME/.bashrc" || return

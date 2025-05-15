@@ -4,7 +4,7 @@ d.up() {
   local pull=false
 
   if [[ $1 = "--help" ]] || [[ $1 = "-h" ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [all / [container1, container2, ...]]")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [all / [container1, container2, ...]]")"
     return
   fi
 
@@ -14,7 +14,7 @@ d.up() {
 
   if [ "$1" = "all" ]; then
     if [[ ! -f "$EPX_PATH/.config/d.up.config" ]]; then
-      printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_PATH/.config/d.up.config")"
+      __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_PATH/.config/d.up.config")"
       return
     fi
 
@@ -33,7 +33,7 @@ d.up() {
   # check if container name is provided
   if [[ -n $* ]]; then
     if [[ ! -f "$EPX_PATH/.config/d.up.config" ]]; then
-      printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_PATH/.config/d.up.config")"
+      __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_PATH/.config/d.up.config")"
       return
     fi
 
@@ -43,7 +43,7 @@ d.up() {
       dirname="$CONTAINERS_DIR/$c"
 
       if [[ ! -f "$dirname/docker-compose.yml" ]]; then
-        printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in $dirname")"
+        __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in $dirname")"
         return
       fi
 
@@ -51,14 +51,14 @@ d.up() {
         docker compose -f "$dirname/docker-compose.yml" pull
       fi
       docker compose -p "$c" -f "$dirname/docker-compose.yml" up -d
-      printf "\n"
+      __epx_echo ""
     done
     return
   fi
 
   # if nothing is provided, just start compose file in current directory
   if [[ ! -f "docker-compose.yml" ]]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in current directory")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in current directory")"
     return
   fi
 
@@ -68,7 +68,7 @@ d.up() {
     docker compose -f docker-compose.yml pull
   fi
   docker compose -p "$fbasename" -f docker-compose.yml up -d
-  printf "\n"
+  __epx_echo ""
 }
 
 if [[ -f "$EPX_PATH/.config/d.up.config" ]]; then

@@ -23,7 +23,7 @@ __epx_backup__log_status_to_file() {
   echo "$status (${input_path}) (${backup_size}) (${total_size}) (${num_of_backups}/${backups_to_keep}) (${current_date})" >"$logfile"
 
   # Start all beesd processes after creating a backup
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
   systemctl start beesd@* --all || true
 }
 
@@ -61,7 +61,7 @@ __epx_backup() {
 
   # Stop the script if any of the required arguments are missing
   if [ -z "$input_path" ] || [ -z "$output_path" ] || [ -z "$backups_to_keep" ]; then
-    printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Usage: backup <input path> <output path> <backups to keep> [excluded directories, files separated with (,)]")"
+    __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Usage: backup <input path> <output path> <backups to keep> [excluded directories, files separated with (,)]")"
     return 1
   fi
 
@@ -77,46 +77,46 @@ __epx_backup() {
   # Create an array of excluded directories and files
   mapfile -t excluded_array < <(echo "$excluded" | tr "," "\n")
 
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting backup...")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting backup...")"
 
   # Stop all beesd processes before creating a backup
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Stopping all beesd processes...")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Stopping all beesd processes...")"
   systemctl stop beesd@* || true
 
   # Create the backup directory
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Creating backup directory: $backup_dir")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Creating backup directory: $backup_dir")"
   if ! mkdir -p "$backup_dir"; then
     __epx_backup__log_status_to_file "Backup failed, failed to create backup directory" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
     return 1
   fi
 
   # Copy files to the backup directory
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Copying files...")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Copying files...")"
   if ! __epx_backup__copy "$input_path" "$backup_dir" "${excluded_array[@]}"; then
     __epx_backup__log_status_to_file "Backup failed, failed to copy files" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
     return 1
   fi
 
   # Compress the backup directory
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
   if ! __epx_backup__compress "$current_timestamp" "$output_path" "$backup_file"; then
     __epx_backup__log_status_to_file "Backup failed, failed to compress files" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
     return 1
   fi
 
   # Remove the backup directory
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing backup directory: $backup_dir")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing backup directory: $backup_dir")"
   if ! rm -rf "$backup_dir"; then
     __epx_backup__log_status_to_file "Backup failed, failed to remove backup directory" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
     return 1
   fi
 
   # Remove old backups
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing old backups...")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing old backups...")"
   mapfile -t backups < <(find "$output_path" -maxdepth 1 -name "*.tar.zst" -printf "%f\n" | sort -r | tail -n +$((backups_to_keep + 1)))
 
   for backup in "${backups[@]}"; do
-    printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing backup: $output_path/$backup")"
+    __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing backup: $output_path/$backup")"
     if ! rm -f "$output_path/$backup"; then
       __epx_backup__log_status_to_file "Backup failed, failed to remove old backups" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
       return 1
@@ -124,6 +124,6 @@ __epx_backup() {
   done
 
   # Log the status to a file
-  printf "%s\n" "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Logging status to file...")"
+  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Logging status to file...")"
   __epx_backup__log_status_to_file "Backup created successfully" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
 }

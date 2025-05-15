@@ -2,7 +2,7 @@
 
 ufw.del() {
   if [ -z "$1" ]; then
-    printf "%s\n" "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_YELLOW "Usage: ufw.del <rule_number> / port <port>")"
+    __epx_echo "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_YELLOW "Usage: ufw.del <rule_number> / port <port>")"
     return 1
   fi
 
@@ -14,7 +14,7 @@ ufw.del() {
   # if $1 is 'port'
   if [ "$1" == "port" ]; then
     if [ -z "$2" ]; then
-      printf "%s\n" "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_YELLOW "Usage: ufw.del port <port>")"
+      __epx_echo "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_YELLOW "Usage: ufw.del port <port>")"
       return 1
     fi
 
