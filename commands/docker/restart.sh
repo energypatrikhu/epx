@@ -16,7 +16,15 @@ d.restart() {
     else
       container_text="Containers"
     fi
-    containers=$(__epx_echo "$(_c LIGHT_BLUE "$@")" | sed 's/$/, /' | sed 's/, $//')
+    read -ra arr <<<"$*"
+    containers=""
+    for i in "${arr[@]}"; do
+      i=$(echo "$i" | xargs) # trim spaces
+      if [[ -n $containers ]]; then
+        containers+=", "
+      fi
+      containers+="$(_c LIGHT_BLUE "$i")"
+    done
 
     __epx_echo "[$(_c LIGHT_BLUE "Docker - Restart")] $container_text $containers $(_c LIGHT_CYAN "restarting...")"
     docker container restart "$@" >/dev/null 2>&1
