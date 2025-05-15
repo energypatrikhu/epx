@@ -16,7 +16,16 @@ d.stop() {
     else
       container_text="Containers"
     fi
-    containers=$(printf "%s, " "$@" | sed 's/, $//')
+
+    read -ra arr <<<"$*"
+    containers=""
+    for i in "${arr[@]}"; do
+      i=$(echo "$i" | xargs) # trim spaces
+      if [[ -n $containers ]]; then
+        containers+=", "
+      fi
+      containers+="$(_c LIGHT_BLUE "$i")"
+    done
 
     __epx_echo "[$(_c LIGHT_BLUE "Docker - Stop")] $container_text $(_c LIGHT_BLUE "$containers") $(_c LIGHT_RED "stopping...")"
     docker container stop "$@" >/dev/null 2>&1

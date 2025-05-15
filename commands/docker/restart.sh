@@ -16,6 +16,7 @@ d.restart() {
     else
       container_text="Containers"
     fi
+
     read -ra arr <<<"$*"
     containers=""
     for i in "${arr[@]}"; do
