@@ -16,7 +16,7 @@ d.restart() {
     else
       container_text="Containers"
     fi
-    containers=$(printf "%s, " "$(_c LIGHT_BLUE "$@"), " | sed 's/, $//')
+    containers=$(__epx_echo "$(_c LIGHT_BLUE "$@")" | sed 's/$/, /' | sed 's/, $//')
 
     __epx_echo "[$(_c LIGHT_BLUE "Docker - Restart")] $container_text $containers $(_c LIGHT_CYAN "restarting...")"
     docker container restart "$@" >/dev/null 2>&1
