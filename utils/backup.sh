@@ -1,5 +1,63 @@
 #!/bin/bash
 
+__epx_backup__get_distro() {
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    echo "$ID"
+  else
+    echo "unknown"
+  fi
+}
+
+__epx_backup__get_beesd_installed() {
+  if command -v beesd &>/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+__epx_backup__stop_beesd() {
+  if __epx_backup__get_beesd_installed; then
+    __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Stopping all beesd processes...")"
+    sudo systemctl stop beesd@* || true
+  fi
+}
+
+__epx_backup__start_beesd() {
+  if __epx_backup__get_beesd_installed; then
+    __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
+    sudo systemctl start beesd@* --all || true
+  fi
+}
+
+__epx_backup__check_and_install_utils() {
+  local required_utils=("rsync" "zstd" "tar")
+
+  for util in "${required_utils[@]}"; do
+    if ! command -v "$util" &>/dev/null; then
+      __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: $util is not installed. Installing $util...")"
+
+      local distro=$(__epx_backup__get_distro)
+      case "$distro" in
+      debian | ubuntu)
+        sudo apt-get update && sudo apt-get install -y "$util"
+        ;;
+      fedora | centos | rhel)
+        sudo dnf install -y "$util" || sudo yum install -y "$util"
+        ;;
+      arch)
+        sudo pacman -Syu --noconfirm "$util"
+        ;;
+      *)
+        __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: Unsupported distribution. Please install $util manually.")"
+        return 1
+        ;;
+      esac
+    fi
+  done
+}
+
 __epx_backup__log_status_to_file() {
   local status=$1
   local logfile=$2
@@ -24,7 +82,7 @@ __epx_backup__log_status_to_file() {
 
   # Start all beesd processes after creating a backup
   __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
-  systemctl start beesd@* --all || true
+  __epx_backup__start_beesd
 }
 
 __epx_backup__copy() {
@@ -65,6 +123,12 @@ __epx_backup() {
     return 1
   fi
 
+  # Check if the required utilities are installed, if not, install them
+  if ! __epx_backup__check_and_install_utils; then
+    __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: Failed to install required utilities.")"
+    return 1
+  fi
+
   # Save the starting date and current timestamp
   local starting_date=$(date +"%Y-%m-%d %H:%M:%S")
   local current_timestamp=$(date -d "$starting_date" "+%Y-%m-%d_%H-%M-%S")
@@ -81,7 +145,7 @@ __epx_backup() {
 
   # Stop all beesd processes before creating a backup
   __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Stopping all beesd processes...")"
-  systemctl stop beesd@* || true
+  __epx_backup__stop_beesd
 
   # Create the backup directory
   __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Creating backup directory: $backup_dir")"
