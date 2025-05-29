@@ -20,14 +20,14 @@ __epx_backup__get_beesd_installed() {
 __epx_backup__stop_beesd() {
   if __epx_backup__get_beesd_installed; then
     __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Stopping all beesd processes...")"
-    sudo systemctl stop beesd@* || true
+    sudo systemctl stop beesd@*
   fi
 }
 
 __epx_backup__start_beesd() {
   if __epx_backup__get_beesd_installed; then
     __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
-    sudo systemctl start beesd@* --all || true
+    sudo systemctl start beesd@* --all
   fi
 }
 
@@ -81,7 +81,6 @@ __epx_backup__log_status_to_file() {
   echo "$status (${input_path}) (${backup_size}) (${total_size}) (${num_of_backups}/${backups_to_keep}) (${current_date})" >"$logfile"
 
   # Start all beesd processes after creating a backup
-  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
   __epx_backup__start_beesd
 }
 
@@ -144,7 +143,6 @@ __epx_backup() {
   __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting backup...")"
 
   # Stop all beesd processes before creating a backup
-  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Stopping all beesd processes...")"
   __epx_backup__stop_beesd
 
   # Create the backup directory
