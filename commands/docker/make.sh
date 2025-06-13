@@ -13,7 +13,12 @@ d.make() {
     return
   fi
 
-  cp -f "$EPX_PATH/.templates/dockerfile/$interpreter.template" Dockerfile >/dev/null 2>&1
+  if ! cp -f "$EPX_PATH/.templates/dockerfile/$interpreter.template" Dockerfile >/dev/null 2>&1; then
+    __epx_echo "[$(_c LIGHT_RED "Docker - Make")] $(_c LIGHT_YELLOW "Failed to copy template for interpreter '$interpreter'.")"
+    return
+  fi
+
+  __epx_echo "[$(_c LIGHT_BLUE "Docker - Make")] $(_c LIGHT_GREEN "Dockerfile created from template for interpreter '$interpreter'.")"
 }
 d.mk() {
   d.make $@
