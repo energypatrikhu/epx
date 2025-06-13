@@ -39,6 +39,9 @@ EOF
   printf "| %-${id_width}s | %-${names_width}s | %-${image_width}s | %-${status_width}s |\n" "CONTAINER ID" "NAME" "IMAGE" "STATUS"
   __epx_echo "$separator"
 
+  # Sort data by the second column (names)
+  sorted_data=$(printf "%s\n" "$data" | sort -k2,2)
+
   while IFS=$'\t' read -r id names image status; do
 
     if printf "%s" "$status" | grep -q "Up"; then
@@ -53,7 +56,7 @@ EOF
 
     printf "| %-${id_width}s | %s%-${padding}s | %-${image_width}s | %-${status_width}s |\n" "$id" "$names" "" "$image" "$status"
   done <<EOF
-$data
+$sorted_data
 EOF
 
   __epx_echo "$separator"
