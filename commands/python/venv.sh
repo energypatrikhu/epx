@@ -49,3 +49,11 @@ py.venv() {
 py.env() {
   py.venv "$@"
 }
+
+# Auto enable virtual environment activation in the current shell if exists
+if [ -d .venv ]; then
+  if [ -z "$VIRTUAL_ENV" ]; then
+    __epx_echo "[$(_c LIGHT_BLUE "Python - VENV")] Auto activating virtual environment"
+    source .venv/bin/activate
+  fi
+fi
