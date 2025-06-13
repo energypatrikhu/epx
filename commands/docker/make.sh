@@ -19,15 +19,6 @@ d.mk() {
   d.make $@
 }
 
-_autocomplete() {
-  local cur opts
-  COMPREPLY=()
-  cur="${COMP_WORDS[COMP_CWORD]}"
-  opts=$*
-
-  mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
-}
-
 . "$EPX_PATH/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete_templates d.make
 complete -F _d_autocomplete_templates d.mk
