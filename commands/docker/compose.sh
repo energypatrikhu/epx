@@ -1,6 +1,6 @@
 #!/bin/bash
 
-d.make() {
+d.compose() {
   if [[ -z $1 ]]; then
     __epx_echo "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_YELLOW "Usage: d.compose [service name]")"
     return
