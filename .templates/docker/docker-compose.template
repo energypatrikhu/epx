@@ -1,0 +1,32 @@
+services:
+  CHANGE_ME:
+    container_name: CHANGE_ME
+    image: image:tag
+    # runtime: nvidia # Specify the runtime if needed
+    # command: ["your", "command", "here"] # Uncomment to specify a command
+    network_mode: bridge
+    # networks: # Uncomment to use custom networks
+    #   - edn0
+    # depends_on: # Uncomment if this service depends on others
+    #   pihole:
+    #     condition: service_healthy
+    # privileged: true
+    # tty: true
+    # stdin_open: true
+    # stop_grace_period: 1m
+    restart: unless-stopped
+    # user: 0:0 # Uncomment to run as root, or specify a user
+    # env_file: # Uncomment to use an env file
+    #   - .TZ.env
+    # environment:
+    #   TZ: Europe/Budapest # Set timezone
+    #   SOME_ENV_VAR: value
+    # devices:
+    #   - /dev/ttyUSB0:/dev/ttyUSB0 # Example device mapping
+    volumes:
+      - /path/in/host:/path/in/container
+    # ports: # Uncomment to expose ports
+    #   - "8080:80"
+    #   - "8443:443"
+    # labels: # Uncomment to add labels
+    #   label.for.docker: true

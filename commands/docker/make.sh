@@ -8,7 +8,7 @@ d.make() {
 
   local interpreter="$1"
 
-  if [[ ! -f "$EPX_PATH/.templates/dockerfile/$interpreter.template" ]]; then
+  if [[ ! -f "$EPX_PATH/.templates/docker/dockerfile/$interpreter.template" ]]; then
     __epx_echo "[$(_c LIGHT_RED "Docker - Make")] $(_c LIGHT_YELLOW "Template for interpreter '$interpreter' not found.")"
     return
   fi
@@ -18,7 +18,7 @@ d.make() {
     return
   fi
 
-  if ! cp -f "$EPX_PATH/.templates/dockerfile/$interpreter.template" Dockerfile >/dev/null 2>&1; then
+  if ! cp -f "$EPX_PATH/.templates/docker/dockerfile/$interpreter.template" Dockerfile >/dev/null 2>&1; then
     __epx_echo "[$(_c LIGHT_RED "Docker - Make")] $(_c LIGHT_YELLOW "Failed to copy template for interpreter '$interpreter'.")"
     return
   fi
