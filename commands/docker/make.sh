@@ -13,7 +13,7 @@ d.make() {
     return
   fi
 
-  cp -f "$EPX_PATH/.templates/dockerfile/$interpreter.template" Dockerfile
+  cp -f "$EPX_PATH/.templates/dockerfile/$interpreter.template" Dockerfile >/dev/null 2>&1
 }
 d.mk() {
   d.make $@
