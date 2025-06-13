@@ -13,6 +13,11 @@ d.make() {
     return
   fi
 
+  if [[ -f Dockerfile ]]; then
+    __epx_echo "[$(_c LIGHT_RED "Docker - Make")] $(_c LIGHT_YELLOW "Dockerfile already exists. Please remove it before creating a new one.")"
+    return
+  fi
+
   if ! cp -f "$EPX_PATH/.templates/dockerfile/$interpreter.template" Dockerfile >/dev/null 2>&1; then
     __epx_echo "[$(_c LIGHT_RED "Docker - Make")] $(_c LIGHT_YELLOW "Failed to copy template for interpreter '$interpreter'.")"
     return
