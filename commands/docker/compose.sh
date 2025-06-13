@@ -1,12 +1,12 @@
 #!/bin/bash
 
 d.compose() {
-  if [[ -z $1 ]]; then
+  local service_name="$1"
+
+  if [[ $service_name = "-h" ]] || [[ $service_name = "--help" ]]; then
     __epx_echo "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_YELLOW "Usage: d.compose [service name]")"
     return
   fi
-
-  local service_name="$1"
 
   if [[ ! -f "$EPX_PATH/.templates/docker/docker-compose.template" ]]; then
     __epx_echo "[$(_c LIGHT_RED "Docker - Compose")] $(_c LIGHT_YELLOW "Template for docker compose not found.")"
