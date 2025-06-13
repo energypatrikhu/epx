@@ -1,0 +1,12 @@
+FROM node:alpine
+
+# ENV PORT=80
+
+WORKDIR /srv
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY dist dist
+
+ENTRYPOINT [ "node", "dist/index.js" ]

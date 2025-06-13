@@ -1,0 +1,12 @@
+FROM oven/bun:alpine
+
+# ENV PORT=80
+
+WORKDIR /srv
+
+COPY package.json bun.lock tsconfig.json ./
+RUN bun install
+
+COPY src src
+
+ENTRYPOINT [ "bun", "src/index.ts" ]

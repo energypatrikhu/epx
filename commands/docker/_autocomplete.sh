@@ -11,3 +11,8 @@ _d_autocomplete_all() {
 _d_autocomplete_list() {
   _autocomplete "created restarting running removing paused exited dead"
 }
+
+_d_autocomplete_templates() {
+  local available_templates="$(find "$EPX_PATH/.templates/dockerfile" -maxdepth 1 -type f -name '*.template' -exec basename {} .template \; | tr '\n' ' ')"
+  _autocomplete "$available_templates"
+}
