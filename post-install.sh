@@ -16,11 +16,12 @@ fi
 source "$EPX_BIN"
 
 # Setup crontab for epx self-update
-CRON_JOB="@daily root bash /usr/local/epx/crontab.sh"
 CRON_FILE="/etc/cron.daily/epx-self-update"
 if ! grep -qF "$CRON_JOB" "$CRON_FILE"; then
   echo "Adding self-update cron job to $CRON_FILE"
-  echo "$CRON_JOB" | sudo tee -a "$CRON_FILE" >/dev/null
+  echo "#!/bin/bash" | sudo tee "$CRON_FILE" >/dev/null
+  echo ". $EPX_BIN" | sudo tee -a "$CRON_FILE" >/dev/null
+  echo "epx self-update" | sudo tee -a "$CRON_FILE" >/dev/null
 else
   echo "Self-update cron job already exists in $CRON_FILE, skipping addition."
 fi
