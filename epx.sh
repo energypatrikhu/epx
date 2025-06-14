@@ -37,7 +37,7 @@ EPX_COMMANDS["update-bees"]="Update bees to the latest version"
 EPX_COMMANDS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories,files separated with (,)]"
 
 declare -A COMMANDS
-COMMANDs["c.help"]="Display help for common commands"
+COMMANDS["c.help"]="Display help for common commands"
 COMMANDS["d.help"]="Display help for Docker commands"
 COMMANDS["py.help"]="Display help for Python commands"
 COMMANDS["ufw.help"]="Display help for UFW commands"
@@ -67,7 +67,7 @@ epx() {
     fi
   done
   __epx_echo "  $(_c LIGHT_BLUE "Aliases:")"
-  __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all EPX_COMMANDS"
+  __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all epx commands"
 
   __epx_echo "  $(_c LIGHT_BLUE "Helpers:")"
   for cmd in "${!COMMANDS[@]}"; do
