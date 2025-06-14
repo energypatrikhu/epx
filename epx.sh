@@ -33,14 +33,9 @@ done
 # Declare commands
 declare -A COMMANDS
 COMMANDS=(
-  ["update-bees"]="Update bees to the latest version"
   ["self-update"]="Update the EPX CLI to the latest version"
+  ["update-bees"]="Update bees to the latest version"
   ["backup"]="<input path> <output path> <backups to keep> [excluded directories, files separated with (,)]"
-
-  ["c.help"]="Show help for common commands"
-  ["d.help"]="Show help for docker commands"
-  ["p.help"]="Show help for python commands"
-  ["ufw.help"]="Show help for UFW commands"
 )
 
 # Main function
