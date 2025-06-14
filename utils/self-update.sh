@@ -6,13 +6,11 @@ __epx_self_update() {
     return
   fi
 
-  cd "$EPX_HOME" || return
+  cd "$EPX_HOME" || exit
 
   git reset --hard HEAD
   git clean -f -d
   git pull
-
-  cd - || return
 
   if [ -d "$EPX_HOME" ]; then
     chmod -R a+x "$EPX_HOME"
