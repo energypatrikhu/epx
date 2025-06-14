@@ -3,16 +3,10 @@
     ```bash
     git clone https://github.com/energypatrikhu/epx.git /opt/epx
     ```
-2. Add `. /opt/epx/epx.sh` to the start of `~/.bashrc`
+2. Run installer
     ```bash
-    . /opt/epx/epx.sh
-    ```
-    ```bash
-    nano ~/.bashrc
-    ```
-4. Run source
-    ```bash
-    source ~/.bashrc
+    chmod a+x ./install.sh
+    ./install.sh
     ```
 
 # Crontab
