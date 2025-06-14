@@ -30,13 +30,11 @@ for file in "$EPX_HOME"/utils/*.sh; do
   UTILS+=("$(basename "$file" .sh)")
 done
 
-# Declare commands
+# Command descriptions and usage as an associative array of objects
 declare -A COMMANDS
-COMMANDS=(
-  ["self-update"]="Update the EPX CLI to the latest version"
-  ["update-bees"]="Update bees to the latest version"
-  ["backup"]="<input path> <output path> <backups to keep> [excluded directories, files separated with (,)]"
-)
+COMMANDS["self-update"]="Update the EPX CLI to the latest version"
+COMMANDS["update-bees"]="Update bees to the latest version"
+COMMANDS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories,files separated with (,)]"
 
 # Main function
 epx() {
@@ -51,10 +49,16 @@ epx() {
     fi
   done
 
-  __epx_echo "[$(_c LIGHT_BLUE "EPX - Help")] $(_c LIGHT_YELLOW "Usage: epx <command >[args]")"
+  __epx_echo "[$(_c LIGHT_BLUE "EPX - Help")] $(_c LIGHT_YELLOW "Usage: epx <command> [args]")"
   __epx_echo "  $(_c LIGHT_BLUE "Commands:")"
   for cmd in "${!COMMANDS[@]}"; do
-    __epx_echo "    $(_c LIGHT_BLUE "$cmd") - ${COMMANDS[$cmd]}"
+    entry="${COMMANDS[$cmd]}"
+    desc=$(echo "$entry" | awk -F'|' '{print $1}' | xargs)
+    usage=$(echo "$entry" | awk -F'|' '{print $2}' | xargs)
+    __epx_echo "    $(_c LIGHT_BLUE "$cmd") - $desc"
+    if [[ -n "$usage" ]]; then
+      __epx_echo "      $(_c LIGHT_YELLOW "Usage:") epx $cmd $usage"
+    fi
   done
   __epx_echo "  $(_c LIGHT_BLUE "Aliases:")"
   __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all commands"
