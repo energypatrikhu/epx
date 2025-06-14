@@ -51,10 +51,13 @@ epx() {
     fi
   done
 
-  __epx_echo "Usage: epx <command> [args]"
+  __epx_echo "[$(_c LIGHT_BLUE "EPX - Help")] $(_c LIGHT_YELLOW "Usage: epx <command >[args]")"
+  __epx_echo "  $(_c LIGHT_BLUE "Commands:")"
   for cmd in "${!COMMANDS[@]}"; do
-    __epx_echo "  $cmd ${COMMANDS[$cmd]}"
+    __epx_echo "    $(_c LIGHT_BLUE "$cmd") - ${COMMANDS[$cmd]}"
   done
+  __epx_echo "  $(_c LIGHT_BLUE "Aliases:")"
+  __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all commands"
 }
 
 # Autocomplete
