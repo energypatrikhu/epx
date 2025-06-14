@@ -1,73 +1,37 @@
 #!/bin/bash
+# Install script for EPX CLI
 
-# Build all commands into the bin directory as extensionless executables
-set -e
-
-BIN_DIR="$(dirname "$0")/bin"
-mkdir -p "$BIN_DIR"
-
-# Find all .sh files in commands (recursively)
-find "$(dirname "$0")/commands" -type f -name '*.sh' | while read -r file; do
-  # Get the filename without extension and directory
-  base="$(basename "$file" .sh)"
-  # Skip files that start with an underscore
-  if [[ "$base" == _* ]]; then
-    continue
-  fi
-  # Extract all function names that do not start with _
-  grep -E '^[a-zA-Z0-9_.]+\(\) *\{' "$file" |
-    grep -vE '^_' |
-    sed -E 's/\(\) *\{.*$//' | while read -r func; do
-    # Remove dots from function name for filename
-    bin_path="$BIN_DIR/$func"
-    # Create the bin file
-    cat >"$bin_path" <<EOF
-#!/bin/bash
-. "$(dirname "$0")/../$file"
-$func "\$@"
-EOF
-    chmod +x "$bin_path"
-  done
-done
-
-# Also build epx.sh as an extensionless executable in bin
-EPX_SRC="$(dirname "$0")/epx.sh"
-EPX_BIN="$BIN_DIR/epx"
-cat >"$EPX_BIN" <<EOF
-#!/bin/bash
-. "$EPX_SRC"
-epx "\$@"
-EOF
-chmod +x "$EPX_BIN"
-
-echo "All commands built into $BIN_DIR."
-
-# Setup environment
-PROFILE_DIR="/etc/profile.d"
-
-# Add EPX_PATH into the environment in profile.d if not already set
-EPX_ENV_SCRIPT="$PROFILE_DIR/00-epx_path.sh"
-if [[ ! -f "$EPX_ENV_SCRIPT" ]]; then
-  echo "Adding EPX_PATH to environment in $EPX_ENV_SCRIPT"
-  echo "export EPX_PATH=\"$EPX_PATH\"" | sudo tee "$EPX_ENV_SCRIPT" >/dev/null
-else
-  echo "EPX_PATH is already set in $EPX_ENV_SCRIPT."
+# Check if git is installed
+if ! command -v git &>/dev/null; then
+  echo "Git is not installed. Please install Git to use EPX."
+  exit 1
 fi
 
-# Add the bin directory to PATH if not already present using profile.d script
-PROFILE_SCRIPT="$PROFILE_DIR/01-epx_bin.sh"
-if [[ ! -f "$PROFILE_SCRIPT" ]]; then
-  echo "Adding $BIN_DIR to PATH in $PROFILE_SCRIPT"
-  echo "export PATH=\"\$BIN_DIR:$PATH\"" | sudo tee "$PROFILE_SCRIPT" >/dev/null
-else
-  echo "$BIN_DIR is already in PATH."
+# Check if EPX_PATH is set, if not, set it to /usr/local/epx
+if [ -z "$EPX_PATH" ]; then
+  EPX_PATH="/usr/local/epx"
 fi
 
-# Add aliases.sh to profile.d if it doesn't exist
-ALIAS_SCRIPT="$PROFILE_DIR/02-epx_aliases.sh"
-if [[ ! -f "$ALIAS_SCRIPT" ]]; then
-  echo "Adding aliases to $ALIAS_SCRIPT"
-  echo "source $(dirname "$0")/aliases.sh" | sudo tee "$ALIAS_SCRIPT" >/dev/null
+# Create EPX_PATH directory if it doesn't exist
+mkdir -p "$EPX_PATH"
+
+# Clone the EPX repository
+if [ ! -d "$EPX_PATH/.git" ]; then
+  echo "Cloning EPX repository into $EPX_PATH..."
+  git clone https://github.com/energypatrikhu/epx.git "$EPX_PATH"
 else
-  echo "Aliases already exist in $ALIAS_SCRIPT."
+  echo "EPX repository already exists in $EPX_PATH. Pulling latest changes..."
+  cd "$EPX_PATH" || exit
+  git pull
+fi
+
+# Set permissions for the EPX_PATH directory
+chmod -R a+x "$EPX_PATH"
+
+# Run post-installation script if it exists
+if [ -f "$EPX_PATH/post-install.sh" ]; then
+  echo "Running post-installation script..."
+  "$EPX_PATH/post-install.sh"
+else
+  echo "Post-installation script not found, skipping."
 fi

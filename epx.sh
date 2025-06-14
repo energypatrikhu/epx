@@ -3,10 +3,6 @@
 # Description: Main script for the EPX CLI
 # Author: EnergyPatrikHU
 
-# Set the EPX path
-export EPX_PATH="/opt/epx"
-# export EPX_PATH="/storage/scripts/shell/epx"
-
 # Load helpers
 for file in $EPX_PATH/helpers/*.sh; do
   . "$file"
