@@ -21,4 +21,8 @@ __epx_self_update() {
   else
     __epx_echo "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "install.sh not found, skipping post-installation steps")\n"
   fi
+
+  __epx_echo "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_GREEN "EPX has been updated successfully")\n"
+
+  cd - || exit
 }
