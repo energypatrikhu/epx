@@ -36,12 +36,12 @@ COMMANDS=(
   ["update-bees"]=""
   ["self-update"]=""
   ["backup"]="<input path> <output path> <backups to keep> [excluded directories, files separated with (,)]"
-)
 
-# Get EPX path
-EPX_HOME() {
-  __epx_echo "EPX path: $EPX_HOME"
-}
+  ["c.help"]="Show help for common commands"
+  ["d.help"]="Show help for docker commands"
+  ["p.help"]="Show help for python commands"
+  ["ufw.help"]="Show help for UFW commands"
+)
 
 # Main function
 epx() {
