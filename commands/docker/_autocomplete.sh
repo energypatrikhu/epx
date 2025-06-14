@@ -13,6 +13,6 @@ _d_autocomplete_list() {
 }
 
 _d_autocomplete_templates() {
-  local available_templates="$(find "$EPX_PATH/.templates/docker/dockerfile" -maxdepth 1 -type f -name '*.template' -exec basename {} .template \; | tr '\n' ' ')"
+  local available_templates="$(find "$EPX_HOME/.templates/docker/dockerfile" -maxdepth 1 -type f -name '*.template' -exec basename {} .template \; | tr '\n' ' ')"
   _autocomplete "$available_templates"
 }

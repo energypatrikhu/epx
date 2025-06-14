@@ -4,15 +4,15 @@
 # Author: EnergyPatrikHU
 
 # Load helpers
-for file in $EPX_PATH/helpers/*.sh; do
+for file in $EPX_HOME/helpers/*.sh; do
   . "$file"
 done
 
 # Load aliases
-. $EPX_PATH/aliases.sh
+. $EPX_HOME/aliases.sh
 
 # Load custom commands
-for dir in "$EPX_PATH"/commands/*; do
+for dir in "$EPX_HOME"/commands/*; do
   if [ -d "$dir" ]; then
     for file in "$dir"/*.sh; do
       # skip file if start with an underscore
@@ -25,7 +25,7 @@ done
 
 # Load all utils
 UTILS=()
-for file in "$EPX_PATH"/utils/*.sh; do
+for file in "$EPX_HOME"/utils/*.sh; do
   . "$file"
   UTILS+=("$(basename "$file" .sh)")
 done
@@ -39,8 +39,8 @@ COMMANDS=(
 )
 
 # Get EPX path
-epx_path() {
-  __epx_echo "EPX path: $EPX_PATH"
+EPX_HOME() {
+  __epx_echo "EPX path: $EPX_HOME"
 }
 
 # Main function

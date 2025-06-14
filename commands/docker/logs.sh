@@ -17,6 +17,6 @@ d.log() {
   d.logs $@
 }
 
-. "$EPX_PATH/commands/docker/_autocomplete.sh"
+. "$EPX_HOME/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete d.logs
 complete -F _d_autocomplete d.log

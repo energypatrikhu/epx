@@ -1,7 +1,7 @@
 #!/bin/bash
 
 __epx_update_bees() {
-  . "$EPX_PATH/.config/update-bees.config"
+  . "$EPX_HOME/.config/update-bees.config"
 
   APP_NAME=bees
   REPOSITORY=Zygo/$APP_NAME

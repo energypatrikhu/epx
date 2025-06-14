@@ -14,5 +14,5 @@ d.shell() {
   __epx_echo "[$(_c LIGHT_BLUE "Docker - Shell")] $(_c LIGHT_RED "Error:") $(_c LIGHT_YELLOW "No suitable shell found in container $1")"
 }
 
-. "$EPX_PATH/commands/docker/_autocomplete.sh"
+. "$EPX_HOME/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete d.shell

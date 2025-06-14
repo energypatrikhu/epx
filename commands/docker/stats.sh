@@ -215,6 +215,6 @@ d.stat() {
   d.stats "$@"
 }
 
-. "$EPX_PATH/commands/docker/_autocomplete.sh"
+. "$EPX_HOME/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete_all d.stats
 complete -F _d_autocomplete_all d.stat

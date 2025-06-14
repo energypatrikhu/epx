@@ -8,7 +8,7 @@ d.compose() {
     return
   fi
 
-  if [[ ! -f "$EPX_PATH/.templates/docker/docker-compose.template" ]]; then
+  if [[ ! -f "$EPX_HOME/.templates/docker/docker-compose.template" ]]; then
     __epx_echo "[$(_c LIGHT_RED "Docker - Compose")] $(_c LIGHT_YELLOW "Template for docker compose not found.")"
     return
   fi
@@ -18,7 +18,7 @@ d.compose() {
     return
   fi
 
-  if ! cp -f "$EPX_PATH/.templates/docker/docker-compose.template" docker-compose.yml >/dev/null 2>&1; then
+  if ! cp -f "$EPX_HOME/.templates/docker/docker-compose.template" docker-compose.yml >/dev/null 2>&1; then
     __epx_echo "[$(_c LIGHT_RED "Docker - Compose")] $(_c LIGHT_YELLOW "Failed to copy template for docker compose.")"
     return
   fi

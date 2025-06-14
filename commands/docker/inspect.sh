@@ -13,6 +13,6 @@ d.i() {
   d.inspect $@
 }
 
-. "$EPX_PATH/commands/docker/_autocomplete.sh"
+. "$EPX_HOME/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete d.inspect
 complete -F _d_autocomplete d.i

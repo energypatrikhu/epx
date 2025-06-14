@@ -65,6 +65,6 @@ d.ls() {
   d.list $@
 }
 
-. "$EPX_PATH/commands/docker/_autocomplete.sh"
+. "$EPX_HOME/commands/docker/_autocomplete.sh"
 complete -F _d_autocomplete_list d.list
 complete -F _d_autocomplete_list d.ls

@@ -13,12 +13,12 @@ d.up() {
   fi
 
   if [ "$1" = "all" ]; then
-    if [[ ! -f "$EPX_PATH/.config/d.up.config" ]]; then
-      __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_PATH/.config/d.up.config")"
+    if [[ ! -f "$EPX_HOME/.config/d.up.config" ]]; then
+      __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_HOME/.config/d.up.config")"
       return
     fi
 
-    . "$EPX_PATH/.config/d.up.config"
+    . "$EPX_HOME/.config/d.up.config"
 
     for d in "$CONTAINERS_DIR"/*; do
       if [ -d "$d" ]; then
@@ -32,12 +32,12 @@ d.up() {
 
   # check if container name is provided
   if [[ -n $* ]]; then
-    if [[ ! -f "$EPX_PATH/.config/d.up.config" ]]; then
-      __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_PATH/.config/d.up.config")"
+    if [[ ! -f "$EPX_HOME/.config/d.up.config" ]]; then
+      __epx_echo "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at $EPX_HOME/.config/d.up.config")"
       return
     fi
 
-    . "$EPX_PATH/.config/d.up.config"
+    . "$EPX_HOME/.config/d.up.config"
 
     for c in "$@"; do
       dirname="$CONTAINERS_DIR/$c"
@@ -71,10 +71,10 @@ d.up() {
   __epx_echo ""
 }
 
-if [[ -f "$EPX_PATH/.config/d.up.config" ]]; then
+if [[ -f "$EPX_HOME/.config/d.up.config" ]]; then
   _d.up_autocomplete() {
-    . "$EPX_PATH/.config/d.up.config"
-    . "$EPX_PATH/commands/docker/_autocomplete.sh"
+    . "$EPX_HOME/.config/d.up.config"
+    . "$EPX_HOME/commands/docker/_autocomplete.sh"
 
     container_dirs=()
     for d in "$CONTAINERS_DIR"/*; do
