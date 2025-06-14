@@ -12,3 +12,5 @@ if [[ ! -f "$EPX_BIN" ]]; then
 else
   echo "$EPX_BIN already exists, skipping creation."
 fi
+
+source "$EPX_BIN"
