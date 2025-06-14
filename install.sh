@@ -42,9 +42,20 @@ chmod +x "$EPX_BIN"
 
 echo "All commands built into $BIN_DIR."
 
-# Add the bin directory to PATH if not already present using profile.d script
+# Setup environment
 PROFILE_DIR="/etc/profile.d"
-PROFILE_SCRIPT="$PROFILE_DIR/epx_bin.sh"
+
+# Add EPX_PATH into the environment in profile.d if not already set
+EPX_ENV_SCRIPT="$PROFILE_DIR/10-epx_path.sh"
+if [[ ! -f "$EPX_ENV_SCRIPT" ]]; then
+  echo "Adding EPX_PATH to environment in $EPX_ENV_SCRIPT"
+  echo "export EPX_PATH=\"$EPX_PATH\"" | sudo tee "$EPX_ENV_SCRIPT" >/dev/null
+else
+  echo "EPX_PATH is already set in $EPX_ENV_SCRIPT."
+fi
+
+# Add the bin directory to PATH if not already present using profile.d script
+PROFILE_SCRIPT="$PROFILE_DIR/11-epx_bin.sh"
 if [[ ! -f "$PROFILE_SCRIPT" ]]; then
   echo "Adding $BIN_DIR to PATH in $PROFILE_SCRIPT"
   echo "export PATH=\"\$BIN_DIR:$PATH\"" | sudo tee "$PROFILE_SCRIPT" >/dev/null
@@ -53,7 +64,7 @@ else
 fi
 
 # Add aliases.sh to profile.d if it doesn't exist
-ALIAS_SCRIPT="$PROFILE_DIR/epx_aliases.sh"
+ALIAS_SCRIPT="$PROFILE_DIR/12-epx_aliases.sh"
 if [[ ! -f "$ALIAS_SCRIPT" ]]; then
   echo "Adding aliases to $ALIAS_SCRIPT"
   echo "source $(dirname "$0")/aliases.sh" | sudo tee "$ALIAS_SCRIPT" >/dev/null
