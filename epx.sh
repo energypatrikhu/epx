@@ -33,8 +33,8 @@ done
 # Declare commands
 declare -A COMMANDS
 COMMANDS=(
-  ["update-bees"]=""
-  ["self-update"]=""
+  ["update-bees"]="Update bees to the latest version"
+  ["self-update"]="Update the EPX CLI to the latest version"
   ["backup"]="<input path> <output path> <backups to keep> [excluded directories, files separated with (,)]"
 
   ["c.help"]="Show help for common commands"
