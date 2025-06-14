@@ -1,22 +1,4 @@
 # Install
-1. Clone the repository
-    ```bash
-    git clone https://github.com/energypatrikhu/epx.git /opt/epx
-    ```
-2. Run installer
-    ```bash
-    chmod a+x ./install.sh
-    ./install.sh
-    ```
-
-# Crontab
-
-### Debian
-1. Run crontab editor
-    ```bash
-    crontab -e
-    ```
-2. Add the following line to the bottom
-    ```bash
-    0 0 * * * (cd /opt/epx && git reset --hard HEAD && git clean -f -d && git pull)
-    ```
+```bash
+curl https://raw.githubusercontent.com/energypatrikhu/epx/refs/heads/main/install.sh | sudo bash -
+```
