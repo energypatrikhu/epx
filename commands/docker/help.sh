@@ -1,7 +1,7 @@
 #!/bin/bash
 
 d.help() {
-  __epx_echo "[$(_c LIGHT_BLUE "Docker - Help")] $(_c LIGHT_YELLOW "Usage: d.help <command >")"
+  __epx_echo "[$(_c LIGHT_BLUE "Docker - Help")]"
   __epx_echo "  $(_c LIGHT_BLUE "Commands:")"
   __epx_echo "    $(_c LIGHT_BLUE "d.attach") - Attach to a running container"
   __epx_echo "    $(_c LIGHT_BLUE "d.compose") - Docker Compose commands"
