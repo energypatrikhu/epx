@@ -11,8 +11,8 @@ done
 # Load aliases
 . $EPX_HOME/aliases.sh
 
-# Load custom EPX_COMMANDS
-for dir in "$EPX_HOME"/EPX_COMMANDS/*; do
+# Load custom COMMANDS
+for dir in "$EPX_HOME"/commands/*; do
   if [ -d "$dir" ]; then
     for file in "$dir"/*.sh; do
       # skip file if start with an underscore
