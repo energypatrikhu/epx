@@ -56,23 +56,23 @@ epx() {
   done
 
   __epx_echo "[$(_c LIGHT_BLUE "EPX")] $(_c LIGHT_YELLOW "Usage: epx <command> [args]")"
-  __epx_echo "  $(_c LIGHT_BLUE "Commands:")"
+  __epx_echo "  $(_c CYAN "Commands:")"
   for cmd in "${!EPX_COMMANDS[@]}"; do
     entry="${EPX_COMMANDS[$cmd]}"
     desc=$(echo "$entry" | awk -F'|' '{print $1}' | xargs)
     usage=$(echo "$entry" | awk -F'|' '{print $2}' | xargs)
-    __epx_echo "    $(_c LIGHT_BLUE "$cmd") - $desc"
+    __epx_echo "    $(_c LIGHT_CYAN "$cmd") - $desc"
     if [[ -n "$usage" ]]; then
       __epx_echo "      $(_c LIGHT_YELLOW "Usage:") epx $cmd $usage"
     fi
   done
-  __epx_echo "  $(_c LIGHT_BLUE "Aliases:")"
-  __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all epx commands"
+  __epx_echo "  $(_c CYAN "Aliases:")"
+  __epx_echo "    $(_c LIGHT_CYAN "epx") - Main entrypoint for all epx commands"
 
-  __epx_echo "\n  $(_c LIGHT_BLUE "Helpers:")"
+  __epx_echo "\n  $(_c CYAN "Helpers:")"
   for cmd in "${!COMMANDS[@]}"; do
     desc="${COMMANDS[$cmd]}"
-    __epx_echo "    $(_c LIGHT_BLUE "$cmd") - $desc"
+    __epx_echo "    $(_c LIGHT_CYAN "$cmd") - $desc"
   done
 }
 
