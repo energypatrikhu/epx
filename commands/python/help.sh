@@ -9,4 +9,7 @@ py.help() {
   __epx_echo "    $(_c LIGHT_CYAN "py.remove") - Remove Python packages or environments"
   __epx_echo "    $(_c LIGHT_CYAN "py.venv") - Manage Python virtual environments"
   __epx_echo "    $(_c LIGHT_CYAN "py.help") - Display this help message"
+  __epx_echo "  $(_c CYAN "Aliases:")"
+  __epx_echo "    $(_c LIGHT_CYAN "py") - Python"
+  __epx_echo "    $(_c LIGHT_CYAN "py3") - Python3"
 }
