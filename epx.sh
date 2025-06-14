@@ -69,7 +69,7 @@ epx() {
   __epx_echo "  $(_c LIGHT_BLUE "Aliases:")"
   __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all epx commands"
 
-  __epx_echo "  $(_c LIGHT_BLUE "Helpers:")"
+  __epx_echo "\n  $(_c LIGHT_BLUE "Helpers:")"
   for cmd in "${!COMMANDS[@]}"; do
     desc="${COMMANDS[$cmd]}"
     __epx_echo "    $(_c LIGHT_BLUE "$cmd") - $desc"
