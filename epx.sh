@@ -11,8 +11,8 @@ done
 # Load aliases
 . $EPX_HOME/aliases.sh
 
-# Load custom commands
-for dir in "$EPX_HOME"/commands/*; do
+# Load custom EPX_COMMANDS
+for dir in "$EPX_HOME"/EPX_COMMANDS/*; do
   if [ -d "$dir" ]; then
     for file in "$dir"/*.sh; do
       # skip file if start with an underscore
@@ -31,10 +31,16 @@ for file in "$EPX_HOME"/utils/*.sh; do
 done
 
 # Command descriptions and usage as an associative array of objects
+declare -A EPX_COMMANDS
+EPX_COMMANDS["self-update"]="Update the EPX CLI to the latest version"
+EPX_COMMANDS["update-bees"]="Update bees to the latest version"
+EPX_COMMANDS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories,files separated with (,)]"
+
 declare -A COMMANDS
-COMMANDS["self-update"]="Update the EPX CLI to the latest version"
-COMMANDS["update-bees"]="Update bees to the latest version"
-COMMANDS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories,files separated with (,)]"
+COMMANDs["c.help"]="Display help for common commands"
+COMMANDS["d.help"]="Display help for Docker commands"
+COMMANDS["py.help"]="Display help for Python commands"
+COMMANDS["ufw.help"]="Display help for UFW commands"
 
 # Main function
 epx() {
@@ -49,10 +55,10 @@ epx() {
     fi
   done
 
-  __epx_echo "[$(_c LIGHT_BLUE "EPX - Help")] $(_c LIGHT_YELLOW "Usage: epx <command> [args]")"
+  __epx_echo "[$(_c LIGHT_BLUE "EPX")] $(_c LIGHT_YELLOW "Usage: epx <command> [args]")"
   __epx_echo "  $(_c LIGHT_BLUE "Commands:")"
-  for cmd in "${!COMMANDS[@]}"; do
-    entry="${COMMANDS[$cmd]}"
+  for cmd in "${!EPX_COMMANDS[@]}"; do
+    entry="${EPX_COMMANDS[$cmd]}"
     desc=$(echo "$entry" | awk -F'|' '{print $1}' | xargs)
     usage=$(echo "$entry" | awk -F'|' '{print $2}' | xargs)
     __epx_echo "    $(_c LIGHT_BLUE "$cmd") - $desc"
@@ -61,7 +67,13 @@ epx() {
     fi
   done
   __epx_echo "  $(_c LIGHT_BLUE "Aliases:")"
-  __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all commands"
+  __epx_echo "    $(_c LIGHT_BLUE "epx") - Main entrypoint for all EPX_COMMANDS"
+
+  __epx_echo "  $(_c LIGHT_BLUE "Helpers:")"
+  for cmd in "${!COMMANDS[@]}"; do
+    desc="${COMMANDS[$cmd]}"
+    __epx_echo "    $(_c LIGHT_BLUE "$cmd") - $desc"
+  done
 }
 
 # Autocomplete
