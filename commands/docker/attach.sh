@@ -6,7 +6,7 @@ d.attach() {
     return
   fi
 
-  docker container attach "$@"
+  docker container attach --sig-proxy=false --detach-keys="ctrl-c" "$@"
 }
 
 . "$EPX_HOME/commands/docker/_autocomplete.sh"
