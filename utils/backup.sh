@@ -84,30 +84,21 @@ __epx_backup__log_status_to_file() {
   __epx_backup__start_beesd
 }
 
-__epx_backup__copy() {
-  local input_path=$1
-  local output_path=$2
-  local excluded_array=$3
-
-  # Copy files to the backup directory via rsync
-  rsync -avzP --stats --exclude-from=<(for i in "${excluded_array[@]}"; do echo "$i"; done) "$input_path/" "$output_path"
-  if [ $? -ne 0 ]; then
-    return 1
-  fi
-  return 0
-}
-
 __epx_backup__compress() {
   local input_dir=$1
-  local output_path=$2
-  local backup_file=$3
+  local backup_file=$2
+  local excluded_array=$3
 
-  # Compress the backup directory with tar and zstd (ultra compression)
-  tar -I "zstd -T0 -19 -v --auto-threads=physical --long -M8192" -cf "${backup_file}" -C "$output_path" "$input_dir"
-  if [ $? -ne 0 ]; then
+  # Compress the backup directory with tar and zstd
+  # Build --exclude options from excluded_array
+  local exclude_args=()
+  for exclude in "${excluded_array[@]}"; do
+    exclude_args+=(--exclude="$exclude")
+  done
+
+  if ! tar "${exclude_args[@]}" -I "zstd -T0 -19 --long" -cvf "$backup_file" -C "$input_dir" .; then
     return 1
   fi
-  return 0
 }
 
 __epx_backup() {
@@ -134,8 +125,8 @@ __epx_backup() {
 
   # Set backup info variables
   local backup_info="$output_path/backup-info.log"
-  local backup_dir="$output_path/$current_timestamp"
-  local backup_file="$backup_dir.tar.zst"
+  # local backup_dir="$output_path/$current_timestamp"
+  local backup_file="$output_path/$current_timestamp.tar.zst"
 
   # Create an array of excluded directories and files
   mapfile -t excluded_array < <(echo "$excluded" | tr "," "\n")
@@ -145,31 +136,10 @@ __epx_backup() {
   # Stop all beesd processes before creating a backup
   __epx_backup__stop_beesd
 
-  # Create the backup directory
-  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Creating backup directory: $backup_dir")"
-  if ! mkdir -p "$backup_dir"; then
-    __epx_backup__log_status_to_file "Backup failed, failed to create backup directory" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
-    return 1
-  fi
-
-  # Copy files to the backup directory
-  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Copying files...")"
-  if ! __epx_backup__copy "$input_path" "$backup_dir" "${excluded_array[@]}"; then
-    __epx_backup__log_status_to_file "Backup failed, failed to copy files" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
-    return 1
-  fi
-
-  # Compress the backup directory
+  # Compress the input path into a tar.zst file
   __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
-  if ! __epx_backup__compress "$current_timestamp" "$output_path" "$backup_file"; then
+  if ! __epx_backup__compress "$input_path" "$backup_file" "${excluded_array[@]}"; then
     __epx_backup__log_status_to_file "Backup failed, failed to compress files" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
-    return 1
-  fi
-
-  # Remove the backup directory
-  __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing backup directory: $backup_dir")"
-  if ! rm -rf "$backup_dir"; then
-    __epx_backup__log_status_to_file "Backup failed, failed to remove backup directory" "$backup_info" "$input_path" "$output_path" "$backup_file" "$starting_date" "$backups_to_keep"
     return 1
   fi
 
