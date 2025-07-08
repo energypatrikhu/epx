@@ -136,6 +136,21 @@ __epx_backup() {
   # Stop all beesd processes before creating a backup
   __epx_backup__stop_beesd
 
+  # Check if the input path exists and is a directory
+  if [ ! -d "$input_path" ]; then
+    __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: Input path does not exist or is not a directory: $input_path")"
+    return 1
+  fi
+
+  # Check if the output path exists, if not, create it
+  if [ ! -d "$output_path" ]; then
+    __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Creating output directory: $output_path")"
+    if ! mkdir -p "$output_path"; then
+      __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: Failed to create output directory: $output_path")"
+      return 1
+    fi
+  fi
+
   # Compress the input path into a tar.zst file
   __epx_echo "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
   if ! __epx_backup__compress "$input_path" "$backup_file" "${excluded_array[@]}"; then
