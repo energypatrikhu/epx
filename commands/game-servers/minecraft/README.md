@@ -196,3 +196,8 @@ To update the project files, you can run the following command:
 mc.update
 ```
 This command will pull the latest changes from the repository and update your local files accordingly. Make sure to review any changes before applying them, especially if you have custom configurations.
+
+---
+
+# Credits
+This project is inspired by the work of [itzg](https://github.com/itzg) and aims to provide a user-friendly way to manage Minecraft servers with Docker Compose.
