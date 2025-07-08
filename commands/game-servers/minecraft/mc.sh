@@ -13,6 +13,11 @@ __epx_mc__config_env_base="$__epx_mc__project_base/configs"
 __epx_mc__server_dir="$MINECRAFT_SERVERS_DIR"
 __epx_mc__backup_dir="$MINECRAFT_BACKUPS_DIR"
 
+if [[ ! -d "$__epx_mc__project_base" ]]; then
+  echo "Error: Minecraft project directory does not exist. Please run 'mc.install' first."
+  return 1
+fi
+
 __epx-mc-get-env-value() {
   local config_env="$1"
   local var_name="$2"
@@ -130,6 +135,9 @@ __epx-mc() {
 __epx-mc-get-configs() {
   find "$__epx_mc__config_env_base" -type f -name "*.env" -not \( -name "@*" \) -printf '%f\n' | sed 's/\.env$//'
 }
+__epx-mc-get-configs-examples() {
+  find "$__epx_mc__config_env_base/examples" -type f -name "@*.env" -printf '%f\n' | sed 's/^@example.//' | sed 's/\.env$//'
+}
 __epx-mc-list-configs() {
   _autocomplete "$(__epx-mc-get-configs "$1")"
 }
@@ -149,7 +157,7 @@ mc() {
 }
 complete -F __epx-mc-list-configs mc
 
-mc.setup() {
+mc.install() {
   if [[ -z "$MINECRAFT_PROJECT_DIR" ]]; then
     echo "Error: MINECRAFT_PROJECT_DIR is not set in your configuration, please set it in your .config/minecraft.config file."
     return 1
@@ -165,7 +173,7 @@ mc.setup() {
     return 1
   fi
 
-  echo "Minecraft project setup completed successfully."
+  echo "Minecraft project install completed successfully."
   echo "You can now configure your Minecraft servers."
   echo "To pull changes from git, use 'mc.update'."
 
@@ -173,7 +181,9 @@ mc.setup() {
   echo "Setup the curseforge api key in $__epx_mc__project_base/secrets/curseforge_api_key.txt"
   echo "Create a new server configuration file in $__epx_mc__config_env_base by copying the example files"
 
-  echo "To show servers and usage, use the command: mc"
+  echo "To show available servers and usage, use the command: mc"
+  echo "To start a server, use the command: mc <server_name>"
+  echo "To create a new server configuration file, use the command: mc.create <server_type>"
 }
 
 mc.update() {
@@ -196,14 +206,55 @@ mc.update() {
   echo "Minecraft project updated successfully."
 }
 
+mc.create() {
+  local server_type="$1"
+
+  if [[ -z "$server_type" ]]; then
+    echo "Usage: mc.install <server_type>"
+    echo "Available server types:"
+    __epx-mc-get-configs-examples | sed 's/^/  /'
+    return 1
+  fi
+
+  local config_file="$__epx_mc__config_env_base/examples/@example.$server_type.env"
+  if [[ ! -f "$config_file" ]]; then
+    echo "Error: Configuration file for server type '$server_type' does not exist."
+    echo "Available server types:"
+    __epx-mc-get-configs-examples | sed 's/^/  /'
+    return 1
+  fi
+
+  local date=$(date +%Y-%m-%d)
+  local new_config_file="$__epx_mc__config_env_base/${server_type}_${date}_CHANGEME.env"
+
+  if [[ -f "$new_config_file" ]]; then
+    echo "Error: Configuration file '$new_config_file' already exists. Please choose a different name."
+    return 1
+  fi
+
+  touch "$new_config_file"
+  while IFS= read -r line; do
+    if [[ "$line" == "CREATED_AT = "* ]]; then
+      line="CREATED_AT = $date"
+    fi
+
+    echo "$line" >>"$new_config_file"
+  done <"$config_file"
+
+  echo "Configuration file '$new_config_file' created successfully."
+  echo "Please replace 'CHANGEME' in the filename with your desired server name or modpack name."
+}
+
 mc.help() {
-  echo "+-----------+--------------------------------------------------------+"
-  echo "| mc.help   | Minecraft commands (This command)                      |"
-  echo "+-----------+--------------------------------------------------------+"
-  echo "| mc        | Start Minecraft Server (mc <server>)                   |"
-  echo "+-----------+--------------------------------------------------------+"
-  echo "| mc.setup  | Download required files for running a Minecraft server |"
-  echo "+-----------+--------------------------------------------------------+"
-  echo "| mc.update | Update Minecraft server files (mc.update)              |"
-  echo "+-----------+--------------------------------------------------------+"
+  echo "+------------+--------------------------------------------------------+"
+  echo "| mc.help    | Minecraft commands (This command)                      |"
+  echo "+------------+--------------------------------------------------------+"
+  echo "| mc         | Start Minecraft Server (mc <server>)                   |"
+  echo "+------------+--------------------------------------------------------+"
+  echo "| mc.create  | Create a new Minecraft server configuration file       |"
+  echo "+------------+--------------------------------------------------------+"
+  echo "| mc.install | Download required files for running a Minecraft server |"
+  echo "+------------+--------------------------------------------------------+"
+  echo "| mc.update  | Update Minecraft server files (mc.update)              |"
+  echo "+------------+--------------------------------------------------------+"
 }
