@@ -12,16 +12,22 @@ done
 . $EPX_HOME/aliases.sh
 
 # Load custom COMMANDS
-for dir in "$EPX_HOME"/commands/*; do
-  if [ -d "$dir" ]; then
-    for file in "$dir"/*.sh; do
-      # skip file if start with an underscore
-      [[ $(basename "$file") =~ ^_ ]] && continue
+__epx_load_functions() {
+  for element in "$1"; do
+    if [[ -d "$element" ]]; then
+      __epx_load_functions "$element"/*
+      continue
+    fi
 
-      . "$file"
-    done
-  fi
-done
+    if [[ -f "$element" ]] && [[ "$element" == *.sh ]]; then
+      # Skip files that start with an underscore
+      [[ $(basename "$element") =~ ^_ ]] && continue
+
+      . "$element"
+    fi
+  done
+}
+__epx_load_functions "$EPX_HOME/commands"
 
 # Load all utils
 UTILS=()
@@ -41,6 +47,7 @@ COMMANDS["c.help"]="Display help for common commands"
 COMMANDS["d.help"]="Display help for Docker commands"
 COMMANDS["py.help"]="Display help for Python commands"
 COMMANDS["ufw.help"]="Display help for UFW commands"
+COMMANDS["mc.help"]="Display help for Minecraft commands"
 
 # Main function
 epx() {
