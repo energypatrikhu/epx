@@ -211,9 +211,10 @@ mc.update() {
 
 mc.create() {
   local server_type="$1"
+  local server_name="$2"
 
   if [[ -z "$server_type" ]]; then
-    echo "Usage: mc.create <server_type>"
+    echo "Usage: mc.create <server_type> [server_name]"
     echo "Available server types:"
     __epx-mc-get-configs-examples | sed 's/^/  /'
     return 1
@@ -228,7 +229,7 @@ mc.create() {
   fi
 
   local date=$(date +%Y-%m-%d)
-  local new_config_file="$__epx_mc__config_env_base/${server_type}_${date}_CHANGEME.env"
+  local new_config_file="$__epx_mc__config_env_base/${server_type}_${date}_${server_name:-CHANGEME}.env"
 
   if [[ -f "$new_config_file" ]]; then
     echo "Error: Configuration file '$new_config_file' already exists. Please choose a different name."
@@ -240,12 +241,22 @@ mc.create() {
     if [[ "$line" == "CREATED_AT = "* ]]; then
       line="CREATED_AT = $date"
     fi
+    if [[ "$line" == "SERVER_NAME = "* ]]; then
+      if [[ -n "$server_name" ]]; then
+        line="SERVER_NAME = $server_name"
+      else
+        line="SERVER_NAME = CHANGE ME"
+      fi
+    fi
 
     echo "$line" >>"$new_config_file"
   done <"$config_file"
 
   echo "Configuration file '$new_config_file' created successfully."
-  echo "Please replace 'CHANGEME' in the filename with your desired server name or modpack name."
+  if [[ -n "$server_name" ]]; then
+    echo "Please replace 'CHANGEME' in the filename with your desired server name or modpack name."
+  fi
+  echo "You can now edit the configuration file '$new_config_file' to set up your server."
 }
 complete -F __epx-mc-list-configs-examples mc.create
 
