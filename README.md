@@ -10,7 +10,7 @@ EPX is a collection of shell scripts and utilities designed to simplify and auto
 - File operations (archive, copy, move, etc.)
 - UFW firewall rule management
 - Utility scripts for backup and updates
-- Minecraft server management (For more details, checkout [minecraft-server](https://github.com/energypatrikhu/minecraft-server) repository)
+- Minecraft server management (For more details, checkout [minecraft-server](commands/game-servers/minecraft/README.md))
 
 ## Installation
 ```bash
