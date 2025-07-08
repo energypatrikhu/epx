@@ -141,6 +141,9 @@ __epx-mc-get-configs-examples() {
 __epx-mc-list-configs() {
   _autocomplete "$(__epx-mc-get-configs "$1")"
 }
+__epx-mc-list-configs-examples() {
+  _autocomplete "$(__epx-mc-get-configs-examples "$1")"
+}
 __epx-mc-display-help() {
   echo "Usage: mc <server>"
   echo "Available servers:"
@@ -244,6 +247,7 @@ mc.create() {
   echo "Configuration file '$new_config_file' created successfully."
   echo "Please replace 'CHANGEME' in the filename with your desired server name or modpack name."
 }
+complete -F __epx-mc-list-configs-examples mc.create
 
 mc.help() {
   echo "+------------+--------------------------------------------------------+"
