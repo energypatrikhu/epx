@@ -13,9 +13,9 @@ done
 
 # Load custom COMMANDS
 __epx_load_functions() {
-  for element in "$1"; do
+  for element in "$1"/*; do
     if [[ -d "$element" ]]; then
-      __epx_load_functions "$element"/*
+      __epx_load_functions "$element"
       continue
     fi
 
@@ -27,7 +27,7 @@ __epx_load_functions() {
     fi
   done
 }
-__epx_load_functions "$EPX_HOME/commands/*"
+__epx_load_functions "$EPX_HOME/commands"
 
 # Load all utils
 UTILS=()
