@@ -2,7 +2,7 @@
 
 d.prune() {
   if [[ -z $1 ]]; then
-    __epx_echo "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_YELLOW "Usage: d.prune <all / images / containers / volumes / networks>")"
+    __epx_echo "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_YELLOW "Usage: d.prune <all / images / containers / volumes / networks> [options]")"
     return
   fi
 
@@ -35,3 +35,6 @@ d.prune() {
     ;;
   esac
 }
+
+. "$EPX_HOME/commands/docker/_autocomplete.sh"
+complete -F _d_autocomplete_prune d.prune
