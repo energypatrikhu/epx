@@ -166,6 +166,14 @@ mc.setup() {
   fi
 
   echo "Minecraft project setup completed successfully."
+  echo "You can now configure your Minecraft servers."
+  echo "To pull changes from git, use 'mc.update'."
+
+  echo "Minecraft project directory is located at $__epx_mc__project_base"
+  echo "Setup the curseforge api key in $__epx_mc__project_base/secrets/curseforge_api_key.txt"
+  echo "Create a new server configuration file in $__epx_mc__config_env_base by copying the example files"
+
+  echo "To show servers and usage, use the command: mc"
 }
 
 mc.update() {
