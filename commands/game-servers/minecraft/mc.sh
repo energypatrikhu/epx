@@ -210,7 +210,7 @@ mc.create() {
   local server_type="$1"
 
   if [[ -z "$server_type" ]]; then
-    echo "Usage: mc.install <server_type>"
+    echo "Usage: mc.create <server_type>"
     echo "Available server types:"
     __epx-mc-get-configs-examples | sed 's/^/  /'
     return 1
