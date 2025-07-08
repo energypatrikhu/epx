@@ -27,7 +27,7 @@ __epx_load_functions() {
     fi
   done
 }
-__epx_load_functions "$EPX_HOME/commands"
+__epx_load_functions "$EPX_HOME/commands/*"
 
 # Load all utils
 UTILS=()
