@@ -253,7 +253,7 @@ mc.create() {
   done <"$config_file"
 
   echo "Configuration file '$new_config_file' created successfully."
-  if [[ -n "$server_name" ]]; then
+  if [[ -z "$server_name" ]]; then
     echo "Please replace 'CHANGEME' in the filename with your desired server name or modpack name."
   fi
   echo "You can now edit the configuration file '$new_config_file' to set up your server."
