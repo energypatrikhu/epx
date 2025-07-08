@@ -13,7 +13,7 @@ Original repository: [minecraft-server](https://github.com/energypatrikhu/minecr
   ```sh
   cp $EPX_HOME/.config/minecraft.config.example $EPX_HOME/.config/minecraft.config
   ```
-  And edit the paths inside the file to match your setup.
+  And edit the paths inside the file to match your setup, then restart the shell.
 
 - Next run `mc.install` to install the required dependencies.
 
