@@ -12,7 +12,3 @@ d.net() {
 d.network() {
   d.net $@
 }
-
-. "$EPX_HOME/commands/docker/_autocomplete.sh"
-complete -F _d_autocomplete d.net
-complete -F _d_autocomplete d.network
