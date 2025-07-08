@@ -12,6 +12,7 @@ d.help() {
   __epx_echo "    $(_c LIGHT_CYAN "d.logs") - View logs of a container"
   __epx_echo "    $(_c LIGHT_CYAN "d.make") - Build images or containers"
   __epx_echo "    $(_c LIGHT_CYAN "d.network") - Manage Docker networks"
+  __epx_echo "    $(_c LIGHT_CYAN "d.prune") - Prune unused Docker objects"
   __epx_echo "    $(_c LIGHT_CYAN "d.remove") - Remove containers or images"
   __epx_echo "    $(_c LIGHT_CYAN "d.restart") - Restart a container"
   __epx_echo "    $(_c LIGHT_CYAN "d.shell") - Open a shell in a container"
