@@ -80,21 +80,21 @@ Original repository: [minecraft-server](https://github.com/energypatrikhu/minecr
 
 - To enable the backup container, set `BACKUP = true` in your server's `.env` file.
 - To disable backups, either omit the `BACKUP` variable or set `BACKUP = false`.
-- The backup container will create backups in the `/opt/minecraft-backups/<platform>_<date>_<name>/` directory. (the base directory can be changed in the `mc.sh` script by changing the variable `__dcf_mc__backup_dir`)
+- The backup container will create backups in the `$MINECRAFT_BACKUPS_DIR/<platform>_<date>_<name>/` directory. (the base directory can be changed in the `$EPX_HOME/.config/minecraft.config` config by changing the variable `MINECRAFT_BACKUPS_DIR`)
 
 ---
 
 ## Directory Structure
 
 - **Default Directories:**
-  - Server data: `/opt/minecraft-servers/<platform>_<date>_<name>/`
-    > Can be changed in `mc.sh` by changing the variable `__dcf_mc__server_dir`
+  - Server data: `$MINECRAFT_SERVERS_DIR/<platform>_<date>_<name>/`
+    > Can be changed in `$EPX_HOME/.config/minecraft.config` by changing the variable `MINECRAFT_SERVERS_DIR`
   - Configs: `configs/`
   - Compose files: `compose/`
   - Platform configs: `platforms/`
   - Secrets: `secrets/`
-  - Backups: `/opt/minecraft-backups`
-    > Can be changed in `mc.sh` by changing the variable `__dcf_mc__backup_dir`
+  - Backups: `$MINECRAFT_BACKUPS_DIR/`
+    > Can be changed in `$EPX_HOME/.config/minecraft.config` by changing the variable `MINECRAFT_BACKUPS_DIR`
 
 ---
 
@@ -109,7 +109,7 @@ Original repository: [minecraft-server](https://github.com/energypatrikhu/minecr
 
 ## Server Location
 
-- Each server runs in its own directory under `/opt/minecraft-servers/` (e.g., `/opt/minecraft-servers/fabric_2025-07-05_bingo/`).
+- Each server runs in its own directory under `$MINECRAFT_SERVERS_DIR` (e.g., `$MINECRAFT_SERVERS_DIR/fabric_2025-07-05_bingo/`).
 
 ---
 
@@ -156,7 +156,7 @@ Original repository: [minecraft-server](https://github.com/energypatrikhu/minecr
 
 ---
 
-For more details, see comments in the example config files and the `mc.sh` script.
+For more details, see comments in the example config files and the `$EPX_HOME/commands/game-servers/minecraft/mc.sh` script.
 
 ---
 
