@@ -171,7 +171,7 @@ mc.install() {
     return 1
   fi
 
-  if ! git clone https://github.com/energypatrikhu/minecraft "$__epx_mc__project_base"; then
+  if ! git clone https://github.com/energypatrikhu/minecraft-server "$__epx_mc__project_base"; then
     echo "Error: Failed to clone the Minecraft repository."
     return 1
   fi
