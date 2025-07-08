@@ -1,0 +1,3 @@
+MINECRAFT_PROJECT_DIR=/opt/minecraft
+MINECRAFT_SERVERS_DIR=/opt/minecraft-servers
+MINECRAFT_BACKUPS_DIR=/opt/minecraft-backups
