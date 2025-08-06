@@ -213,7 +213,7 @@ show_delete_summary() {
 get_user_confirmation() {
   local stripped_target="$1"
 
-  read -p "Are you sure you want to move '$stripped_target' to trash? [y/N] " confirm
+  read -p "Are you sure you want to move '$stripped_target' item(s) to trash? [y/N] " confirm
   case "$confirm" in
     [yY][eE][sS]|[yY])
       return 0
