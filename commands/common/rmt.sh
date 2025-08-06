@@ -247,17 +247,11 @@ move_file() {
   local dest_file="$2"
   local file_size="$3"
 
-  if [ "$file_size" -gt 0 ]; then
-
-    if pv "$source_file" > "$dest_file"; then
-      /usr/bin/rm "$source_file"
-    else
-      echo "Error: Failed to copy '$source_file'" >&2
-      return 1
-    fi
+  if pv "$source_file" > "$dest_file"; then
+    /usr/bin/rm "$source_file"
   else
-    echo "  Processing empty file..." | pv -q -L 10
-    /usr/bin/mv "$source_file" "$dest_file" 2>/dev/null
+    echo "Error: Failed to copy '$source_file'" >&2
+    return 1
   fi
 }
 
