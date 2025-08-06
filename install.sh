@@ -18,7 +18,7 @@ mkdir -p "${EPX_HOME}"
 # Clone the EPX repository
 if [ ! -d "${EPX_HOME}/.git" ]; then
   echo "Cloning EPX repository into ${EPX_HOME}..."
-  git clone https://github.com/energypatrikhu/epx-bin.git "${EPX_HOME}"
+  git clone https://github.com/energypatrikhu/epx.git "${EPX_HOME}"
 else
   echo "EPX repository already exists in ${EPX_HOME}. Pulling latest changes..."
   cd "${EPX_HOME}" || exit
