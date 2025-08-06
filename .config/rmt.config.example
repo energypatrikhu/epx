@@ -1,0 +1,3 @@
+TRASH_DIRS="/:/\$trash /storage:/storage/\$trash /storage/.shared:/storage/\$trash.shared"
+TRASH_FALLBACK="/storage/\$trash"
+TRASH_EXCLUDE="/tmp /var/tmp"

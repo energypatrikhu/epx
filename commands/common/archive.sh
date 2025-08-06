@@ -1,17 +1,13 @@
 #!/bin/bash
 
-archive() {
-  [ "$#" -eq 0 ] && __epx_echo "No input files" && return
+source "${EPX_HOME}/helpers/check-command-installed.sh"
+_cci time tar
 
-  fbasename=$(basename -- "$@")
+if [ $# -eq 0 ]; then
+  echo -e "No input files"
+  exit 1
+fi
 
-  time tar -cvf "${fbasename}.tar" "$@"
-}
+fbasename=$(basename -- "${@}")
 
-unarchive() {
-  [ "$#" -eq 0 ] && __epx_echo "No input files" && return
-
-  fbasename=$(basename -- "$@")
-
-  time tar -xvf "${fbasename}"
-}
+time tar -cvf "${fbasename}.tar" "${@}"

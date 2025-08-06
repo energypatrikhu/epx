@@ -14,7 +14,7 @@ EPX is a collection of shell scripts and utilities designed to simplify and auto
 
 ## Installation
 ```bash
-curl https://raw.githubusercontent.com/energypatrikhu/epx/refs/heads/main/install.sh | sudo bash -
+curl https://raw.githubusercontent.com/energypatrikhu/epx-bin/refs/heads/main/install.sh | sudo bash -
 ```
 
 ## Updating

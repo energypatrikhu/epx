@@ -1,5 +1,2 @@
-#!/bin/bash
-
-export EPX_IFS=', '
-
-export EPX_BULLET="●"
+EPX_IFS=', '
+EPX_BULLET="●"

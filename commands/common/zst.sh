@@ -1,17 +1,13 @@
 #!/bin/bash
 
-zst() {
-  [ "$#" -eq 0 ] && __epx_echo "No input files" && return
+source "${EPX_HOME}/helpers/check-command-installed.sh"
+_cci time tar zstd
 
-  fbasename=$(basename -- "$@")
+if [ $# -eq 0 ]; then
+  echo -e "No input files"
+  exit 1
+fi
 
-  time tar -I "zstd -T0 --ultra -22 -v --auto-threads=logical --long -M8192" -cf "${fbasename}.tar.zst" "$@"
-}
+fbasename=$(basename -- "${@}")
 
-unzst() {
-  [ "$#" -eq 0 ] && __epx_echo "No input files" && return
-
-  fbasename=$(basename -- "$@")
-
-  time tar --use-compress-program=unzstd -xvf "${fbasename}"
-}
+time tar -I "zstd -T0 --ultra -22 -v --auto-threads=logical --long -M8192" -cf "${fbasename}.tar.zst" "${@}"

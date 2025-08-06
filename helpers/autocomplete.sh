@@ -1,10 +1,8 @@
-#!/bin/bash
-
 _autocomplete() {
   local cur opts
   COMPREPLY=()
   cur="${COMP_WORDS[COMP_CWORD]}"
-  opts=$*
+  opts=${*}
 
   mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
 }

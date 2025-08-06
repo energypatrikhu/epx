@@ -1,7 +1,5 @@
-#!/bin/bash
-
 declare -A EPX_COLORS
-export EPX_COLORS=(
+EPX_COLORS=(
   ["LIGHT_BLUE"]="\033[1;34m"
   ["LIGHT_GREEN"]="\033[1;32m"
   ["LIGHT_RED"]="\033[1;31m"
