@@ -157,15 +157,14 @@ build_cp_options() {
 }
 
 copy_file() {
-  local source="$1"
-  local dest="$2"
-  local file_size="$3"
+  local source_file="$1"
+  local dest_file="$2"
 
-  if [ "$file_size" -gt 1048576 ]; then  # Show progress for files > 1MB
-    pv "$source" > "$dest"
+  if pv "$source_file" > "$dest_file"; then
+    /usr/bin/rm "$source_file"
   else
-
-    /usr/bin/cp $(build_cp_options) "$source" "$dest"
+    echo "Error: Failed to copy '$source_file'" >&2
+    return 1
   fi
 }
 
@@ -202,7 +201,7 @@ copy_directory() {
     if should_overwrite "$file" "$dest_file"; then
       echo "  [$current_file/$file_count] Copying: $relative_path"
       local file_size=$(stat -c%s "$file" 2>/dev/null || echo 0)
-      copy_file "$file" "$dest_file" "$file_size"
+      copy_file "$file" "$dest_file"
     fi
   done
 }
@@ -253,7 +252,7 @@ perform_copy_operation() {
 
     if should_overwrite "$source" "$dest_path"; then
       echo "Copying file: $source -> $dest_path"
-      copy_file "$source" "$dest_path" "$total_size"
+      copy_file "$source" "$dest_path"
       echo "✓ Successfully copied file"
     fi
 

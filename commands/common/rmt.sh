@@ -245,7 +245,6 @@ get_user_confirmation_delete() {
 move_file() {
   local source_file="$1"
   local dest_file="$2"
-  local file_size="$3"
 
   if pv "$source_file" > "$dest_file"; then
     /usr/bin/rm "$source_file"
@@ -273,7 +272,7 @@ move_directory_contents() {
     echo "  [$current_file/$file_count] Moving: $relative_path"
     local file_size=$(stat -c%s "$file" 2>/dev/null || echo 0)
 
-    move_file "$file" "$dest_file" "$file_size"
+    move_file "$file" "$dest_file"
   done
 }
 
@@ -299,7 +298,7 @@ perform_move_operation() {
   if [ -f "$stripped_target" ]; then
 
     echo "Moving file: $stripped_target -> $trash_target"
-    move_file "$stripped_target" "$trash_target" "$total_size"
+    move_file "$stripped_target" "$trash_target"
 
   elif [ -d "$stripped_target" ]; then
 
