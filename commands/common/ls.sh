@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if command -v eza &> /dev/null; then
-  /usr/bin/eza -lagh --git --octal-permissions "$@"
+  /bin/eza --all --long --group --header --git --octal-permissions --tree --level=1 "$@"
 elif command -v exa &> /dev/null; then
-  /usr/bin/exa -lagh --git --octal-permissions "$@"
+  /bin/exa --all --long --group --header --git --octal-permissions --tree --level=1 "$@"
 else
-  /usr/bin/ls -lah "$@"
+  /bin/ls --all --format=long --human-readable "$@"
 fi
