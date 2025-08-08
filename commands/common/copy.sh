@@ -161,7 +161,7 @@ copy_file() {
   local dest_file="$2"
 
   if pv "$source_file" > "$dest_file"; then
-    /usr/bin/rm "$source_file"
+    rm "$source_file"
   else
     echo "Error: Failed to copy '$source_file'" >&2
     return 1

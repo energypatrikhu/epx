@@ -3,7 +3,7 @@
 echo "Building and Linking EPX commands to /usr/local/bin..."
 
 mkdir -p "${EPX_HOME}/scripts" 2>/dev/null
-/usr/bin/rm -rf "${EPX_HOME}/scripts/*" 2>/dev/null
+rm -rf "${EPX_HOME}/scripts/*" 2>/dev/null
 
 _build_function() {
   local output_file="${EPX_HOME}/scripts/$(basename "${1}")"
@@ -27,7 +27,7 @@ _build_function() {
   done <"${1}"
 
   if [[ -f "${output_file}" ]]; then
-    /usr/bin/rm -f "${output_file}"
+    rm -f "${output_file}"
   fi
 
   if ! /usr/bin/mv "${temp_file}" "${output_file}"; then
@@ -37,7 +37,7 @@ _build_function() {
 
   chmod a+x "${output_file}"
 
-  /usr/bin/rm -f "${temp_file}"
+  rm -f "${temp_file}"
 }
 
 _load_functions() {

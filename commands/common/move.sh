@@ -146,14 +146,14 @@ move_file() {
 
   if [ "$file_size" -gt 0 ]; then
     if pv "$source_file" > "$dest_file"; then
-      /usr/bin/rm "$source_file"
+      rm "$source_file"
     else
       echo "Error: Failed to copy '$source_file'" >&2
       return 1
     fi
   else
     echo "  Processing empty file..." | pv -q -L 10
-    /usr/bin/mv "$source_file" "$dest_file" 2>/dev/null
+    mv "$source_file" "$dest_file" 2>/dev/null
   fi
 }
 
@@ -193,14 +193,14 @@ move_directory() {
       if [ "$file_size" -gt 0 ]; then
         if [ "$file_size" -gt 1048576 ]; then
           if pv "$file" > "$dest_file"; then
-            /usr/bin/rm "$file"
+            rm "$file"
           else
             echo "Error: Failed to move '$file'" >&2
             return 1
           fi
         else
           if pv -q "$file" > "$dest_file"; then
-            /usr/bin/rm "$file"
+            rm "$file"
           else
             echo "Error: Failed to move '$file'" >&2
             return 1
@@ -209,7 +209,7 @@ move_directory() {
       else
         echo "      Processing empty file..." | pv -q -L 10
         if /usr/bin/cp "$file" "$dest_file"; then
-          /usr/bin/rm "$file"
+          rm "$file"
         else
           echo "Error: Failed to move empty file '$file'" >&2
           return 1

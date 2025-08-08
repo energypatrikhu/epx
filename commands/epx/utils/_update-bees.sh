@@ -66,15 +66,15 @@ __epx_update_bees() {
 
   # Copy service files
   echo -e "\n> Copying service files"
-  /usr/bin/cp -rf "${BUILD_DIR}"/scripts/*.service /etc/systemd/system/
+  cp -rf "${BUILD_DIR}"/scripts/*.service /etc/systemd/system/
 
   # Remove the build directory
   echo -e "\n> Removing the build directory"
-  /usr/bin/rm -rf "${BUILD_DIR}"
+  rm -rf "${BUILD_DIR}"
 
   # Remove the tarball
   echo -e "\n> Removing the tarball"
-  /usr/bin/rm -rf "${EPX_BEES_SOURCE_PATH}"/"${LATEST_VERSION}".tar.gz
+  rm -rf "${EPX_BEES_SOURCE_PATH}"/"${LATEST_VERSION}".tar.gz
 
   # Write version number to '.version' file
   echo -e "${LATEST_VERSION}" >"${EPX_BEES_SOURCE_PATH}"/.version

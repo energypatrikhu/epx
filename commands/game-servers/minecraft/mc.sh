@@ -122,4 +122,4 @@ else
 fi
 
 # clean up the tmp env file
-/usr/bin/rm -f "${tmp_env_file}"
+rm -f "${tmp_env_file}"

@@ -138,7 +138,7 @@ remove_file() {
     pv "$source_file" > /dev/null && /usr/bin/rm -f "$source_file"
   else
     echo "  Processing empty file..." | pv -q -L 10
-    /usr/bin/rm -f "$source_file"
+    rm -f "$source_file"
   fi
 }
 
@@ -159,7 +159,7 @@ remove_directory_contents() {
       pv "$file" > /dev/null && /usr/bin/rm -f "$file"
     else
       echo "    Processing empty file..." | pv -q -L 10
-      /usr/bin/rm -f "$file"
+      rm -f "$file"
     fi
   done | pv -l -s "$file_count" > /dev/null
 }
@@ -195,11 +195,11 @@ perform_removal_operation() {
       remove_empty_directories "$stripped_target"
     else
       echo "  Removing empty directory..."
-      /usr/bin/rm -rf "$stripped_target"
+      rm -rf "$stripped_target"
     fi
   else
     echo "Removing: $stripped_target"
-    /usr/bin/rm -rf "$stripped_target"
+    rm -rf "$stripped_target"
   fi
 }
 

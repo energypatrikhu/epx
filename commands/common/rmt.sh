@@ -247,7 +247,7 @@ move_file() {
   local dest_file="$2"
 
   if pv "$source_file" > "$dest_file"; then
-    /usr/bin/rm "$source_file"
+    rm "$source_file"
   else
     echo "Error: Failed to copy '$source_file'" >&2
     return 1
@@ -314,12 +314,12 @@ perform_move_operation() {
     else
 
       echo "  Moving empty directory..."
-      /usr/bin/mv "$stripped_target" "$trash_target" 2>/dev/null
+      mv "$stripped_target" "$trash_target" 2>/dev/null
     fi
   else
 
     echo "Moving: $stripped_target -> $trash_target"
-    /usr/bin/mv "$stripped_target" "$trash_target" 2>/dev/null
+    mv "$stripped_target" "$trash_target" 2>/dev/null
   fi
 }
 
@@ -331,19 +331,19 @@ perform_delete_operation() {
 
   if [ -f "$stripped_target" ]; then
     echo "Deleting file: $stripped_target"
-    /usr/bin/rm -f "$stripped_target"
+    rm -f "$stripped_target"
   elif [ -d "$stripped_target" ]; then
     echo "Deleting directory: $stripped_target"
     if [ "$file_count" -gt 0 ]; then
       echo "  Deleting $file_count files..."
-      /usr/bin/rm -rf "$stripped_target" | pv -l > /dev/null
+      rm -rf "$stripped_target" | pv -l > /dev/null
     else
       echo "  Deleting empty directory..."
-      /usr/bin/rmdir "$stripped_target" 2>/dev/null
+      rmdir "$stripped_target" 2>/dev/null
     fi
   else
     echo "Deleting: $stripped_target"
-    /usr/bin/rm -rf "$stripped_target"
+    rm -rf "$stripped_target"
   fi
 }
 
