@@ -14,7 +14,7 @@ __epx_self_update_logging() {
 }
 
 __epx_self_update() {
-  __epx_self_update_logging "Self Update - $(date +'%Y-%m-%d %H:%M:%S')"
+  __epx_self_update_logging "\nSelf Update - $(date +'%Y-%m-%d %H:%M:%S')"
 
   _cci git
 
