@@ -1,6 +1,10 @@
 __epx_self_update_logging() {
   filename="/var/log/epx/self-update.log"
 
+  if [ "$2" == true ]; then
+    echo "" > "${filename}"
+  fi
+
   if [ ! -d "/var/log/epx" ]; then
     echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "Log directory '/var/log/epx' does not exist and could not be created")"
 
@@ -15,7 +19,7 @@ __epx_self_update_logging() {
 
 __epx_self_update() {
   echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_YELLOW "Starting EPX self-update process...")"
-  __epx_self_update_logging "\nSelf Update - $(date +'%Y-%m-%d %H:%M:%S')"
+  __epx_self_update_logging "\nSelf Update - $(date +'%Y-%m-%d %H:%M:%S')" true
 
   _cci git
 
