@@ -73,22 +73,3 @@ if [ "${pull}" = true ]; then
 fi
 docker compose -p "${fbasename}" -f docker-compose.yml up -d
 echo -e ""
-
-# if [[ -f "${EPX_HOME}/.config/d.up.config" ]]; then
-#   _d.up_autocomplete() {
-#     . "${EPX_HOME}/.config/d.up.config"
-#     . "${EPX_HOME}/commands/docker/_autocomplete.sh"
-
-#     container_dirs=()
-#     for d in "${CONTAINERS_DIR}"/*; do
-#       if [ -d "${d}" ]; then
-#         if [[ -f "${d}/docker-compose.yml" ]]; then
-#           container_dirs+=("$(basename -- "${d}")")
-#         fi
-#       fi
-#     done
-
-#     _autocomplete "${container_dirs[@]}"
-#   }
-#   complete -F _d.up_autocomplete d.up
-# fi
