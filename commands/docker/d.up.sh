@@ -7,7 +7,13 @@ source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
 if [[ "${1}" = "--help" ]] || [[ "${1}" = "-h" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [all / [container1, container2, ...]]")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [<options>] [all / [container1, container2, ...]]")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  --pull, -p") $(_c LIGHT_GREEN "Pull images before starting containers")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  all") $(_c LIGHT_GREEN "Start all containers defined in the config file")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  [container1, container2, ...]") $(_c LIGHT_GREEN "Start specific containers by name")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If no arguments are provided, it will start the compose file in the current directory")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If the config file is not found, it will prompt to create one at ${EPX_HOME}/.config/docker.config")"
   exit
 fi
 
@@ -17,12 +23,13 @@ if [[ "${1}" = "--pull" ]] || [[ "${1}" = "-p" ]]; then
 fi
 
 if [ "${1}" = "all" ]; then
-  if [[ ! -f "${EPX_HOME}/.config/d.up.config" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/d.up.config")"
+  if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Use 'd.up --help' for more information")"
     exit
   fi
 
-  . "${EPX_HOME}/.config/d.up.config"
+  . "${EPX_HOME}/.config/docker.config"
 
   for d in "${CONTAINERS_DIR}"/*; do
     if [ -d "${d}" ]; then
@@ -36,12 +43,13 @@ fi
 
 # check if container name is provided
 if [[ -n $* ]]; then
-  if [[ ! -f "${EPX_HOME}/.config/d.up.config" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/d.up.config")"
+  if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Use 'd.up --help' for more information")"
     exit
   fi
 
-  . "${EPX_HOME}/.config/d.up.config"
+  . "${EPX_HOME}/.config/docker.config"
 
   for c in "${@}"; do
     dirname="${CONTAINERS_DIR}/${c}"
@@ -63,6 +71,7 @@ fi
 # if nothing is provided, just start compose file in current directory
 if [[ ! -f "docker-compose.yml" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in current directory")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Use 'd.up --help' for more information")"
   exit
 fi
 

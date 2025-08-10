@@ -41,7 +41,7 @@ complete -F _d_autocomplete_templates d.make
 complete -F _d_autocomplete_templates d.mk
 
 _d_autocomplete_up() {
-  . "${EPX_HOME}/.config/d.up.config"
+  . "${EPX_HOME}/.config/docker.config"
 
   container_dirs=()
   for d in "${CONTAINERS_DIR}"/*; do
@@ -54,6 +54,6 @@ _d_autocomplete_up() {
 
   _autocomplete "${container_dirs[@]}"
 }
-if [[ -f "${EPX_HOME}/.config/d.up.config" ]]; then
+if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
   complete -F _d_autocomplete_up d.up
 fi
