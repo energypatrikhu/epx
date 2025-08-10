@@ -2,10 +2,10 @@ __epx_self_update_logging() {
   filename="/var/log/epx/self-update.log"
 
   if [ ! -d "/var/log/epx" ]; then
-    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "Log directory '/var/log/epx' does not exist and could not be created")\n"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "Log directory '/var/log/epx' does not exist and could not be created")"
 
     if ! mkdir -p "/var/log/epx"; then
-      echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "Failed to create log directory '/var/log/epx'")\n"
+      echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "Failed to create log directory '/var/log/epx'")"
       return 1
     fi
   fi
@@ -19,7 +19,7 @@ __epx_self_update() {
   _cci git
 
   if [ ! -d "${EPX_HOME}" ]; then
-    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "The '${EPX_HOME}' directory does not exist")\n"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "The '${EPX_HOME}' directory does not exist")"
     __epx_self_update_logging "Directory '${EPX_HOME}' does not exist"
     return
   fi
@@ -44,11 +44,11 @@ __epx_self_update() {
     __epx_self_update_logging "Running post-install script"
     "${EPX_HOME}/post-install.sh" 2>&1 | while IFS= read -r line; do __epx_self_update_logging "$line"; done
   else
-    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "install.sh not found, skipping post-installation steps")\n"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "install.sh not found, skipping post-installation steps")"
     __epx_self_update_logging "Post-install script not found, skipping"
   fi
 
-  echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_GREEN "EPX has been updated successfully")\n"
+  echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_GREEN "EPX has been updated successfully")"
   __epx_self_update_logging "EPX updated successfully"
 
   cd - || exit
