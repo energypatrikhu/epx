@@ -14,6 +14,7 @@ __epx_self_update_logging() {
 }
 
 __epx_self_update() {
+  echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_YELLOW "Starting EPX self-update process...")"
   __epx_self_update_logging "\nSelf Update - $(date +'%Y-%m-%d %H:%M:%S')"
 
   _cci git
