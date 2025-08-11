@@ -18,9 +18,9 @@ fi
 
 # check if virtual environment is activated, then deactivate
 if [ -n "${VIRTUAL_ENV}" ]; then
-  echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Deactivating virtual environment"
-  deactivate
-  return 2>/dev/null || exit 1
+  echo -e "[$(_c LIGHT_BLUE "Python - VENV")] To deactivate virtual environment"
+  echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Run $(_c LIGHT_YELLOW "deactivate")"
+  exit 1
 fi
 
 # check if virtual environment exists, if not create it, then activate
