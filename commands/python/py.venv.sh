@@ -36,10 +36,10 @@ if [ ! -d .venv ]; then
 
   # activate virtual environment
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Activating virtual environment"
-  bash -c "source .venv/bin/activate"
+  source ./.venv/bin/activate
   exit 0
 fi
 
 # activate virtual environment
 echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Activating virtual environment"
-bash -c "source .venv/bin/activate"
+source ./.venv/bin/activate
