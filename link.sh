@@ -12,10 +12,13 @@ _build_function() {
   while IFS= read -r line; do
     if [[ "${line}" =~ ^[[:space:]]*source[[:space:]]+([^\ ]+) ]]; then
       local src_file=$(sed 's/^[[:space:]]*source[[:space:]]\+//;s/[[:space:]].*//' <<<"${line}" | tr -d '"')
-      [[ "${src_file}" != *.sh ]] && continue
 
       if [[ "${src_file}" == "\${EPX_HOME}"* ]]; then
         src_file="${EPX_HOME}${src_file#"\${EPX_HOME}"}"
+      fi
+
+      if [[ "${src_file}" != *.sh ]]; then
+        continue
       fi
 
       local src_content=$(cat "${src_file}" 2>/dev/null)
