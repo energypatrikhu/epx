@@ -16,7 +16,7 @@ if [ "${1}" == "-h" ] || [ "${1}" == "--help" ]; then
   exit 0
 fi
 
-if [[ $- == *i* ]]
+if [[ $- == *i* ]]; then
   exec bash -i py.venv
 else
   # check if virtual environment is activated, then deactivate
