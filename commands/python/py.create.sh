@@ -42,8 +42,9 @@ if [ ! -d .venv ]; then
 fi
 
 # activate virtual environment
-echo -e "[$(_c LIGHT_BLUE "Python - Create")] Activating virtual environment"
-source .venv/bin/activate
+echo -e "[$(_c LIGHT_BLUE "Python - Create")] To activate virtual environment"
+echo -e "[$(_c LIGHT_BLUE "Python - Create")] Run $(_c LIGHT_YELLOW "source .venv/bin/activate")"
 
 # inform user how to deactivate virtual environment
-echo -e "[$(_c LIGHT_BLUE "Python - Create")] To deactivate virtual environment, run $(_c LIGHT_YELLOW "deactivate") or $(_c LIGHT_YELLOW "py.venv")"
+echo -e "[$(_c LIGHT_BLUE "Python - Create")] To deactivate virtual environment"
+echo -e "[$(_c LIGHT_BLUE "Python - Create")] Run $(_c LIGHT_YELLOW "deactivate")"
