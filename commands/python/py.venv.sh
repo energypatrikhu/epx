@@ -16,10 +16,9 @@ if [ "${1}" == "-h" ] || [ "${1}" == "--help" ]; then
   exit 0
 fi
 
-exec bash -i py.venv
-
-# if shell is interactive
-if [ -t 0 ]; then
+if [[ $- == *i* ]]
+  exec bash -i py.venv
+else
   # check if virtual environment is activated, then deactivate
   if [ -n "${VIRTUAL_ENV}" ]; then
     echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Deactivating virtual environment"
