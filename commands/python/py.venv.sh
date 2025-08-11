@@ -20,7 +20,7 @@ fi
 if [ -n "${VIRTUAL_ENV}" ]; then
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Deactivating virtual environment"
   deactivate
-  exit 1
+  return 2>/dev/null || exit 1
 fi
 
 # check if virtual environment exists, if not create it, then activate
@@ -33,13 +33,9 @@ if [ ! -d .venv ]; then
     echo -e "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_RED "Failed to create virtual environment")"
     exit 1
   fi
-
-  # activate virtual environment
-  echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Activating virtual environment"
-  source .venv/bin/activate; exec bash -i
-  exit 0
 fi
 
 # activate virtual environment
 echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Activating virtual environment"
-source .venv/bin/activate; exec bash -i
+source .venv/bin/activate
+exec bash -i
