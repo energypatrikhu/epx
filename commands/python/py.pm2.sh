@@ -9,7 +9,7 @@ source "${EPX_HOME}/helpers/colors.sh"
 # help message
 if [ "${1}" = "-h" ] || [ "${1}" = "--help" ]; then
   echo -e "Usage: py.pm2 [script] [name]"
-  return 0
+  exit 0
 fi
 
 if [ -z "${1}" ]; then

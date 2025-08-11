@@ -9,13 +9,13 @@ source "${EPX_HOME}/helpers/colors.sh"
 # check if directory is provided
 if [ -z "${1}" ]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Create")] $(_c LIGHT_YELLOW "Usage: py.create <directory>")"
-  return 1
+  exit 1
 fi
 
 # check if directory already exists
 if [ -d "${1}" ]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Create")] $(_c LIGHT_RED "Directory") "${1}" $(_c LIGHT_RED "already exists")"
-  return 1
+  exit 1
 fi
 
 # create directory
@@ -24,7 +24,7 @@ mkdir -p "${1}"
 
 # change directory
 echo -e "[$(_c LIGHT_BLUE "Python - Create")] Changing directory to $(_c LIGHT_YELLOW "${1}")"
-cd "${1}" || return 1
+cd "${1}" || exit 1
 
 # create requirements.txt and main.py
 echo -e "[$(_c LIGHT_BLUE "Python - Create")] Creating $(_c LIGHT_YELLOW "requirements.txt") and $(_c LIGHT_YELLOW "main.py")"
@@ -38,7 +38,7 @@ python3 -m venv .venv
 # check if virtual environment is created
 if [ ! -d .venv ]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Create")] $(_c LIGHT_RED "Failed to create virtual environment")"
-  return 1
+  exit 1
 fi
 
 # activate virtual environment

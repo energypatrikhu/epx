@@ -12,13 +12,13 @@ if [ -z "${1}" ]; then
   # check if requirements.txt exists
   if [ ! -f requirements.txt ]; then
     echo -e "[$(_c LIGHT_BLUE "Python - Install")] $(_c LIGHT_YELLOW "requirements.txt") $(_c LIGHT_RED "not found")"
-    return 1
+    exit 1
   fi
 
   # install dependencies
   echo -e "[$(_c LIGHT_BLUE "Python - Install")] Installing dependencies"
   pip install -r requirements.txt
-  return 0
+  exit 0
 fi
 
 # install package

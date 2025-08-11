@@ -13,14 +13,14 @@ if [ "${1}" == "-h" ] || [ "${1}" == "--help" ]; then
 
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "Alias:")"
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "  py.env")"
-  return 0
+  exit 0
 fi
 
 # check if virtual environment is activated, then deactivate
 if [ -n "${VIRTUAL_ENV}" ]; then
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Deactivating virtual environment"
   deactivate
-  return 1
+  exit 1
 fi
 
 # check if virtual environment exists, if not create it, then activate
@@ -31,13 +31,13 @@ if [ ! -d .venv ]; then
   # check if virtual environment is created
   if [ ! -d .venv ]; then
     echo -e "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_RED "Failed to create virtual environment")"
-    return 1
+    exit 1
   fi
 
   # activate virtual environment
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Activating virtual environment"
   source .venv/bin/activate
-  return 0
+  exit 0
 fi
 
 # activate virtual environment
