@@ -10,15 +10,11 @@ _build_function() {
   local temp_file=$(mktemp)
 
   while IFS= read -r line; do
-    if [[ "${line}" =~ ^[[:space:]]*source[[:space:]]+([^\ ]+) ]]; then
+    if [[ "${line}" =~ ^[[:space:]]*source[[:space:]]+([^\ ]+\.sh) ]]; then
       local src_file=$(sed 's/^[[:space:]]*source[[:space:]]\+//;s/[[:space:]].*//' <<<"${line}" | tr -d '"')
 
       if [[ "${src_file}" == "\${EPX_HOME}"* ]]; then
         src_file="${EPX_HOME}${src_file#"\${EPX_HOME}"}"
-      fi
-
-      if [[ "${src_file}" != *.sh ]]; then
-        continue
       fi
 
       local src_content=$(cat "${src_file}" 2>/dev/null)
