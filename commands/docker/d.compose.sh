@@ -6,7 +6,7 @@ _cci docker
 source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
-if [[ "${1}" = "-h" ]] || [[ "${1}" = "--help" ]]; then
+if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_YELLOW "Usage: d.compose [service name]")"
   exit
 fi

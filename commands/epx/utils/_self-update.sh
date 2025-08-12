@@ -1,7 +1,7 @@
 __epx_self_update_logging() {
   filename="/var/log/epx/self-update.log"
 
-  if [ ! -d "/var/log/epx" ]; then
+  if [[ ! -d "/var/log/epx" ]]; then
     echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "Log directory '/var/log/epx' does not exist and could not be created")"
 
     if ! mkdir -p "/var/log/epx"; then
@@ -25,7 +25,7 @@ __epx_self_update() {
 
   _cci git
 
-  if [ ! -d "${EPX_HOME}" ]; then
+  if [[ ! -d "${EPX_HOME}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "The '${EPX_HOME}' directory does not exist")"
     __epx_self_update_logging "Directory '${EPX_HOME}' does not exist"
     return
@@ -42,12 +42,12 @@ __epx_self_update() {
   __epx_self_update_logging "Running git pull"
   git pull 2>&1 | while IFS= read -r line; do __epx_self_update_logging "$line"; done
 
-  if [ -d "${EPX_HOME}" ]; then
+  if [[ -d "${EPX_HOME}" ]]; then
     __epx_self_update_logging "Setting permissions on ${EPX_HOME}"
     chmod -R a+x "${EPX_HOME}" 2>&1 | while IFS= read -r line; do __epx_self_update_logging "$line"; done
   fi
 
-  if [ -f "${EPX_HOME}/post-install.sh" ]; then
+  if [[ -f "${EPX_HOME}/post-install.sh" ]]; then
     __epx_self_update_logging "Running post-install script"
     "${EPX_HOME}/post-install.sh" 2>&1 | while IFS= read -r line; do __epx_self_update_logging "$line"; done
   else

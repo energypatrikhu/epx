@@ -11,7 +11,7 @@ fi
 export PROFILE_DIR="/etc/profile.d"
 export ENV_FILE="/etc/environment"
 
-if [ -z "${EPX_HOME}" ]; then
+if [[ -z "${EPX_HOME}" ]]; then
   export EPX_HOME="/usr/local/epx"
 fi
 
@@ -53,7 +53,7 @@ else
 fi
 
 # Run linking script if it exists
-if [ -f "${EPX_HOME}/link.sh" ]; then
+if [[ -f "${EPX_HOME}/link.sh" ]]; then
   echo "Running linking script..."
   "${EPX_HOME}/link.sh"
 else

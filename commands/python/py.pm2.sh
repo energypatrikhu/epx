@@ -7,21 +7,21 @@ source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
 # help message
-if [ "${1}" = "-h" ] || [ "${1}" = "--help" ]; then
+if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "Usage: py.pm2 [script] [name]"
   exit 0
 fi
 
-if [ -z "${1}" ]; then
-  filename="main.py"
-else
+if [[ -n "${1-}" ]]; then
   filename="${1}"
+else
+  filename="main.py"
 fi
 
-if [ -z "${2}" ]; then
-  project_name=$(basename "${PWD}")
-else
+if [[ -n "${2-}" ]]; then
   project_name="${2}"
+else
+  project_name=$(basename "${PWD}")
 fi
 
 # start Python script with PM2, for name use "${2}" if not available use ${PWD} last directory name

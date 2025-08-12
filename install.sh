@@ -14,7 +14,7 @@ if ! command -v git &>/dev/null; then
 fi
 
 # Check if EPX_HOME is set, if not, set it to /usr/local/epx
-if [ -z "${EPX_HOME}" ]; then
+if [[ -z "${EPX_HOME}" ]]; then
   EPX_HOME="/usr/local/epx"
 fi
 
@@ -22,7 +22,7 @@ fi
 mkdir -p "${EPX_HOME}"
 
 # Clone the EPX repository
-if [ ! -d "${EPX_HOME}/.git" ]; then
+if [[ ! -d "${EPX_HOME}/.git" ]]; then
   echo "Cloning EPX repository into ${EPX_HOME}..."
   git clone https://github.com/energypatrikhu/epx.git "${EPX_HOME}"
 else
@@ -37,7 +37,7 @@ fi
 chmod -R a+x "${EPX_HOME}"
 
 # Run post-installation script if it exists
-if [ -f "${EPX_HOME}/post-install.sh" ]; then
+if [[ -f "${EPX_HOME}/post-install.sh" ]]; then
   echo "Running post-installation script..."
   "${EPX_HOME}/post-install.sh"
 else

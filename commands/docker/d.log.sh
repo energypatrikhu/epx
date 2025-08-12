@@ -11,8 +11,8 @@ if [[ -z "${1}" ]]; then
   exit
 fi
 
-if [[ ! "${2}" = "--all" ]] && [[ ! "${2}" = "-a" ]]; then
-  docker container logs -f "${1}" --since "$(docker inspect "${1}" | jq .[0].State.StartedAt | sed 's/\"//g')"
+if [[ ! "${2-}" = "--all" ]] && [[ ! "${2-}" = "-a" ]]; then
+  docker container logs -f "${1}" --since "$(docker inspect "${1}" | jq .[0].State.StartedAt | sed 's/"//g')"
   exit
 fi
 

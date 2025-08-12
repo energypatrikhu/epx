@@ -6,7 +6,7 @@ _cci docker
 source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
-if [[ "${1}" = "--help" ]] || [[ "${1}" = "-h" ]]; then
+if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "Usage: d.pull [<options>] [all / [container1, container2, ...]]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "  all") $(_c LIGHT_GREEN "Pull all containers defined in the config file")"

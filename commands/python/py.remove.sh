@@ -7,7 +7,7 @@ source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
 # check if no arguments are provided
-if [ -z "${1}" ]; then
+if [[ -z "${1}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.remove <package>")"
 
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Alias:")"
@@ -22,7 +22,7 @@ echo -e "[$(_c LIGHT_BLUE "Python - Remove")] Removing $(_c LIGHT_YELLOW "${pack
 pip uninstall "${@}"
 
 # check if removal was successful, then remove from requirements.txt, line by line
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
   for package in "${@}"; do
     sed -i "/${package}/d" requirements.txt
   done

@@ -5,7 +5,7 @@ __epx_load_helps() {
       continue
     fi
 
-    if [[ -f "${element}" ]] && [[ "${element}" == *.sh ]]; then
+    if [[ -f "${element}" && "${element}" == *.sh ]]; then
       if [[ "${element}" == *".help.sh" ]]; then
         . "${element}"
       fi

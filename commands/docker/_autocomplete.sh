@@ -1,5 +1,7 @@
 _d_autocomplete() {
-  _autocomplete "$(docker ps -a --format '{{.Names}}')"
+  local containers
+  containers="$(docker ps -a --format '{{.Names}}')"
+  _autocomplete "${containers}"
 }
 complete -F _d_autocomplete d.attach
 complete -F _d_autocomplete d.exec
@@ -10,7 +12,9 @@ complete -F _d_autocomplete d.log
 complete -F _d_autocomplete d.shell
 
 _d_autocomplete_all() {
-  _autocomplete "all $(docker ps -a --format '{{.Names}}')"
+  local containers
+  containers="$(docker ps -a --format '{{.Names}}')"
+  _autocomplete "all ${containers}"
 }
 complete -F _d_autocomplete_all d.remove
 complete -F _d_autocomplete_all d.rm
@@ -32,7 +36,8 @@ _d_autocomplete_prune() {
 complete -F _d_autocomplete_prune d.prune
 
 _d_autocomplete_templates() {
-  local available_templates="$(find "${EPX_HOME}"/.templates/docker/dockerfile -maxdepth 1 -type f -name '*.template' -exec basename {} .template \; | tr '\n' ' ')"
+  local available_templates
+  available_templates="$(find "${EPX_HOME}"/.templates/docker/dockerfile -maxdepth 1 -type f -name '*.template' -exec basename {} .template \; | tr '\n' ' ')"
   _autocomplete "${available_templates}"
 }
 complete -F _d_autocomplete_templates d.make
@@ -41,9 +46,10 @@ complete -F _d_autocomplete_templates d.mk
 _d_autocomplete_compose() {
   . "${EPX_HOME}/.config/docker.config"
 
-  container_dirs=()
+  local container_dirs=()
+  local d
   for d in "${CONTAINERS_DIR}"/*; do
-    if [ -d "${d}" ]; then
+    if [[ -d "${d}" ]]; then
       if [[ -f "${d}/docker-compose.yml" ]]; then
         container_dirs+=("$(basename -- "${d}")")
       fi

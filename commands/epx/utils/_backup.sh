@@ -103,10 +103,10 @@ __epx_backup() {
   local input_path="${1}"
   local output_path="${2}"
   local backups_to_keep="${3}"
-  local excluded="${4}"
+  local excluded="${4-}"
 
   # Stop the script if any of the required arguments are missing
-  if [ -z "${input_path}" ] || [ -z "${output_path}" ] || [ -z "${backups_to_keep}" ]; then
+  if [[ -z "${input_path}" || -z "${output_path}" || -z "${backups_to_keep}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Usage: backup <input path> <output path> <backups to keep> [excluded directories, files separated with (,)]")"
     return 1
   fi
@@ -135,13 +135,13 @@ __epx_backup() {
   __epx_backup__stop_beesd
 
   # Check if the input path exists and is a directory
-  if [ ! -d "${input_path}" ]; then
+  if [[ ! -d "${input_path}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: Input path does not exist or is not a directory: ${input_path}")"
     return 1
   fi
 
   # Check if the output path exists, if not, create it
-  if [ ! -d "${output_path}" ]; then
+  if [[ ! -d "${output_path}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Creating output directory: ${output_path}")"
     if ! mkdir -p "${output_path}"; then
       echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: Failed to create output directory: ${output_path}")"

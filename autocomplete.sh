@@ -10,6 +10,7 @@ fi
 . "${EPX_HOME}/helpers/autocomplete.sh"
 
 _load_autocomplete() {
+  local element
   for element in "${1}"/*; do
     if [[ -d "${element}" ]]; then
       _load_autocomplete "${element}"
