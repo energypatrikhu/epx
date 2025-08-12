@@ -4,7 +4,7 @@ source "${EPX_HOME}/helpers/check-command-installed.sh"
 _cci pv find du
 
 # Load configuration
-if [ ! -f "${EPX_HOME}/.config/rmt.config" ]; then
+if [[ ! -f "${EPX_HOME}/.config/rmt.config" ]]; then
   echo "Error: Config file not found, please create one at ${EPX_HOME}/.config/rmt.config" >&2
   exit 1
 fi
@@ -54,7 +54,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [ ${#TARGETS[@]} -eq 0 ]; then
+if [[ ${#TARGETS[@]} -eq 0 ]]; then
   echo "Error: No files or directories specified" >&2
   show_usage
   exit 1
@@ -66,7 +66,7 @@ is_excluded_from_trash() {
   local abs_target=$(realpath "$target" 2>/dev/null || readlink -f "$target" 2>/dev/null || echo "$target")
 
   # Check if TRASH_EXCLUDE is set and not empty
-  if [ -n "$TRASH_EXCLUDE" ]; then
+  if [[ -n "$TRASH_EXCLUDE" ]]; then
     local IFS=' '
     for exclude_path in $TRASH_EXCLUDE; do
       if [[ "$abs_target" == "$exclude_path"* ]]; then
@@ -99,7 +99,7 @@ get_trash_dir() {
   done
 
   # If no specific mapping found, use fallback
-  if [ -z "$trash_dir" ]; then
+  if [[ -z "$trash_dir" ]]; then
     trash_dir="$TRASH_FALLBACK"
   fi
 
@@ -109,9 +109,9 @@ get_trash_dir() {
 count_files() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     echo 1
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     find "$target" -type f 2>/dev/null | wc -l
   else
     echo 0
@@ -121,9 +121,9 @@ count_files() {
 get_total_size() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     stat -c%s "$target" 2>/dev/null || echo 0
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     du -sb "$target" 2>/dev/null | cut -f1 || echo 0
   else
     echo 0
@@ -133,7 +133,7 @@ get_total_size() {
 format_size() {
   local size="$1"
 
-  if [ "$size" -gt 0 ]; then
+  if [[ "$size" -gt 0 ]]; then
     numfmt --to=iec-i --suffix=B "$size" 2>/dev/null || echo "${size} bytes"
   else
     echo "0 bytes"
@@ -143,7 +143,7 @@ format_size() {
 validate_target() {
   local target="$1"
 
-  if [ ! -e "$target" ]; then
+  if [[ ! -e "$target" ]]; then
     echo "Warning: '$target' does not exist, skipping..." >&2
     return 1
   fi
@@ -161,7 +161,7 @@ validate_target() {
 ensure_trash_dir() {
   local trash_dir="$1"
 
-  if [ ! -d "$trash_dir" ]; then
+  if [[ ! -d "$trash_dir" ]]; then
     echo "Creating trash directory: $trash_dir"
     if ! mkdir -p "$trash_dir"; then
       echo "Error: Failed to create trash directory: $trash_dir" >&2
@@ -177,7 +177,7 @@ generate_unique_trash_target() {
   local trash_target="$trash_dir/$basename"
   local counter=1
 
-  while [ -e "$trash_target" ]; do
+  while [[ -e "$trash_target" ]]; do
     trash_target="$trash_dir/${basename}.${counter}"
     counter=$((counter + 1))
   done
@@ -293,16 +293,16 @@ perform_move_operation() {
 
   echo "Moving '$stripped_target' to trash..."
 
-  if [ -f "$stripped_target" ]; then
+  if [[ -f "$stripped_target" ]]; then
 
     echo "Moving file: $stripped_target -> $trash_target"
     move_file "$stripped_target" "$trash_target"
 
-  elif [ -d "$stripped_target" ]; then
+  elif [[ -d "$stripped_target" ]]; then
 
     echo "Moving directory: $stripped_target -> $trash_target"
 
-    if [ "$file_count" -gt 0 ]; then
+    if [[ "$file_count" -gt 0 ]]; then
 
       mkdir -p "$trash_target"
 
@@ -327,12 +327,12 @@ perform_delete_operation() {
 
   echo "Permanently deleting '$stripped_target'..."
 
-  if [ -f "$stripped_target" ]; then
+  if [[ -f "$stripped_target" ]]; then
     echo "Deleting file: $stripped_target"
     rm -f "$stripped_target"
-  elif [ -d "$stripped_target" ]; then
+  elif [[ -d "$stripped_target" ]]; then
     echo "Deleting directory: $stripped_target"
-    if [ "$file_count" -gt 0 ]; then
+    if [[ "$file_count" -gt 0 ]]; then
       echo "  Deleting $file_count files..."
       rm -rf "$stripped_target" | pv -l > /dev/null
     else
@@ -349,7 +349,7 @@ verify_move_success() {
   local stripped_target="$1"
   local trash_target="$2"
 
-  if [ ! -e "$stripped_target" ] && [ -e "$trash_target" ]; then
+  if [[ ! -e "$stripped_target" && -e "$trash_target" ]]; then
     echo "✓ Successfully moved '$stripped_target' to trash: $trash_target"
     return 0
   else
@@ -361,7 +361,7 @@ verify_move_success() {
 verify_delete_success() {
   local stripped_target="$1"
 
-  if [ ! -e "$stripped_target" ]; then
+  if [[ ! -e "$stripped_target" ]]; then
     echo "✓ Successfully deleted '$stripped_target' permanently"
     return 0
   else
@@ -383,7 +383,7 @@ move_to_trash_with_progress() {
   local file_count=$(count_files "$stripped_target")
   local total_size=$(get_total_size "$stripped_target")
 
-  if [ "$file_count" -eq 0 ]; then
+  if [[ "$file_count" -eq 0 ]]; then
     echo "Warning: No files found in '$stripped_target'" >&2
     return 0
   fi
@@ -416,7 +416,7 @@ delete_permanently_with_progress() {
   local file_count=$(count_files "$stripped_target")
   local total_size=$(get_total_size "$stripped_target")
 
-  if [ "$file_count" -eq 0 ]; then
+  if [[ "$file_count" -eq 0 ]]; then
     echo "Warning: No files found in '$stripped_target'" >&2
     return 0
   fi
@@ -448,7 +448,7 @@ show_final_summary() {
   echo "Operation completed!"
   echo "Processed: $total_targets target(s)"
 
-  if [ ${#failed_targets[@]} -eq 0 ]; then
+  if [[ ${#failed_targets[@]} -eq 0 ]]; then
     echo "✓ All targets processed successfully"
     return 0
   else
@@ -465,7 +465,7 @@ main() {
   local current=0
   local failed_targets=()
 
-  if [ "$FORCE_MODE" = false ]; then
+  if [[ "$FORCE_MODE" = false ]]; then
     # Check if any targets will be permanently deleted
     local has_excluded=false
     local excluded_targets=()
@@ -481,14 +481,14 @@ main() {
     done
 
     # Show summary
-    if [ ${#trash_targets[@]} -gt 0 ]; then
+    if [[ ${#trash_targets[@]} -gt 0 ]]; then
       echo "Items to move to trash (${#trash_targets[@]}):"
       for target in "${trash_targets[@]}"; do
         echo "  📁 $target"
       done
     fi
 
-    if [ ${#excluded_targets[@]} -gt 0 ]; then
+    if [[ ${#excluded_targets[@]} -gt 0 ]]; then
       echo
       echo "⚠️  Items to PERMANENTLY DELETE (${#excluded_targets[@]}):"
       for target in "${excluded_targets[@]}"; do
@@ -499,7 +499,7 @@ main() {
     echo
 
     # Get confirmation for trash items
-    if [ ${#trash_targets[@]} -gt 0 ]; then
+    if [[ ${#trash_targets[@]} -gt 0 ]]; then
       if ! get_user_confirmation "${#trash_targets[@]}"; then
         echo "Operation cancelled by user."
         exit 1
@@ -507,7 +507,7 @@ main() {
     fi
 
     # Get confirmation for permanent deletion
-    if [ ${#excluded_targets[@]} -gt 0 ]; then
+    if [[ ${#excluded_targets[@]} -gt 0 ]]; then
       if ! get_user_confirmation_delete "${#excluded_targets[@]}"; then
         echo "Operation cancelled by user."
         exit 1

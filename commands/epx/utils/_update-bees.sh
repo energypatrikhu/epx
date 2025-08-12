@@ -7,13 +7,13 @@ __epx_update_bees() {
   REPOSITORY=Zygo/${APP_NAME}
 
   # Check if the build directory exists
-  if [ ! -d "${EPX_BEES_SOURCE_PATH}" ]; then
+  if [[ ! -d "${EPX_BEES_SOURCE_PATH}" ]]; then
     echo -e "\n> Creating the build directory"
     mkdir -p "${EPX_BEES_SOURCE_PATH}"
   fi
 
   # Check if the '.version' file exists
-  if [ -f "${EPX_BEES_SOURCE_PATH}"/.version ]; then
+  if [[ -f "${EPX_BEES_SOURCE_PATH}"/.version ]]; then
     # Get the version number from the '.-version' file
     CURRENT_VERSION=$(cat "${EPX_BEES_SOURCE_PATH}"/.version)
     echo -e "\n> Current version: ${CURRENT_VERSION}"
@@ -30,7 +30,7 @@ __epx_update_bees() {
   echo -e "\n> Latest version: ${LATEST_VERSION}"
 
   # Check if the latest version is the same as the current version
-  if [ "${LATEST_VERSION}" == "${CURRENT_VERSION}" ]; then
+  if [[ "${LATEST_VERSION}" == "${CURRENT_VERSION}" ]]; then
     echo -e "\n> ${APP_NAME} is already up to date"
     cd - || return
 

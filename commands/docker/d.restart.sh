@@ -16,7 +16,7 @@ if [[ "${1}" == "all" ]]; then
   docker container restart $(docker ps -aq) >/dev/null 2>&1
   echo -e "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "All containers restarted")"
 else
-  if [ $# -eq 1 ]; then
+  if [[ $# -eq 1 ]]; then
     container_text="Container"
   else
     container_text="Containers"

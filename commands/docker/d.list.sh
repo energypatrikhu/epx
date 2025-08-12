@@ -7,7 +7,7 @@ source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 source "${EPX_HOME}/helpers/shared.sh"
 
-if [ -z $* ]; then
+if [[ -z $* ]]; then
   data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
 else
   filters=""
@@ -17,7 +17,7 @@ else
   data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "${filters}")
 fi
 
-if [ -z "${data}" ]; then
+if [[ -z "${data}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")"
   exit
 fi

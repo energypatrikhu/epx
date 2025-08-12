@@ -18,7 +18,7 @@ _visible_length() {
 container_name="${1}"
 
 # If no container name is provided or if the container name is "all", list all containers
-if [ -z "${container_name}" ] || [ "${container_name}" = "all" ]; then
+if [[ -z "${container_name}" || "${container_name}" = "all" ]]; then
   containers=$(docker ps -a --format "{{.Names}}")
   for container in ${containers}; do
     d.stats "${container}"
@@ -30,7 +30,7 @@ fi
 # Get container details using docker inspect
 container_info=$(docker inspect "${container_name}" 2>/dev/null)
 
-if [ -z "${container_info}" ]; then
+if [[ -z "${container_info}" ]]; then
   echo -e "Error: Container '${container_name}' not found."
   exit 1
 fi
@@ -72,7 +72,7 @@ volumes=$(printf "%s" "${container_info}" | jq -r '
 
 # Extract network details (handle null and empty objects)
 networks=""
-if [ "${network_mode}" = "host" ]; then
+if [[ "${network_mode}" = "host" ]]; then
   networks="Host network mode (no container-specific IPs)"
 else
   networks=$(printf "%s" "${container_info}" | jq -r '
@@ -95,18 +95,18 @@ ports=$(printf "%s" "${container_info}" | jq -r '
 ' | sort -u)
 
 # check if attr has value
-[ -z "${name}" ] && name="-"
-[ -z "${image}" ] && image="-"
-[ -z "${ports}" ] && ports="-"
-[ -z "${start_date}" ] || [ "${state}" != "running" ] && start_date="-"
-[ -z "${created_date}" ] && created_date="-"
-[ -z "${uptime}" ] || [ "${state}" != "running" ] && uptime="-"
-[ -z "${workdir}" ] && workdir="-"
-[ -z "${state}" ] && state="-"
-[ -z "${network_mode}" ] && network_mode="-"
-[ -z "${environments}" ] && environments="-"
-[ -z "${volumes}" ] && volumes="-"
-[ -z "${networks}" ] || [ "${state}" != "running" ] && networks="-"
+[[ -z "${name}" ]] && name="-"
+[[ -z "${image}" ]] && image="-"
+[[ -z "${ports}" ]] && ports="-"
+[[ -z "${start_date}" || "${state}" != "running" ]] && start_date="-"
+[[ -z "${created_date}" ]] && created_date="-"
+[[ -z "${uptime}" || "${state}" != "running" ]] && uptime="-"
+[[ -z "${workdir}" ]] && workdir="-"
+[[ -z "${state}" ]] && state="-"
+[[ -z "${network_mode}" ]] && network_mode="-"
+[[ -z "${environments}" ]] && environments="-"
+[[ -z "${volumes}" ]] && volumes="-"
+[[ -z "${networks}" || "${state}" != "running" ]] && networks="-"
 
 # Calculate dynamic column widths
 max_width() {
@@ -119,7 +119,7 @@ max_width() {
 }
 
 # Colorize state
-if [ "${state}" = "running" ]; then
+if [[ "${state}" = "running" ]]; then
   state="$(_c GREEN "${EPX_BULLET}") ${state}"
 else
   state="$(_c RED "${EPX_BULLET}") ${state}"
@@ -129,7 +129,7 @@ attributes=("Name" "Image" "Start Date" "Created" "Up time" "WorkDir" "State" "E
 values=("${name}" "${image}" "${start_date}" "${created_date}" "${uptime}" "${workdir}" "${state}")
 
 # Add environments, volumes and networks to values for width calculation
-if [ -z "${environments}" ]; then
+if [[ -z "${environments}" ]]; then
   values+=("No environment variables set.")
 else
   while IFS= read -r env; do
@@ -137,7 +137,7 @@ else
   done <<<"${environments}"
 fi
 
-if [ -z "${ports}" ]; then
+if [[ -z "${ports}" ]]; then
   values+=("No ports mapped.")
 else
   while IFS= read -r port; do
@@ -145,7 +145,7 @@ else
   done <<<"${ports}"
 fi
 
-if [ -z "${volumes}" ]; then
+if [[ -z "${volumes}" ]]; then
   values+=("No volumes mounted.")
 else
   while IFS= read -r volume; do
@@ -153,7 +153,7 @@ else
   done <<<"${volumes}"
 fi
 
-if [ "${network_mode}" = "host" ]; then
+if [[ "${network_mode}" = "host" ]]; then
   values+=("${networks}")
 else
   while IFS= read -r network; do
@@ -196,7 +196,7 @@ print_row "State" "${state}"
 print_separator
 
 # Environments
-if [ "${environments}" = "n/a" ]; then
+if [[ "${environments}" = "n/a" ]]; then
   print_row "Environments" "n/a"
 else
   first_env=true
@@ -219,7 +219,7 @@ fi
 print_separator
 
 # Ports
-if [ "${ports}" = "n/a" ]; then
+if [[ "${ports}" = "n/a" ]]; then
   print_row "Ports" "n/a"
 else
   first_port=true
@@ -242,7 +242,7 @@ fi
 print_separator
 
 # Volumes
-if [ "${volumes}" = "n/a" ]; then
+if [[ "${volumes}" = "n/a" ]]; then
   print_row "Volumes" "n/a"
 else
   first_volume=true
@@ -265,7 +265,7 @@ fi
 print_separator
 
 # Networks
-if [ "${network_mode}" = "host" ]; then
+if [[ "${network_mode}" = "host" ]]; then
   print_row "Networks" "${networks}"
 else
   first_network=true

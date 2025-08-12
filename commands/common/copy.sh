@@ -58,8 +58,8 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-      if [ ${#SOURCES[@]} -eq 0 ] || [ -z "$DESTINATION" ]; then
-        if [ -z "$DESTINATION" ] && [ ${#SOURCES[@]} -gt 0 ]; then
+      if [[ ${#SOURCES[@]} -eq 0 ]] || [[ -z "$DESTINATION" ]]; then
+        if [[ -z "$DESTINATION" ]] && [[ ${#SOURCES[@]} -gt 0 ]]; then
           DESTINATION="$1"
         else
           SOURCES+=("$1")
@@ -72,13 +72,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [ ${#SOURCES[@]} -eq 0 ]; then
+if [[ ${#SOURCES[@]} -eq 0 ]]; then
   echo "Error: No source files specified" >&2
   show_usage
   exit 1
 fi
 
-if [ -z "$DESTINATION" ]; then
+if [[ -z "$DESTINATION" ]]; then
   echo "Error: No destination specified" >&2
   show_usage
   exit 1
@@ -87,9 +87,9 @@ fi
 count_files() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     echo 1
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     find "$target" -type f 2>/dev/null | wc -l
   else
     echo 0
@@ -99,9 +99,9 @@ count_files() {
 get_total_size() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     stat -c%s "$target" 2>/dev/null || echo 0
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     du -sb "$target" 2>/dev/null | cut -f1 || echo 0
   else
     echo 0
@@ -111,7 +111,7 @@ get_total_size() {
 format_size() {
   local size="$1"
 
-  if [ "$size" -gt 0 ]; then
+  if [[ "$size" -gt 0 ]]; then
     numfmt --to=iec-i --suffix=B "$size" 2>/dev/null || echo "${size} bytes"
   else
     echo "0 bytes"
@@ -122,7 +122,7 @@ should_overwrite() {
   local source="$1"
   local dest="$2"
 
-  if [ ! -e "$dest" ]; then
+  if [[ ! -e "$dest" ]]; then
     return 0
   fi
 
@@ -147,9 +147,9 @@ get_user_confirmation() {
 build_cp_options() {
   local options=""
 
-  [ "$FORCE" = true ] && options="$options -f"
-  [ "$DEREFERENCE" = true ] && options="$options -L"
-  [ -n "$PRESERVE" ] && options="$options --preserve=$PRESERVE"
+  [[ "$FORCE" = true ]] && options="$options -f"
+  [[ "$DEREFERENCE" = true ]] && options="$options -L"
+  [[ -n "$PRESERVE" ]] && options="$options --preserve=$PRESERVE"
 
   echo "$options"
 }
@@ -176,11 +176,11 @@ copy_directory() {
 
   mkdir -p "$dest"
 
-  if [ "$PRESERVE" != "" ]; then
+  if [[ "$PRESERVE" != "" ]]; then
     find "$source" -type d -print0 | while IFS= read -r -d '' dir; do
       local relative_path="${dir:$source_len}"
       relative_path="${relative_path#/}"
-      if [ -n "$relative_path" ]; then
+      if [[ -n "$relative_path" ]]; then
         local dest_dir="$dest/$relative_path"
         mkdir -p "$dest_dir"
       fi
@@ -208,11 +208,9 @@ get_destination_path() {
   local source="$1"
   local dest="$2"
 
-  if [ -d "$dest" ]; then
-
+  if [[ -d "$dest" ]]; then
     echo "$dest/$(basename "$source")"
   else
-
     echo "$dest"
   fi
 }
@@ -220,7 +218,7 @@ get_destination_path() {
 validate_source() {
   local source="$1"
 
-  if [ ! -e "$source" ]; then
+  if [[ ! -e "$source" ]]; then
     echo "Error: '$source' does not exist" >&2
     return 1
   fi
@@ -236,7 +234,7 @@ perform_copy_operation() {
   local file_count=$(count_files "$source")
   local total_size=$(get_total_size "$source")
 
-  if [ "$file_count" -eq 0 ] && [ -d "$source" ]; then
+  if [[ "$file_count" -eq 0 ]] && [[ -d "$source" ]]; then
     echo "Warning: No files found in '$source'" >&2
     return 0
   fi
@@ -246,7 +244,7 @@ perform_copy_operation() {
   echo "Files to copy: $file_count"
   echo "Total size: $(format_size "$total_size")"
 
-  if [ -f "$source" ]; then
+  if [[ -f "$source" ]]; then
 
     if should_overwrite "$source" "$dest_path"; then
       echo "Copying file: $source -> $dest_path"
@@ -254,7 +252,7 @@ perform_copy_operation() {
       echo "✓ Successfully copied file"
     fi
 
-  elif [ -d "$source" ]; then
+  elif [[ -d "$source" ]]; then
 
     echo "Copying directory: $source -> $dest_path"
     copy_directory "$source" "$dest_path" "$file_count"
@@ -283,7 +281,7 @@ show_final_summary() {
   echo "Copy operation completed!"
   echo "Processed: $total_sources source(s)"
 
-  if [ ${#failed_sources[@]} -eq 0 ]; then
+  if [[ ${#failed_sources[@]} -eq 0 ]]; then
     echo "✓ All sources copied successfully"
     return 0
   else
@@ -300,15 +298,15 @@ main() {
   local current=0
   local failed_sources=()
 
-  if [ "$FORCE" = false ]; then
+  if [[ "$FORCE" = false ]]; then
 
-    if [ $total_sources -gt 20 ]; then
+    if [[ $total_sources -gt 20 ]]; then
       echo "About to copy $total_sources item(s)."
       echo "Too many items to list individually. First 10 items:"
       local count=0
       for source in "${SOURCES[@]}"; do
         count=$((count + 1))
-        if [ $count -le 10 ]; then
+        if [[ $count -le 10 ]]; then
           echo "  - $source"
         else
           echo "  ... and $((total_sources - 10)) more items"

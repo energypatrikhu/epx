@@ -22,7 +22,7 @@ if [[ "${1}" = "--pull" ]] || [[ "${1}" = "-p" ]]; then
   pull=true
 fi
 
-if [ "${1}" = "all" ]; then
+if [[ "${1}" = "all" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Use 'd.up --help' for more information")"
@@ -32,7 +32,7 @@ if [ "${1}" = "all" ]; then
   . "${EPX_HOME}/.config/docker.config"
 
   for d in "${CONTAINERS_DIR}"/*; do
-    if [ -d "${d}" ]; then
+    if [[ -d "${d}" ]]; then
       if [[ -f "${d}/docker-compose.yml" ]]; then
         d.up "$(basename -- "${d}")"
       fi
@@ -59,7 +59,7 @@ if [[ -n $* ]]; then
       exit
     fi
 
-    if [ "${pull}" = true ]; then
+    if [[ "${pull}" = true ]]; then
       docker compose -f "${dirname}/docker-compose.yml" pull
     fi
     docker compose -p "${c}" -f "${dirname}/docker-compose.yml" up -d
@@ -77,7 +77,7 @@ fi
 
 fbasename=$(basename -- "$(pwd)")
 
-if [ "${pull}" = true ]; then
+if [[ "${pull}" = true ]]; then
   docker compose -f docker-compose.yml pull
 fi
 docker compose -p "${fbasename}" -f docker-compose.yml up -d

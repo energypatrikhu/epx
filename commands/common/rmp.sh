@@ -44,7 +44,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [ ${#TARGETS[@]} -eq 0 ]; then
+if [[ ${#TARGETS[@]} -eq 0 ]]; then
   echo "Error: No files or directories specified" >&2
   show_usage
   exit 1
@@ -53,9 +53,9 @@ fi
 count_files() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     echo 1
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     find "$target" -type f 2>/dev/null | wc -l
   else
     echo 0
@@ -65,9 +65,9 @@ count_files() {
 get_total_size() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     stat -c%s "$target" 2>/dev/null || echo 0
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     du -sb "$target" 2>/dev/null | cut -f1 || echo 0
   else
     echo 0
@@ -77,7 +77,7 @@ get_total_size() {
 format_size() {
   local size="$1"
 
-  if [ "$size" -gt 0 ]; then
+  if [[ "$size" -gt 0 ]]; then
     numfmt --to=iec-i --suffix=B "$size" 2>/dev/null || echo "${size} bytes"
   else
     echo "0 bytes"
@@ -87,7 +87,7 @@ format_size() {
 validate_target() {
   local target="$1"
 
-  if [ ! -e "$target" ]; then
+  if [[ ! -e "$target" ]]; then
     echo "Warning: '$target' does not exist, skipping..." >&2
     return 1
   fi
@@ -132,7 +132,7 @@ remove_file() {
   local file_size="$2"
 
   echo "  Removing: $source_file"
-  if [ "$file_size" -gt 0 ]; then
+  if [[ "$file_size" -gt 0 ]]; then
     pv "$source_file" > /dev/null && /usr/bin/rm -f "$source_file"
   else
     echo "  Processing empty file..." | pv -q -L 10
@@ -153,7 +153,7 @@ remove_directory_contents() {
     echo "  [$current_file/$file_count] Removing: $relative_path"
     local file_size=$(stat -c%s "$file" 2>/dev/null || echo 0)
 
-    if [ "$file_size" -gt 0 ]; then
+    if [[ "$file_size" -gt 0 ]]; then
       pv "$file" > /dev/null && /usr/bin/rm -f "$file"
     else
       echo "    Processing empty file..." | pv -q -L 10
@@ -180,14 +180,14 @@ perform_removal_operation() {
 
   echo "Removing '$stripped_target'..."
 
-  if [ -f "$stripped_target" ]; then
+  if [[ -f "$stripped_target" ]]; then
     echo "Removing file: $stripped_target"
     remove_file "$stripped_target" "$total_size"
 
-  elif [ -d "$stripped_target" ]; then
+  elif [[ -d "$stripped_target" ]]; then
     echo "Removing directory: $stripped_target"
 
-    if [ "$file_count" -gt 0 ]; then
+    if [[ "$file_count" -gt 0 ]]; then
       remove_directory_contents "$stripped_target" "$file_count"
 
       remove_empty_directories "$stripped_target"
@@ -204,7 +204,7 @@ perform_removal_operation() {
 verify_removal_success() {
   local stripped_target="$1"
 
-  if [ ! -e "$stripped_target" ]; then
+  if [[ ! -e "$stripped_target" ]]; then
     echo "✓ Successfully removed '$stripped_target'"
     return 0
   else
@@ -226,7 +226,7 @@ remove_with_progress() {
   local file_count=$(count_files "$stripped_target")
   local total_size=$(get_total_size "$stripped_target")
 
-  if [ "$file_count" -eq 0 ]; then
+  if [[ "$file_count" -eq 0 ]]; then
     echo "Warning: No files found in '$stripped_target'" >&2
     return 0
   fi
@@ -247,7 +247,7 @@ show_final_summary() {
   echo "Removal completed!"
   echo "Processed: $total_targets target(s)"
 
-  if [ ${#failed_targets[@]} -eq 0 ]; then
+  if [[ ${#failed_targets[@]} -eq 0 ]]; then
     echo "✓ All targets removed successfully"
     return 0
   else
@@ -264,14 +264,14 @@ main() {
   local current=0
   local failed_targets=()
 
-  if [ "$FORCE_MODE" = false ]; then
-    if [ $total_targets -gt 20 ]; then
+  if [[ "$FORCE_MODE" = false ]]; then
+    if [[ $total_targets -gt 20 ]]; then
       echo "About to permanently remove $total_targets item(s)."
       echo "Too many items to list individually. First 10 items:"
       local count=0
       for target in "${TARGETS[@]}"; do
         count=$((count + 1))
-        if [ $count -le 10 ]; then
+        if [[ $count -le 10 ]]; then
           echo "  - $target"
         else
           echo "  ... and $((total_targets - 10)) more items"

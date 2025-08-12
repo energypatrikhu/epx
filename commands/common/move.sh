@@ -46,8 +46,8 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-      if [ ${#SOURCES[@]} -eq 0 ] || [ -z "$DESTINATION" ]; then
-        if [ -z "$DESTINATION" ] && [ ${#SOURCES[@]} -gt 0 ]; then
+      if [[ ${#SOURCES[@]} -eq 0 || -z "$DESTINATION" ]]; then
+        if [[ -z "$DESTINATION" && ${#SOURCES[@]} -gt 0 ]]; then
           DESTINATION="$1"
         else
           SOURCES+=("$1")
@@ -60,13 +60,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [ ${#SOURCES[@]} -eq 0 ]; then
+if [[ ${#SOURCES[@]} -eq 0 ]]; then
   echo "Error: No source files specified" >&2
   show_usage
   exit 1
 fi
 
-if [ -z "$DESTINATION" ]; then
+if [[ -z "$DESTINATION" ]]; then
   echo "Error: No destination specified" >&2
   show_usage
   exit 1
@@ -75,9 +75,9 @@ fi
 count_files() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     echo 1
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     find "$target" -type f 2>/dev/null | wc -l
   else
     echo 0
@@ -87,9 +87,9 @@ count_files() {
 get_total_size() {
   local target="$1"
 
-  if [ -f "$target" ]; then
+  if [[ -f "$target" ]]; then
     stat -c%s "$target" 2>/dev/null || echo 0
-  elif [ -d "$target" ]; then
+  elif [[ -d "$target" ]]; then
     du -sb "$target" 2>/dev/null | cut -f1 || echo 0
   else
     echo 0
@@ -99,7 +99,7 @@ get_total_size() {
 format_size() {
   local size="$1"
 
-  if [ "$size" -gt 0 ]; then
+  if [[ "$size" -gt 0 ]]; then
     numfmt --to=iec-i --suffix=B "$size" 2>/dev/null || echo "${size} bytes"
   else
     echo "0 bytes"
@@ -110,11 +110,11 @@ should_overwrite() {
   local source="$1"
   local dest="$2"
 
-  if [ ! -e "$dest" ]; then
+  if [[ ! -e "$dest" ]]; then
     return 0
   fi
 
-  if [ "$NO_CLOBBER" = true ]; then
+  if [[ "$NO_CLOBBER" = true ]]; then
     echo "Skipping '$dest' (no-clobber mode)"
     return 1
   fi
@@ -142,7 +142,7 @@ move_file() {
   local dest_file="$2"
   local file_size="$3"
 
-  if [ "$file_size" -gt 0 ]; then
+  if [[ "$file_size" -gt 0 ]]; then
     if pv "$source_file" > "$dest_file"; then
       rm "$source_file"
     else
@@ -169,7 +169,7 @@ move_directory() {
   find "$source" -type d -print0 | while IFS= read -r -d '' dir; do
     local relative_path="${dir:$source_len}"
     relative_path="${relative_path#/}"
-    if [ -n "$relative_path" ]; then
+    if [[ -n "$relative_path" ]]; then
       local dest_dir="$dest/$relative_path"
       mkdir -p "$dest_dir"
     fi
@@ -188,8 +188,8 @@ move_directory() {
       echo "    [$current_file/$file_count] Moving: $relative_path"
       local file_size=$(stat -c%s "$file" 2>/dev/null || echo 0)
 
-      if [ "$file_size" -gt 0 ]; then
-        if [ "$file_size" -gt 1048576 ]; then
+      if [[ "$file_size" -gt 0 ]]; then
+        if [[ "$file_size" -gt 1048576 ]]; then
           if pv "$file" > "$dest_file"; then
             rm "$file"
           else
@@ -225,7 +225,7 @@ get_destination_path() {
   local source="$1"
   local dest="$2"
 
-  if [ -d "$dest" ]; then
+  if [[ -d "$dest" ]]; then
     echo "$dest/$(basename "$source")"
   else
     echo "$dest"
@@ -235,7 +235,7 @@ get_destination_path() {
 validate_source() {
   local source="$1"
 
-  if [ ! -e "$source" ]; then
+  if [[ ! -e "$source" ]]; then
     echo "Error: '$source' does not exist" >&2
     return 1
   fi
@@ -247,12 +247,12 @@ validate_move() {
   local source="$1"
   local dest_path="$2"
 
-  if [ -d "$source" ] && [[ "$dest_path" == "$source"/* ]]; then
+  if [[ -d "$source" && "$dest_path" == "$source"/* ]]; then
     echo "Error: Cannot move '$source' into itself" >&2
     return 1
   fi
 
-  if [ "$source" -ef "$dest_path" ] 2>/dev/null; then
+  if [[ "$source" -ef "$dest_path" ]] 2>/dev/null; then
     echo "Error: '$source' and '$dest_path' are the same file" >&2
     return 1
   fi
@@ -268,7 +268,7 @@ perform_move_operation() {
   local file_count=$(count_files "$source")
   local total_size=$(get_total_size "$source")
 
-  if [ "$file_count" -eq 0 ] && [ -d "$source" ]; then
+  if [[ "$file_count" -eq 0 && -d "$source" ]]; then
     echo "Warning: No files found in '$source'" >&2
     file_count=1
   fi
@@ -282,14 +282,14 @@ perform_move_operation() {
     return 1
   fi
 
-  if [ -f "$source" ]; then
+  if [[ -f "$source" ]]; then
     if should_overwrite "$source" "$dest_path"; then
       echo "Moving file: $source -> $dest_path"
       move_file "$source" "$dest_path" "$total_size"
       echo "✓ Successfully moved file"
     fi
 
-  elif [ -d "$source" ]; then
+  elif [[ -d "$source" ]]; then
     echo "Moving directory: $source -> $dest_path"
     move_directory "$source" "$dest_path" "$file_count"
     echo "✓ Successfully moved directory"
@@ -317,7 +317,7 @@ show_final_summary() {
   echo "Move operation completed!"
   echo "Processed: $total_sources source(s)"
 
-  if [ ${#failed_sources[@]} -eq 0 ]; then
+  if [[ ${#failed_sources[@]} -eq 0 ]]; then
     echo "✓ All sources moved successfully"
     return 0
   else
@@ -334,14 +334,14 @@ main() {
   local current=0
   local failed_sources=()
 
-  if [ "$FORCE" = false ]; then
-    if [ $total_sources -gt 20 ]; then
+  if [[ "$FORCE" = false ]]; then
+    if [[ $total_sources -gt 20 ]]; then
       echo "About to move $total_sources item(s)."
       echo "Too many items to list individually. First 10 items:"
       local count=0
       for source in "${SOURCES[@]}"; do
         count=$((count + 1))
-        if [ $count -le 10 ]; then
+        if [[ $count -le 10 ]]; then
           echo "  - $source"
         else
           echo "  ... and $((total_sources - 10)) more items"

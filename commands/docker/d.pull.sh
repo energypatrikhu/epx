@@ -16,7 +16,7 @@ if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   exit
 fi
 
-if [ "${1}" = "all" ]; then
+if [[ "${1}" = "all" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Use 'd.pull --help' for more information")"
@@ -26,7 +26,7 @@ if [ "${1}" = "all" ]; then
   . "${EPX_HOME}/.config/docker.config"
 
   for d in "${CONTAINERS_DIR}"/*; do
-    if [ -d "${d}" ]; then
+    if [[ -d "${d}" ]]; then
       if [[ -f "${d}/docker-compose.yml" ]]; then
         d.pull "$(basename -- "${d}")"
       fi

@@ -1,5 +1,5 @@
 __epx_backup__get_distro() {
-  if [ -f /etc/os-release ]; then
+  if [[ -f /etc/os-release ]]; then
     . /etc/os-release
     echo "${ID}"
   else
@@ -69,7 +69,7 @@ __epx_backup__log_status_to_file() {
   local backup_size="N/A"
   local num_of_backups=$(find "${output_path}" -maxdepth 1 -name "*.tar.zst" -printf "%f\n" | wc -l)
 
-  if [ -f "${output_zst_file}" ]; then
+  if [[ -f "${output_zst_file}" ]]; then
     backup_size=$(du -h "${output_zst_file}" | awk '{print $2}')
   fi
 
