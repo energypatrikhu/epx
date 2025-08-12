@@ -15,6 +15,8 @@ __epx_self_update_logging() {
   else
     echo -e "$1" >> "${filename}"
   fi
+
+  echo -e "$1"
 }
 
 __epx_self_update() {
