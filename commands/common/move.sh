@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -euo pipefail
+source "${EPX_HOME}/helpers/header.sh"
 
 source "${EPX_HOME}/helpers/check-command-installed.sh"
 _cci pv find du

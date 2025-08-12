@@ -1,5 +1,3 @@
-#!/bin/bash
-
 _d_autocomplete() {
   _autocomplete "$(docker ps -a --format '{{.Names}}')"
 }

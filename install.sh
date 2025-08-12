@@ -1,5 +1,11 @@
-#!/bin/bash
-# Install script for EPX CLI
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+if [[ "${TRACE-0}" == "1" ]]; then
+  set -o xtrace
+fi
 
 # Check if git is installed
 if ! command -v git &>/dev/null; then

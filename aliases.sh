@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+if [[ "${TRACE-0}" == "1" ]]; then
+  set -o xtrace
+fi
 
 _load_aliases() {
   for element in "${1}"/*; do
@@ -15,8 +22,3 @@ _load_aliases() {
   done
 }
 _load_aliases "${EPX_HOME}/commands"
-
-
-# alias rm='rm -rfvI'
-# alias cp='cp -fvir'
-# alias mv='mv -fvi'

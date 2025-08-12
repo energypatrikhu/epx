@@ -1,5 +1,3 @@
-#!/bin/bash
-
 if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
