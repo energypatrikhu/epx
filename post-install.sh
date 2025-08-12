@@ -28,7 +28,7 @@ fi
 export EPX_BIN="${PROFILE_DIR}/00-epx.sh"
 if [[ ! -f "${EPX_BIN}" ]]; then
   echo "Creating ${EPX_BIN}"
-  echo "#!/bin/bash" | sudo tee "${EPX_BIN}" >/dev/null
+  echo "#!/usr/bin/env bash" | sudo tee "${EPX_BIN}" >/dev/null
 
   if [[ ! -f "${ENV_FILE}" ]]; then
     echo "export EPX_HOME=\"${EPX_HOME}\"" | sudo tee -a "${EPX_BIN}" >/dev/null
@@ -42,9 +42,10 @@ fi
 
 # Setup crontab for epx self-update
 export CRON_FILE="/etc/cron.daily/epx-self-update"
-if ! grep -qF "${CRON_FILE}"; then
+export CRON_JOB="epx self-update"
+if ! grep -qF "${CRON_JOB}" "${CRON_FILE}"; then
   echo "Adding self-update cron job to ${CRON_FILE}"
-  echo "#!/bin/bash" | sudo tee "${CRON_FILE}" >/dev/null
+  echo "#!/usr/bin/env sh" | sudo tee "${CRON_FILE}" >/dev/null
   echo "source ${EPX_BIN}" | sudo tee -a "${CRON_FILE}" >/dev/null
   echo "epx self-update" | sudo tee -a "${CRON_FILE}" >/dev/null
 else
