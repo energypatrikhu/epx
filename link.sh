@@ -19,7 +19,6 @@ _build_function() {
 
       local src_content=$(cat "${src_file}" 2>/dev/null)
 
-      echo "# source: ${src_file}" >>"${temp_file}"
       echo "${src_content}" >>"${temp_file}"
       echo "" >>"${temp_file}"
     else
