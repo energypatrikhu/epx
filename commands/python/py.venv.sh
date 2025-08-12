@@ -17,7 +17,7 @@ if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
 fi
 
 # check if virtual environment is activated, then deactivate
-if [[ -n "${VIRTUAL_ENV}" ]]; then
+if [[ -n "${VIRTUAL_ENV-}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] To deactivate virtual environment"
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Run $(_c LIGHT_YELLOW "deactivate")"
   exit 1
