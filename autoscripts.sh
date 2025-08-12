@@ -16,6 +16,7 @@ _load_auto() {
 
     if [[ -f "${element}" ]] && [[ "${element}" == *.sh ]]; then
       if [[ "${element}" == *"_auto."*.sh ]]; then
+        echo "Loading auto from ${element}"
         source "${element}"
       fi
     fi

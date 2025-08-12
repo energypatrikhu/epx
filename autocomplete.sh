@@ -7,7 +7,7 @@ if [[ "${TRACE-0}" == "1" ]]; then
   set -o xtrace
 fi
 
-. "${EPX_HOME}"/helpers/autocomplete.sh
+. "${EPX_HOME}/helpers/autocomplete.sh"
 
 _load_autocomplete() {
   for element in "${1}"/*; do
@@ -18,6 +18,7 @@ _load_autocomplete() {
 
     if [[ -f "${element}" ]] && [[ "${element}" == *.sh ]]; then
       if [[ "${element}" == *"_autocomplete.sh" ]]; then
+        echo "Loading autocomplete from ${element}"
         source "${element}"
       fi
     fi
