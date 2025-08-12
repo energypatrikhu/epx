@@ -42,7 +42,7 @@ fi
 
 # Setup crontab for epx self-update
 export CRON_FILE="/etc/cron.daily/epx-self-update"
-if ! grep -qF "${CRON_JOB}" "${CRON_FILE}"; then
+if ! grep -qF "${CRON_FILE}"; then
   echo "Adding self-update cron job to ${CRON_FILE}"
   echo "#!/bin/bash" | sudo tee "${CRON_FILE}" >/dev/null
   echo "source ${EPX_BIN}" | sudo tee -a "${CRON_FILE}" >/dev/null
