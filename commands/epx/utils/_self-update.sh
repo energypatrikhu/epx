@@ -10,7 +10,7 @@ __epx_self_update_logging() {
     fi
   fi
 
-  if [ "$2" == true ]; then
+  if [[ -n "$2" && "$2" == true ]]; then
     echo -e "$1" > "${filename}"
   else
     echo -e "$1" >> "${filename}"
