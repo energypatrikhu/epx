@@ -90,7 +90,7 @@ _load_functions() {
 #     fi
 #   done
 # ' sh {} +
-find /usr/local/bin -maxdepth 1 -type l -exec sh -c '
+find /usr/local/bin -maxdepth 1 -type l -exec bash -c '
   for link; do
     target=$(readlink "${link}")
     if [[ "${target#${EPX_HOME}/scripts/}" != "${target}" ]]; then
@@ -99,7 +99,7 @@ find /usr/local/bin -maxdepth 1 -type l -exec sh -c '
       fi
     fi
   done
-' sh {} +
+' bash {} +
 
 _load_functions "${EPX_HOME}/commands"
 _load_functions "${EPX_HOME}/scripts"
