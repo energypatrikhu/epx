@@ -128,9 +128,6 @@ move_with_rsync() {
 
   echo
 
-  # Ensure destination directory exists
-  mkdir -p "$(dirname "$dest")"
-
   # Build rsync options array
   local rsync_opts=()
   while IFS= read -r option; do

@@ -250,9 +250,6 @@ move_with_rsync() {
 
   echo
 
-  # Ensure destination directory exists
-  mkdir -p "$(dirname "$dest")"
-
   if rsync -av --progress --remove-source-files "$source" "$dest"; then
     # Clean up empty directories
     [[ -d "$source" ]] && find "$source" -depth -type d -empty -delete 2>/dev/null
