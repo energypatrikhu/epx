@@ -106,35 +106,25 @@ get_trash_dir() {
   echo "$trash_dir"
 }
 
-count_files() {
+get_target_info() {
   local target="$1"
 
   if [[ -f "$target" ]]; then
-    echo 1
+    echo "1 $(wc -c < "$target" 2>/dev/null || echo 0)"
   elif [[ -d "$target" ]]; then
-    find "$target" -type f 2>/dev/null | wc -l
-  else
-    echo 0
-  fi
-}
-
-get_total_size() {
-  local target="$1"
-
-  if [[ -f "$target" ]]; then
-    wc -c < "$target" 2>/dev/null || echo 0
-  elif [[ -d "$target" ]]; then
-    # Use shell built-ins for directory size calculation
-    local total=0
+    # Get both count and size in one pass
+    local file_count=0
+    local total_size=0
     while IFS= read -r -d '' file; do
       if [[ -f "$file" ]]; then
+        file_count=$((file_count + 1))
         local size=$(wc -c < "$file" 2>/dev/null || echo 0)
-        total=$((total + size))
+        total_size=$((total_size + size))
       fi
     done < <(find "$target" -type f -print0 2>/dev/null)
-    echo "$total"
+    echo "$file_count $total_size"
   else
-    echo 0
+    echo "0 0"
   fi
 }
 
@@ -204,27 +194,22 @@ generate_unique_trash_target() {
   echo "$trash_target"
 }
 
-show_move_summary() {
-  local stripped_target="$1"
+show_summary() {
+  local target="$1"
   local file_count="$2"
   local total_size="$3"
-  local trash_target="$4"
+  local destination="$4"
+  local is_delete="${5:-false}"
 
-  echo "Target: $stripped_target"
-  echo "Files to move: $file_count"
-  echo "Destination: $trash_target"
-  echo "Total size: $(format_size "$total_size")"
-}
+  echo "Target: $target"
+  echo "Files: $file_count"
+  echo "Size: $(format_size "$total_size")"
 
-show_delete_summary() {
-  local stripped_target="$1"
-  local file_count="$2"
-  local total_size="$3"
-
-  echo "Target: $stripped_target"
-  echo "Files to permanently delete: $file_count"
-  echo "Total size: $(format_size "$total_size")"
-  echo "⚠️  WARNING: This will PERMANENTLY DELETE the files (not moved to trash)"
+  if [[ "$is_delete" == "true" ]]; then
+    echo "⚠️  WARNING: This will PERMANENTLY DELETE the files (not moved to trash)"
+  else
+    echo "Destination: $destination"
+  fi
 }
 
 get_user_confirmation() {
@@ -263,16 +248,12 @@ move_with_rsync() {
   local source="$1"
   local dest="$2"
 
-  # Ensure destination directory exists
   mkdir -p "$(dirname "$dest")"
 
-  # Use rsync for both files and directories - it handles both seamlessly
   if rsync -av --progress --remove-source-files "$source" "$dest"; then
-    # Clean up any empty directories left behind
-    if [[ -d "$source" ]]; then
-      find "$source" -depth -type d -empty -delete 2>/dev/null
-      rmdir "$source" 2>/dev/null || rm -rf "$source"
-    fi
+    # Clean up empty directories
+    [[ -d "$source" ]] && find "$source" -depth -type d -empty -delete 2>/dev/null
+    [[ -d "$source" ]] && (rmdir "$source" 2>/dev/null || rm -rf "$source")
     return 0
   else
     echo "Error: Failed to move '$source'" >&2
@@ -280,137 +261,94 @@ move_with_rsync() {
   fi
 }
 
-perform_delete_operation() {
-  local stripped_target="$1"
+delete_permanently() {
+  local target="$1"
   local file_count="$2"
 
-  echo "Permanently deleting '$stripped_target'..."
+  echo "Permanently deleting '$target'..."
 
-  if [[ -f "$stripped_target" ]]; then
-    echo "Deleting file: $stripped_target"
-    rm -f "$stripped_target"
-  elif [[ -d "$stripped_target" ]]; then
-    echo "Deleting directory: $stripped_target"
-    if [[ "$file_count" -gt 0 ]]; then
-      echo "  Deleting $file_count files..."
-      # Simple progress indication without pv
-      local removed=0
-      local progress_interval=$((file_count / 10))
-      if [[ "$progress_interval" -lt 1 ]]; then
-        progress_interval=1
+  if [[ "$file_count" -gt 50 ]]; then
+    # Show progress for large deletions
+    local removed=0
+    local progress_interval=$((file_count / 10))
+    [[ "$progress_interval" -lt 1 ]] && progress_interval=1
+
+    find "$target" -type f -print0 | while IFS= read -r -d '' file; do
+      rm -f "$file"
+      removed=$((removed + 1))
+      if [[ $((removed % progress_interval)) -eq 0 ]]; then
+        echo "  Progress: $removed/$file_count files deleted"
       fi
+    done
+    find "$target" -depth -type d -delete 2>/dev/null
+  else
+    # Direct removal for small targets
+    rm -rf "$target"
+  fi
+}
 
-      find "$stripped_target" -type f -print0 | while IFS= read -r -d '' file; do
-        rm -f "$file"
-        removed=$((removed + 1))
-        if [[ $((removed % progress_interval)) -eq 0 ]]; then
-          echo "    Progress: $removed/$file_count files deleted"
-        fi
-      done
+verify_operation() {
+  local target="$1"
+  local destination="$2"
+  local is_delete="${3:-false}"
 
-      # Remove empty directories
-      find "$stripped_target" -depth -type d -delete 2>/dev/null
+  if [[ "$is_delete" == "true" ]]; then
+    if [[ ! -e "$target" ]]; then
+      echo "✓ Successfully deleted '$target'"
+      return 0
     else
-      echo "  Deleting empty directory..."
-      rmdir "$stripped_target" 2>/dev/null
+      echo "✗ Failed to delete '$target'" >&2
+      return 1
     fi
   else
-    echo "Deleting: $stripped_target"
-    rm -rf "$stripped_target"
+    if [[ ! -e "$target" && -e "$destination" ]]; then
+      echo "✓ Successfully moved '$target' to trash: $destination"
+      return 0
+    else
+      echo "✗ Failed to move '$target' to trash" >&2
+      return 1
+    fi
   fi
-}
-
-verify_move_success() {
-  local stripped_target="$1"
-  local trash_target="$2"
-
-  if [[ ! -e "$stripped_target" && -e "$trash_target" ]]; then
-    echo "✓ Successfully moved '$stripped_target' to trash: $trash_target"
-    return 0
-  else
-    echo "✗ Failed to move '$stripped_target' to trash" >&2
-    return 1
-  fi
-}
-
-verify_delete_success() {
-  local stripped_target="$1"
-
-  if [[ ! -e "$stripped_target" ]]; then
-    echo "✓ Successfully deleted '$stripped_target' permanently"
-    return 0
-  else
-    echo "✗ Failed to delete '$stripped_target'" >&2
-    return 1
-  fi
-}
-
-move_to_trash_with_progress() {
-  local target="$1"
-
-  if ! validate_target "$target"; then
-    return 0
-  fi
-
-  local stripped_target="${target%/}"
-
-  echo "Analyzing '$stripped_target'..."
-  local file_count=$(count_files "$stripped_target")
-  local total_size=$(get_total_size "$stripped_target")
-
-  if [[ "$file_count" -eq 0 ]]; then
-    echo "Warning: No files found in '$stripped_target'" >&2
-    return 0
-  fi
-
-  local trash_dir=$(get_trash_dir "$stripped_target")
-  if ! ensure_trash_dir "$trash_dir"; then
-    return 1
-  fi
-
-  local basename=$(basename "$stripped_target")
-  local trash_target=$(generate_unique_trash_target "$trash_dir" "$basename")
-
-  show_move_summary "$stripped_target" "$file_count" "$total_size" "$trash_target"
-
-  move_with_rsync "$stripped_target" "$trash_target"
-
-  verify_move_success "$stripped_target" "$trash_target"
-}
-
-delete_permanently_with_progress() {
-  local target="$1"
-
-  if ! validate_target "$target"; then
-    return 0
-  fi
-
-  local stripped_target="${target%/}"
-
-  echo "Analyzing '$stripped_target'..."
-  local file_count=$(count_files "$stripped_target")
-  local total_size=$(get_total_size "$stripped_target")
-
-  if [[ "$file_count" -eq 0 ]]; then
-    echo "Warning: No files found in '$stripped_target'" >&2
-    return 0
-  fi
-
-  show_delete_summary "$stripped_target" "$file_count" "$total_size"
-
-  perform_delete_operation "$stripped_target" "$file_count"
-
-  verify_delete_success "$stripped_target"
 }
 
 process_target() {
   local target="$1"
 
-  if is_excluded_from_trash "$target"; then
+  if ! validate_target "$target"; then
+    return 0
+  fi
+
+  local stripped_target="${target%/}"
+  echo "Analyzing '$stripped_target'..."
+
+  # Get file count and size in one call
+  local info=($(get_target_info "$stripped_target"))
+  local file_count=${info[0]}
+  local total_size=${info[1]}
+
+  if [[ "$file_count" -eq 0 ]]; then
+    echo "Warning: No files found in '$stripped_target'" >&2
+    return 0
+  fi
+
+  if is_excluded_from_trash "$stripped_target"; then
     echo "⚠️  Target is in TRASH_EXCLUDE - will be permanently deleted"
-    delete_permanently_with_progress "$target"
+    show_summary "$stripped_target" "$file_count" "$total_size" "" "true"
+    delete_permanently "$stripped_target" "$file_count"
+    verify_operation "$stripped_target" "" "true"
   else
-    move_to_trash_with_progress "$target"
+    local trash_dir=$(get_trash_dir "$stripped_target")
+    if ! ensure_trash_dir "$trash_dir"; then
+      return 1
+    fi
+
+    local basename=$(basename "$stripped_target")
+    local trash_target=$(generate_unique_trash_target "$trash_dir" "$basename")
+
+    show_summary "$stripped_target" "$file_count" "$total_size" "$trash_target"
+    echo "Moving '$stripped_target' to trash..."
+    move_with_rsync "$stripped_target" "$trash_target"
+    verify_operation "$stripped_target" "$trash_target"
   fi
 }
 
