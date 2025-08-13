@@ -1,7 +1,7 @@
 source "${EPX_HOME}/helpers/header.sh"
 
 source "${EPX_HOME}/helpers/check-command-installed.sh"
-_cci pv find du
+_cci rsync
 
 # Load configuration
 if [[ ! -f "${EPX_HOME}/.config/rmt.config" ]]; then
@@ -122,9 +122,17 @@ get_total_size() {
   local target="$1"
 
   if [[ -f "$target" ]]; then
-    stat -c%s "$target" 2>/dev/null || echo 0
+    wc -c < "$target" 2>/dev/null || echo 0
   elif [[ -d "$target" ]]; then
-    du -sb "$target" 2>/dev/null | cut -f1 || echo 0
+    # Use shell built-ins for directory size calculation
+    local total=0
+    while IFS= read -r -d '' file; do
+      if [[ -f "$file" ]]; then
+        local size=$(wc -c < "$file" 2>/dev/null || echo 0)
+        total=$((total + size))
+      fi
+    done < <(find "$target" -type f -print0 2>/dev/null)
+    echo "$total"
   else
     echo 0
   fi
@@ -133,11 +141,22 @@ get_total_size() {
 format_size() {
   local size="$1"
 
-  if [[ "$size" -gt 0 ]]; then
-    numfmt --to=iec-i --suffix=B "$size" 2>/dev/null || echo "${size} bytes"
-  else
+  if [[ "$size" -eq 0 ]]; then
     echo "0 bytes"
+    return
   fi
+
+  # Simple size formatting without numfmt
+  local units=("bytes" "KB" "MB" "GB" "TB")
+  local unit_index=0
+  local formatted_size="$size"
+
+  while [[ "$formatted_size" -gt 1024 && "$unit_index" -lt 4 ]]; do
+    formatted_size=$((formatted_size / 1024))
+    unit_index=$((unit_index + 1))
+  done
+
+  echo "${formatted_size} ${units[$unit_index]}"
 }
 
 validate_target() {
@@ -240,84 +259,24 @@ get_user_confirmation_delete() {
   esac
 }
 
-move_file() {
-  local source_file="$1"
-  local dest_file="$2"
+move_with_rsync() {
+  local source="$1"
+  local dest="$2"
 
-  if pv "$source_file" > "$dest_file"; then
-    rm "$source_file"
-  else
-    echo "Error: Failed to copy '$source_file'" >&2
-    return 1
-  fi
-}
+  # Ensure destination directory exists
+  mkdir -p "$(dirname "$dest")"
 
-move_directory_contents() {
-  local source_dir="$1"
-  local dest_dir="$2"
-  local file_count="$3"
-
-  local current_file=0
-
-  find "$source_dir" -type f -print0 | while IFS= read -r -d '' file; do
-    current_file=$((current_file + 1))
-    local relative_path="${file#$source_dir/}"
-    local dest_file="$dest_dir/$relative_path"
-    local dest_file_dir=$(dirname "$dest_file")
-
-    mkdir -p "$dest_file_dir"
-
-    echo "  [$current_file/$file_count] Moving: $relative_path"
-    local file_size=$(stat -c%s "$file" 2>/dev/null || echo 0)
-
-    move_file "$file" "$dest_file"
-  done
-}
-
-cleanup_empty_directories() {
-  local source_dir="$1"
-
-  echo "  Cleaning up empty directories..."
-  find "$source_dir" -depth -type d -empty -delete 2>/dev/null | while read -r dir; do
-    echo "    Removed empty directory: ${dir#$source_dir/}"
-  done | pv -l > /dev/null
-
-  rmdir "$source_dir" 2>/dev/null || true
-}
-
-perform_move_operation() {
-  local stripped_target="$1"
-  local trash_target="$2"
-  local file_count="$3"
-  local total_size="$4"
-
-  echo "Moving '$stripped_target' to trash..."
-
-  if [[ -f "$stripped_target" ]]; then
-
-    echo "Moving file: $stripped_target -> $trash_target"
-    move_file "$stripped_target" "$trash_target"
-
-  elif [[ -d "$stripped_target" ]]; then
-
-    echo "Moving directory: $stripped_target -> $trash_target"
-
-    if [[ "$file_count" -gt 0 ]]; then
-
-      mkdir -p "$trash_target"
-
-      move_directory_contents "$stripped_target" "$trash_target" "$file_count"
-
-      cleanup_empty_directories "$stripped_target"
-    else
-
-      echo "  Moving empty directory..."
-      mv "$stripped_target" "$trash_target" 2>/dev/null
+  # Use rsync for both files and directories - it handles both seamlessly
+  if rsync -av --progress --remove-source-files "$source" "$dest"; then
+    # Clean up any empty directories left behind
+    if [[ -d "$source" ]]; then
+      find "$source" -depth -type d -empty -delete 2>/dev/null
+      rmdir "$source" 2>/dev/null || rm -rf "$source"
     fi
+    return 0
   else
-
-    echo "Moving: $stripped_target -> $trash_target"
-    mv "$stripped_target" "$trash_target" 2>/dev/null
+    echo "Error: Failed to move '$source'" >&2
+    return 1
   fi
 }
 
@@ -334,7 +293,23 @@ perform_delete_operation() {
     echo "Deleting directory: $stripped_target"
     if [[ "$file_count" -gt 0 ]]; then
       echo "  Deleting $file_count files..."
-      rm -rf "$stripped_target" | pv -l > /dev/null
+      # Simple progress indication without pv
+      local removed=0
+      local progress_interval=$((file_count / 10))
+      if [[ "$progress_interval" -lt 1 ]]; then
+        progress_interval=1
+      fi
+
+      find "$stripped_target" -type f -print0 | while IFS= read -r -d '' file; do
+        rm -f "$file"
+        removed=$((removed + 1))
+        if [[ $((removed % progress_interval)) -eq 0 ]]; then
+          echo "    Progress: $removed/$file_count files deleted"
+        fi
+      done
+
+      # Remove empty directories
+      find "$stripped_target" -depth -type d -delete 2>/dev/null
     else
       echo "  Deleting empty directory..."
       rmdir "$stripped_target" 2>/dev/null
@@ -398,7 +373,7 @@ move_to_trash_with_progress() {
 
   show_move_summary "$stripped_target" "$file_count" "$total_size" "$trash_target"
 
-  perform_move_operation "$stripped_target" "$trash_target" "$file_count" "$total_size"
+  move_with_rsync "$stripped_target" "$trash_target"
 
   verify_move_success "$stripped_target" "$trash_target"
 }
