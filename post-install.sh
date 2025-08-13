@@ -35,6 +35,7 @@ if [[ ! -f "${EPX_BIN}" ]]; then
   fi
 
   echo "source \"\${EPX_HOME}/aliases.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
+  echo "source \"\${EPX_HOME}/autoscripts.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
   echo "source \"\${EPX_HOME}/autocomplete.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
 else
   echo "${EPX_BIN} already exists, skipping creation."
