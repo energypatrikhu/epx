@@ -114,7 +114,7 @@ format_size() {
 }
 
 build_rsync_options() {
-  local options=("-a" "-v" "--progress" "--remove-source-files")
+  local options=("-rxvuaP" "--progress" "--remove-source-files")
 
   [[ "$FORCE" = true ]] && options+=("--force")
   [[ "$NO_CLOBBER" = true ]] && options+=("--ignore-existing")

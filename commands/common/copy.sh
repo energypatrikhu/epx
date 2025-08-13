@@ -126,7 +126,7 @@ format_size() {
 }
 
 build_rsync_options() {
-  local options=("-a" "-v" "--progress")
+  local options=("-rxvuaP" "--progress")
 
   [[ "$FORCE" = true ]] && options+=("--force")
   [[ "$DEREFERENCE" = true ]] && options+=("-L")

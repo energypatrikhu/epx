@@ -250,7 +250,7 @@ move_with_rsync() {
 
   echo
 
-  if rsync -av --progress --remove-source-files "$source" "$dest"; then
+  if rsync -rxvuaP --progress --remove-source-files "$source" "$dest"; then
     # Clean up empty directories
     [[ -d "$source" ]] && find "$source" -depth -type d -empty -delete 2>/dev/null
     [[ -d "$source" ]] && (rmdir "$source" 2>/dev/null || rm -rf "$source")
