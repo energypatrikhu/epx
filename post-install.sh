@@ -20,7 +20,12 @@ if [[ -f "${ENV_FILE}" ]]; then
     echo "Adding EPX_HOME to ${ENV_FILE}"
     echo "EPX_HOME=\"${EPX_HOME}\"" | sudo tee -a "${ENV_FILE}" >/dev/null
   else
-    echo "EPX_HOME already exists in ${ENV_FILE}, skipping addition."
+    echo "EPX_HOME already exists in ${ENV_FILE}, checking content..."
+
+    if ! grep -qF "EPX_HOME" "${ENV_FILE}"; then
+      echo "EPX_HOME=\"${EPX_HOME}\"" | sudo tee -a "${ENV_FILE}" >/dev/null
+      echo "Added EPX_HOME to ${ENV_FILE}"
+    fi
   fi
 fi
 
@@ -38,7 +43,22 @@ if [[ ! -f "${EPX_BIN}" ]]; then
   echo "source \"\${EPX_HOME}/autoscripts.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
   echo "source \"\${EPX_HOME}/autocomplete.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
 else
-  echo "${EPX_BIN} already exists, skipping creation."
+  echo "${EPX_BIN} already exists, checking content..."
+
+  if ! grep -qF "aliases.sh" "${EPX_BIN}"; then
+    echo "source \"\${EPX_HOME}/aliases.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
+    echo "Added aliases.sh to ${EPX_BIN}"
+  fi
+
+  if ! grep -qF "autoscripts.sh" "${EPX_BIN}"; then
+    echo "source \"\${EPX_HOME}/autoscripts.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
+    echo "Added autoscripts.sh to ${EPX_BIN}"
+  fi
+
+  if ! grep -qF "autocomplete.sh" "${EPX_BIN}"; then
+    echo "source \"\${EPX_HOME}/autocomplete.sh\"" | sudo tee -a "${EPX_BIN}" >/dev/null
+    echo "Added autocomplete.sh to ${EPX_BIN}"
+  fi
 fi
 
 # Setup crontab for epx self-update
@@ -46,11 +66,19 @@ export CRON_FILE="/etc/cron.daily/epx-self-update"
 export CRON_JOB="epx self-update"
 if ! grep -qF "${CRON_JOB}" "${CRON_FILE}"; then
   echo "Adding self-update cron job to ${CRON_FILE}"
-  echo "#!/usr/bin/env sh" | sudo tee "${CRON_FILE}" >/dev/null
+  echo "#!/usr/bin/env bash" | sudo tee "${CRON_FILE}" >/dev/null
   echo "source ${EPX_BIN}" | sudo tee -a "${CRON_FILE}" >/dev/null
   echo "epx self-update" | sudo tee -a "${CRON_FILE}" >/dev/null
 else
-  echo "Self-update cron job already exists in ${CRON_FILE}, skipping addition."
+  echo "Self-update cron job already exists in ${CRON_FILE}, checking content..."
+
+  if grep -qF "#!/usr/bin/env bash" "${CRON_FILE}"; then
+    echo "Updating self-update cron job in ${CRON_FILE}"
+    echo "" > "${CRON_FILE}"
+    echo "#!/usr/bin/env bash" | sudo tee "${CRON_FILE}" >/dev/null
+    echo "source ${EPX_BIN}" | sudo tee -a "${CRON_FILE}" >/dev/null
+    echo "epx self-update" | sudo tee -a "${CRON_FILE}" >/dev/null
+  fi
 fi
 
 # Run linking script if it exists
