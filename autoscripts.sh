@@ -23,4 +23,4 @@ _load_auto() {
     fi
   done
 }
-_load_auto "${EPX_HOME}/commands"
+# _load_auto "${EPX_HOME}/commands"

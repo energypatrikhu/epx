@@ -25,7 +25,7 @@ _load_autocomplete() {
     fi
   done
 }
-_load_autocomplete "${EPX_HOME}/commands"
+# _load_autocomplete "${EPX_HOME}/commands"
 
 _epx_completions() {
   _autocomplete "self-update update-bees backup"
