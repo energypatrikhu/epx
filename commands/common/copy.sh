@@ -1,7 +1,7 @@
 source "${EPX_HOME}/helpers/header.sh"
 
 source "${EPX_HOME}/helpers/check-command-installed.sh"
-_cci pv find du
+_cci rsync
 
 show_usage() {
   echo "Usage: copy [OPTIONS] SOURCE... DESTINATION"
@@ -84,49 +84,91 @@ if [[ -z "$DESTINATION" ]]; then
   exit 1
 fi
 
-count_files() {
+get_target_info() {
   local target="$1"
 
   if [[ -f "$target" ]]; then
-    echo 1
+    echo "1 $(wc -c < "$target" 2>/dev/null || echo 0)"
   elif [[ -d "$target" ]]; then
-    find "$target" -type f 2>/dev/null | wc -l
+    local file_count=0
+    local total_size=0
+    while IFS= read -r -d '' file; do
+      if [[ -f "$file" ]]; then
+        file_count=$((file_count + 1))
+        local size=$(wc -c < "$file" 2>/dev/null || echo 0)
+        total_size=$((total_size + size))
+      fi
+    done < <(find "$target" -type f -print0 2>/dev/null)
+    echo "$file_count $total_size"
   else
-    echo 0
-  fi
-}
-
-get_total_size() {
-  local target="$1"
-
-  if [[ -f "$target" ]]; then
-    stat -c%s "$target" 2>/dev/null || echo 0
-  elif [[ -d "$target" ]]; then
-    du -sb "$target" 2>/dev/null | cut -f1 || echo 0
-  else
-    echo 0
+    echo "0 0"
   fi
 }
 
 format_size() {
   local size="$1"
 
-  if [[ "$size" -gt 0 ]]; then
-    numfmt --to=iec-i --suffix=B "$size" 2>/dev/null || echo "${size} bytes"
-  else
+  if [[ "$size" -eq 0 ]]; then
     echo "0 bytes"
+    return
   fi
+
+  local units=("bytes" "KB" "MB" "GB" "TB")
+  local unit_index=0
+  local formatted_size="$size"
+
+  while [[ "$formatted_size" -gt 1024 && "$unit_index" -lt 4 ]]; do
+    formatted_size=$((formatted_size / 1024))
+    unit_index=$((unit_index + 1))
+  done
+
+  echo "${formatted_size} ${units[$unit_index]}"
 }
 
-should_overwrite() {
+build_rsync_options() {
+  local options=("-a" "-v" "--progress")
+
+  [[ "$FORCE" = true ]] && options+=("--force")
+  [[ "$DEREFERENCE" = true ]] && options+=("-L")
+
+  if [[ -n "$PRESERVE" ]]; then
+    # Convert cp preserve format to rsync format
+    case "$PRESERVE" in
+      *mode*) options+=("--chmod=D755,F644") ;;
+    esac
+    case "$PRESERVE" in
+      *ownership*) options+=("--owner" "--group") ;;
+    esac
+    case "$PRESERVE" in
+      *timestamps*) options+=("--times") ;;
+    esac
+  fi
+
+  printf '%s\n' "${options[@]}"
+}
+
+copy_with_rsync() {
   local source="$1"
   local dest="$2"
 
-  if [[ ! -e "$dest" ]]; then
-    return 0
-  fi
+  echo "Copying: $source -> $dest"
 
-  return 0
+  # Ensure destination directory exists
+  mkdir -p "$(dirname "$dest")"
+
+  # Build rsync options array
+  local rsync_opts=()
+  while IFS= read -r option; do
+    rsync_opts+=("$option")
+  done < <(build_rsync_options)
+
+  # Use rsync for efficient copying with progress
+  if rsync "${rsync_opts[@]}" "$source" "$dest"; then
+    return 0
+  else
+    echo "Error: Failed to copy '$source'" >&2
+    return 1
+  fi
 }
 
 get_user_confirmation() {
@@ -144,78 +186,7 @@ get_user_confirmation() {
   esac
 }
 
-build_cp_options() {
-  local options=""
-
-  [[ "$FORCE" = true ]] && options="$options -f"
-  [[ "$DEREFERENCE" = true ]] && options="$options -L"
-  [[ -n "$PRESERVE" ]] && options="$options --preserve=$PRESERVE"
-
-  echo "$options"
-}
-
-copy_file() {
-  local source_file="$1"
-  local dest_file="$2"
-
-  if pv "$source_file" > "$dest_file"; then
-    rm "$source_file"
-  else
-    echo "Error: Failed to copy '$source_file'" >&2
-    return 1
-  fi
-}
-
-copy_directory() {
-  local source="$1"
-  local dest="$2"
-  local file_count="$3"
-
-  local current_file=0
-  local source_len=${#source}
-
-  mkdir -p "$dest"
-
-  if [[ "$PRESERVE" != "" ]]; then
-    find "$source" -type d -print0 | while IFS= read -r -d '' dir; do
-      local relative_path="${dir:$source_len}"
-      relative_path="${relative_path#/}"
-      if [[ -n "$relative_path" ]]; then
-        local dest_dir="$dest/$relative_path"
-        mkdir -p "$dest_dir"
-      fi
-    done
-  fi
-
-  find "$source" -type f -print0 | while IFS= read -r -d '' file; do
-    current_file=$((current_file + 1))
-    local relative_path="${file:$source_len}"
-    relative_path="${relative_path#/}"
-    local dest_file="$dest/$relative_path"
-    local dest_file_dir=$(dirname "$dest_file")
-
-    mkdir -p "$dest_file_dir"
-
-    if should_overwrite "$file" "$dest_file"; then
-      echo "  [$current_file/$file_count] Copying: $relative_path"
-      local file_size=$(stat -c%s "$file" 2>/dev/null || echo 0)
-      copy_file "$file" "$dest_file"
-    fi
-  done
-}
-
-get_destination_path() {
-  local source="$1"
-  local dest="$2"
-
-  if [[ -d "$dest" ]]; then
-    echo "$dest/$(basename "$source")"
-  else
-    echo "$dest"
-  fi
-}
-
-validate_source() {
+process_source() {
   local source="$1"
 
   if [[ ! -e "$source" ]]; then
@@ -223,16 +194,17 @@ validate_source() {
     return 1
   fi
 
-  return 0
-}
-
-perform_copy_operation() {
-  local source="$1"
-  local dest_path="$2"
+  local dest_path
+  if [[ -d "$DESTINATION" ]]; then
+    dest_path="$DESTINATION/$(basename "$source")"
+  else
+    dest_path="$DESTINATION"
+  fi
 
   echo "Analyzing '$source'..."
-  local file_count=$(count_files "$source")
-  local total_size=$(get_total_size "$source")
+  local info=($(get_target_info "$source"))
+  local file_count=${info[0]}
+  local total_size=${info[1]}
 
   if [[ "$file_count" -eq 0 ]] && [[ -d "$source" ]]; then
     echo "Warning: No files found in '$source'" >&2
@@ -241,35 +213,18 @@ perform_copy_operation() {
 
   echo "Source: $source"
   echo "Destination: $dest_path"
-  echo "Files to copy: $file_count"
-  echo "Total size: $(format_size "$total_size")"
+  echo "Files: $file_count"
+  echo "Size: $(format_size "$total_size")"
 
-  if [[ -f "$source" ]]; then
+  copy_with_rsync "$source" "$dest_path"
 
-    if should_overwrite "$source" "$dest_path"; then
-      echo "Copying file: $source -> $dest_path"
-      copy_file "$source" "$dest_path"
-      echo "✓ Successfully copied file"
-    fi
-
-  elif [[ -d "$source" ]]; then
-
-    echo "Copying directory: $source -> $dest_path"
-    copy_directory "$source" "$dest_path" "$file_count"
-    echo "✓ Successfully copied directory"
-  fi
-}
-
-copy_with_progress() {
-  local source="$1"
-
-  if ! validate_source "$source"; then
+  if [[ $? -eq 0 ]]; then
+    echo "✓ Successfully copied '$source'"
+    return 0
+  else
+    echo "✗ Failed to copy '$source'" >&2
     return 1
   fi
-
-  local dest_path=$(get_destination_path "$source" "$DESTINATION")
-
-  perform_copy_operation "$source" "$dest_path"
 }
 
 show_final_summary() {
@@ -337,7 +292,7 @@ main() {
     echo "[$current/$total_sources] Processing: $source"
     echo "----------------------------------------"
 
-    if ! copy_with_progress "$source"; then
+    if ! process_source "$source"; then
       failed_sources+=("$source")
     fi
   done
