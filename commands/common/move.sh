@@ -1,7 +1,7 @@
 source "${EPX_HOME}/helpers/header.sh"
 
 source "${EPX_HOME}/helpers/check-command-installed.sh"
-_cci pv find du
+_cci rsync
 
 show_usage() {
   echo "Usage: move [OPTIONS] SOURCE... DESTINATION"
@@ -72,54 +72,81 @@ if [[ -z "$DESTINATION" ]]; then
   exit 1
 fi
 
-count_files() {
+get_target_info() {
   local target="$1"
 
   if [[ -f "$target" ]]; then
-    echo 1
+    echo "1 $(wc -c < "$target" 2>/dev/null || echo 0)"
   elif [[ -d "$target" ]]; then
-    find "$target" -type f 2>/dev/null | wc -l
+    local file_count=0
+    local total_size=0
+    while IFS= read -r -d '' file; do
+      if [[ -f "$file" ]]; then
+        file_count=$((file_count + 1))
+        local size=$(wc -c < "$file" 2>/dev/null || echo 0)
+        total_size=$((total_size + size))
+      fi
+    done < <(find "$target" -type f -print0 2>/dev/null)
+    echo "$file_count $total_size"
   else
-    echo 0
-  fi
-}
-
-get_total_size() {
-  local target="$1"
-
-  if [[ -f "$target" ]]; then
-    stat -c%s "$target" 2>/dev/null || echo 0
-  elif [[ -d "$target" ]]; then
-    du -sb "$target" 2>/dev/null | cut -f1 || echo 0
-  else
-    echo 0
+    echo "0 0"
   fi
 }
 
 format_size() {
   local size="$1"
 
-  if [[ "$size" -gt 0 ]]; then
-    numfmt --to=iec-i --suffix=B "$size" 2>/dev/null || echo "${size} bytes"
-  else
+  if [[ "$size" -eq 0 ]]; then
     echo "0 bytes"
+    return
   fi
+
+  local units=("bytes" "KB" "MB" "GB" "TB")
+  local unit_index=0
+  local formatted_size="$size"
+
+  while [[ "$formatted_size" -gt 1024 && "$unit_index" -lt 4 ]]; do
+    formatted_size=$((formatted_size / 1024))
+    unit_index=$((unit_index + 1))
+  done
+
+  echo "${formatted_size} ${units[$unit_index]}"
 }
 
-should_overwrite() {
+build_rsync_options() {
+  local options=("-a" "-v" "--progress" "--remove-source-files")
+
+  [[ "$FORCE" = true ]] && options+=("--force")
+  [[ "$NO_CLOBBER" = true ]] && options+=("--ignore-existing")
+
+  printf '%s\n' "${options[@]}"
+}
+
+move_with_rsync() {
   local source="$1"
   local dest="$2"
 
-  if [[ ! -e "$dest" ]]; then
-    return 0
-  fi
+  echo "Moving: $source -> $dest"
 
-  if [[ "$NO_CLOBBER" = true ]]; then
-    echo "Skipping '$dest' (no-clobber mode)"
+  # Ensure destination directory exists
+  mkdir -p "$(dirname "$dest")"
+
+  # Build rsync options array
+  local rsync_opts=()
+  while IFS= read -r option; do
+    rsync_opts+=("$option")
+  done < <(build_rsync_options)
+
+  # Use rsync for efficient moving with progress
+  if rsync "${rsync_opts[@]}" "$source" "$dest"; then
+    # Clean up empty directories
+    [[ -d "$source" ]] && find "$source" -depth -type d -empty -delete 2>/dev/null
+    [[ -d "$source" ]] && (rmdir "$source" 2>/dev/null || rm -rf "$source")
+    return 0
+  else
+    echo "Error: Failed to move '$source'" >&2
     return 1
   fi
-
-  return 0
 }
 
 get_user_confirmation() {
@@ -135,112 +162,6 @@ get_user_confirmation() {
       return 1
       ;;
   esac
-}
-
-move_file() {
-  local source_file="$1"
-  local dest_file="$2"
-  local file_size="$3"
-
-  if [[ "$file_size" -gt 0 ]]; then
-    if pv "$source_file" > "$dest_file"; then
-      rm "$source_file"
-    else
-      echo "Error: Failed to copy '$source_file'" >&2
-      return 1
-    fi
-  else
-    echo "  Processing empty file..." | pv -q -L 10
-    mv "$source_file" "$dest_file" 2>/dev/null
-  fi
-}
-
-move_directory() {
-  local source="$1"
-  local dest="$2"
-  local file_count="$3"
-
-  echo "  Moving directory: $(basename "$source")"
-  local current_file=0
-  local source_len=${#source}
-
-  mkdir -p "$dest"
-
-  find "$source" -type d -print0 | while IFS= read -r -d '' dir; do
-    local relative_path="${dir:$source_len}"
-    relative_path="${relative_path#/}"
-    if [[ -n "$relative_path" ]]; then
-      local dest_dir="$dest/$relative_path"
-      mkdir -p "$dest_dir"
-    fi
-  done
-
-  find "$source" -type f -print0 | while IFS= read -r -d '' file; do
-    current_file=$((current_file + 1))
-    local relative_path="${file:$source_len}"
-    relative_path="${relative_path#/}"
-    local dest_file="$dest/$relative_path"
-    local dest_file_dir=$(dirname "$dest_file")
-
-    mkdir -p "$dest_file_dir"
-
-    if should_overwrite "$file" "$dest_file"; then
-      echo "    [$current_file/$file_count] Moving: $relative_path"
-      local file_size=$(stat -c%s "$file" 2>/dev/null || echo 0)
-
-      if [[ "$file_size" -gt 0 ]]; then
-        if [[ "$file_size" -gt 1048576 ]]; then
-          if pv "$file" > "$dest_file"; then
-            rm "$file"
-          else
-            echo "Error: Failed to move '$file'" >&2
-            return 1
-          fi
-        else
-          if pv -q "$file" > "$dest_file"; then
-            rm "$file"
-          else
-            echo "Error: Failed to move '$file'" >&2
-            return 1
-          fi
-        fi
-      else
-        echo "      Processing empty file..." | pv -q -L 10
-        if /usr/bin/cp "$file" "$dest_file"; then
-          rm "$file"
-        else
-          echo "Error: Failed to move empty file '$file'" >&2
-          return 1
-        fi
-      fi
-    fi
-  done
-
-  echo "  Cleaning up empty directories..."
-  find "$source" -depth -type d -empty -delete 2>/dev/null || true
-  rmdir "$source" 2>/dev/null || true
-}
-
-get_destination_path() {
-  local source="$1"
-  local dest="$2"
-
-  if [[ -d "$dest" ]]; then
-    echo "$dest/$(basename "$source")"
-  else
-    echo "$dest"
-  fi
-}
-
-validate_source() {
-  local source="$1"
-
-  if [[ ! -e "$source" ]]; then
-    echo "Error: '$source' does not exist" >&2
-    return 1
-  fi
-
-  return 0
 }
 
 validate_move() {
@@ -260,52 +181,49 @@ validate_move() {
   return 0
 }
 
-perform_move_operation() {
+process_source() {
   local source="$1"
-  local dest_path="$2"
+
+  if [[ ! -e "$source" ]]; then
+    echo "Error: '$source' does not exist" >&2
+    return 1
+  fi
+
+  local dest_path
+  if [[ -d "$DESTINATION" ]]; then
+    dest_path="$DESTINATION/$(basename "$source")"
+  else
+    dest_path="$DESTINATION"
+  fi
+
+  if ! validate_move "$source" "$dest_path"; then
+    return 1
+  fi
 
   echo "Analyzing '$source'..."
-  local file_count=$(count_files "$source")
-  local total_size=$(get_total_size "$source")
+  local info=($(get_target_info "$source"))
+  local file_count=${info[0]}
+  local total_size=${info[1]}
 
-  if [[ "$file_count" -eq 0 && -d "$source" ]]; then
+  if [[ "$file_count" -eq 0 ]] && [[ -d "$source" ]]; then
     echo "Warning: No files found in '$source'" >&2
     file_count=1
   fi
 
   echo "Source: $source"
   echo "Destination: $dest_path"
-  echo "Files to move: $file_count"
-  echo "Total size: $(format_size "$total_size")"
+  echo "Files: $file_count"
+  echo "Size: $(format_size "$total_size")"
 
-  if ! validate_move "$source" "$dest_path"; then
+  move_with_rsync "$source" "$dest_path"
+
+  if [[ $? -eq 0 ]]; then
+    echo "✓ Successfully moved '$source'"
+    return 0
+  else
+    echo "✗ Failed to move '$source'" >&2
     return 1
   fi
-
-  if [[ -f "$source" ]]; then
-    if should_overwrite "$source" "$dest_path"; then
-      echo "Moving file: $source -> $dest_path"
-      move_file "$source" "$dest_path" "$total_size"
-      echo "✓ Successfully moved file"
-    fi
-
-  elif [[ -d "$source" ]]; then
-    echo "Moving directory: $source -> $dest_path"
-    move_directory "$source" "$dest_path" "$file_count"
-    echo "✓ Successfully moved directory"
-  fi
-}
-
-move_with_progress() {
-  local source="$1"
-
-  if ! validate_source "$source"; then
-    return 1
-  fi
-
-  local dest_path=$(get_destination_path "$source" "$DESTINATION")
-
-  perform_move_operation "$source" "$dest_path"
 }
 
 show_final_summary() {
@@ -372,7 +290,7 @@ main() {
     echo "[$current/$total_sources] Processing: $source"
     echo "----------------------------------------"
 
-    if ! move_with_progress "$source"; then
+    if ! process_source "$source"; then
       failed_sources+=("$source")
     fi
   done
