@@ -248,6 +248,8 @@ move_with_rsync() {
   local source="$1"
   local dest="$2"
 
+  echo "Removing: $source -> $dest"
+
   mkdir -p "$(dirname "$dest")"
 
   if rsync -av --progress --remove-source-files "$source" "$dest"; then
