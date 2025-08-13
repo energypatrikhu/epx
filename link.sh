@@ -10,7 +10,7 @@ fi
 echo "Building and Linking EPX commands to /usr/local/bin..."
 
 mkdir -p "${EPX_HOME}/scripts" 2>/dev/null
-rm -rfv "${EPX_HOME}/scripts/*" 2>/dev/null
+rm -rf "${EPX_HOME}/scripts/"* 2>/dev/null
 
 _build_function() {
   local output_file="${EPX_HOME}/scripts/$(basename "${1}")"
