@@ -79,23 +79,13 @@ _load_functions() {
 }
 
 # Find and remove broken symlinks in /usr/local/bin that point to /usr/local/epx/scripts
-# find /usr/local/bin -maxdepth 1 -type l -exec sh -c '
-#   for link; do
-#     target=$(readlink "${link}")
-#     if [[ "${target#${EPX_HOME}/scripts/}" != "${target}" ]]; then
-#       if [[ ! -e "${target}" ]]; then
-#         echo "Removing broken symlink: ${link} -> ${target}"
-#         rm "${link}"
-#       fi
-#     fi
-#   done
-# ' sh {} +
 find /usr/local/bin -maxdepth 1 -type l -exec bash -c '
   for link; do
     target=$(readlink "${link}")
     if [[ "${target#${EPX_HOME}/scripts/}" != "${target}" ]]; then
       if [[ ! -e "${target}" ]]; then
-        echo "Broken symlink: ${link} -> ${target}"
+        echo "Removing broken symlink: ${link} -> ${target}"
+        rm "${link}"
       fi
     fi
   done
