@@ -248,14 +248,17 @@ move_with_rsync() {
   local source="$1"
   local dest="$2"
 
-  echo "Removing: $source -> $dest"
+  echo
 
+  # Ensure destination directory exists
   mkdir -p "$(dirname "$dest")"
 
   if rsync -av --progress --remove-source-files "$source" "$dest"; then
     # Clean up empty directories
     [[ -d "$source" ]] && find "$source" -depth -type d -empty -delete 2>/dev/null
     [[ -d "$source" ]] && (rmdir "$source" 2>/dev/null || rm -rf "$source")
+
+    echo
     return 0
   else
     echo "Error: Failed to move '$source'" >&2
@@ -343,7 +346,6 @@ process_target() {
     local trash_target=$(generate_unique_trash_target "$trash_dir" "$basename")
 
     show_summary "$stripped_target" "$file_count" "$total_size" "$trash_target"
-    echo "Moving '$stripped_target' to trash..."
     move_with_rsync "$stripped_target" "$trash_target"
     verify_operation "$stripped_target" "$trash_target"
   fi

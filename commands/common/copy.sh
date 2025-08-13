@@ -151,7 +151,7 @@ copy_with_rsync() {
   local source="$1"
   local dest="$2"
 
-  echo "Copying: $source -> $dest"
+  echo
 
   # Ensure destination directory exists
   mkdir -p "$(dirname "$dest")"
@@ -164,6 +164,7 @@ copy_with_rsync() {
 
   # Use rsync for efficient copying with progress
   if rsync "${rsync_opts[@]}" "$source" "$dest"; then
+    echo
     return 0
   else
     echo "Error: Failed to copy '$source'" >&2

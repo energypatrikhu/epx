@@ -126,7 +126,7 @@ move_with_rsync() {
   local source="$1"
   local dest="$2"
 
-  echo "Moving: $source -> $dest"
+  echo
 
   # Ensure destination directory exists
   mkdir -p "$(dirname "$dest")"
@@ -142,6 +142,8 @@ move_with_rsync() {
     # Clean up empty directories
     [[ -d "$source" ]] && find "$source" -depth -type d -empty -delete 2>/dev/null
     [[ -d "$source" ]] && (rmdir "$source" 2>/dev/null || rm -rf "$source")
+
+    echo
     return 0
   else
     echo "Error: Failed to move '$source'" >&2
