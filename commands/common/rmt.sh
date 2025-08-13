@@ -326,10 +326,10 @@ process_target() {
   local file_count=${info[0]}
   local total_size=${info[1]}
 
-  if [[ "$file_count" -eq 0 ]]; then
-    echo "Warning: No files found in '$stripped_target'" >&2
-    return 0
-  fi
+  # if [[ "$file_count" -eq 0 ]]; then
+  #   echo "Warning: No files found in '$stripped_target'" >&2
+  #   return 0
+  # fi
 
   if is_excluded_from_trash "$stripped_target"; then
     echo "⚠️  Target is in TRASH_EXCLUDE - will be permanently deleted"
