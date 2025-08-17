@@ -9,9 +9,9 @@ __epx_update_bees() {
 
   . "${EPX_HOME}/.config/update-bees.config"
 
-  local APP_NAME=bees
-  local REPOSITORY=Zygo/${APP_NAME}
-  local INSTALLED_VERSION=$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')
+  local APP_NAME="bees"
+  local REPOSITORY="Zygo/${APP_NAME}"
+  local INSTALLED_VERSION="$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')"
 
   # Check if the build directory exists
   if [[ ! -d "${EPX_BEES_SOURCE_PATH}" ]]; then
