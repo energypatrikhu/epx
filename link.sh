@@ -35,8 +35,6 @@ _build_function() {
         echo "" >>"${temp_file}"
       fi
     done
-
-    echo -e "\n# === Main === #\n" >>"${temp_file}"
   fi
 
   while IFS= read -r line; do
