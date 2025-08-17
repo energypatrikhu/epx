@@ -28,9 +28,8 @@ _build_function() {
 
   # Write global includes
   for include in "${GLOBAL_INCLUDES[@]}"; do
-    # Expand the include path and write its content directly
-    local include_path
-    include_path=$(eval echo "${include}")
+    # Replace variable reference with actual value without using eval
+    local include_path="${include/\${EPX_HOME}/$EPX_HOME}"
     if [[ -f "${include_path}" ]]; then
       cat "${include_path}" >>"${temp_file}"
       echo "" >>"${temp_file}"
