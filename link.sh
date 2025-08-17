@@ -99,8 +99,8 @@ _load_functions() {
   done
 }
 
-_load_functions "${EPX_HOME}/commands" "true"
-_load_functions "${EPX_HOME}/scripts" "false"
+_load_functions "${EPX_HOME}/commands" "false"
+_load_functions "${EPX_HOME}/scripts" "true"
 
 # Find and remove broken symlinks in /usr/local/bin that point to /usr/local/epx/scripts
 find /usr/local/bin -maxdepth 1 -type l -exec bash -c '
