@@ -1,75 +1,59 @@
 __epx_update_bees() {
-  if [[ ! -f "${EPX_HOME}/.config/update-bees.config" ]]; then
-    echo -e "$(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/update-bees.config")"
-    exit 1
-  fi
-
   _check_sudo
   _cci wget tar make markdown jq
 
-  . "${EPX_HOME}/.config/update-bees.config"
-
-  local APP_NAME="bees"
-  local REPOSITORY="Zygo/${APP_NAME}"
-  local INSTALLED_VERSION="$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')"
-
-  # Check if the build directory exists
-  if [[ ! -d "${EPX_BEES_SOURCE_PATH}" ]]; then
-    echo -e "\n> Creating the build directory"
-    mkdir -p "${EPX_BEES_SOURCE_PATH}"
-  fi
+  local app_name="bees"
+  local repository="Zygo/${app_name}"
+  local installed_version="$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')"
 
   # Get the latest release from the app repository
-  echo -e "\n> Getting the latest release from the ${APP_NAME} repository"
-  LATEST_VERSION=$(curl "https://api.github.com/repos/${REPOSITORY}/tags" | jq -r '.[0].name')
+  echo -e "\n> Getting the latest release from the ${app_name} repository"
+  local latest_version=$(curl "https://api.github.com/repos/${repository}/tags" | jq -r '.[0].name')
 
-  echo -e "\n> Installed version: ${INSTALLED_VERSION}"
-  echo -e "> Latest version: ${LATEST_VERSION}"
+  echo -e "\n> Installed version: ${installed_version}"
+  echo -e "> Latest version: ${latest_version}"
 
   # Check if the latest version is the same as the current version
-  if [[ "${LATEST_VERSION}" == "${INSTALLED_VERSION}" ]]; then
-    echo -e "\n> ${APP_NAME} is already up to date"
+  if [[ "${latest_version}" == "${installed_version}" ]]; then
+    echo -e "\n> ${app_name} is already up to date"
     return
   fi
 
-  # Set the build directory based on the latest version, remove the 'v' prefix
-  BUILD_DIR=${EPX_BEES_SOURCE_PATH}/${APP_NAME}-${LATEST_VERSION:1}
+  # Setup temporary directories
+  local tmp_dir="$(mktemp -d)"
+  local build_dir="${tmp_dir}/${app_name}"
 
   # Download the latest release
-  echo -e "\n> Downloading the latest release: ${LATEST_VERSION}"
-  wget -O "${EPX_BEES_SOURCE_PATH}"/"${LATEST_VERSION}".tar.gz "https://github.com/${REPOSITORY}/archive/refs/tags/${LATEST_VERSION}.tar.gz"
+  echo -e "\n> Downloading the latest release: ${latest_version}"
+  wget -O "${tmp_dir}/${latest_version}.tar.gz" "https://github.com/${repository}/archive/refs/tags/${latest_version}.tar.gz"
 
   # Extract the tarball
   echo -e "\n> Extracting the tarball"
-  tar -xzf "${EPX_BEES_SOURCE_PATH}"/"${LATEST_VERSION}".tar.gz -C "${EPX_BEES_SOURCE_PATH}"
+  tar -xzf "${tmp_dir}/${latest_version}.tar.gz" -C "${tmp_dir}"
 
   # Change to the app directory
-  echo -e "\n> Changing to the ${APP_NAME} directory"
-  cd "${BUILD_DIR}" || return
+  echo -e "\n> Changing to the ${app_name} directory"
+  cd "${build_dir}"
 
   # Set version
-  echo -e "\n> Setting the ${APP_NAME} version"
-  sed -i "s/BEES_VERSION ?=.*/BEES_VERSION ?= ${LATEST_VERSION}/" ./Makefile
+  echo -e "\n> Setting the ${app_name} version"
+  sed -i "s/BEES_VERSION ?=.*/BEES_VERSION ?= ${latest_version}/" ./Makefile
 
   # Build the project
-  echo -e "\n> Building the ${APP_NAME} project"
+  echo -e "\n> Building the ${app_name} project"
   make
 
   # Install the project
-  echo -e "\n> Installing the ${APP_NAME} project"
+  echo -e "\n> Installing the ${app_name} project"
   make install
 
   # Copy service files
   echo -e "\n> Copying service files"
-  cp -rf "${BUILD_DIR}"/scripts/*.service /etc/systemd/system/
+  cp -rf "${build_dir}"/scripts/*.service /etc/systemd/system/
 
-  # Remove the build directory
-  echo -e "\n> Removing the build directory"
-  rm -rf "${BUILD_DIR}"
+  # Remove the temporary directory
+  echo -e "\n> Removing the temporary directory"
+  rm -rf "${tmp_dir}"
 
-  # Remove the tarball
-  echo -e "\n> Removing the tarball"
-  rm -rf "${EPX_BEES_SOURCE_PATH}"/"${LATEST_VERSION}".tar.gz
-
-  echo -e "\n> ${APP_NAME} has been successfully updated to version ${LATEST_VERSION}"
+  echo -e "\n> ${app_name} has been successfully updated to version ${latest_version}"
 }
