@@ -1,5 +1,6 @@
-_cci ufwif [[ -z "${1-}" ]]; then
+_cci ufw
 
+if [[ -z "${1-}" ]]; then
   echo -e "[$(_c LIGHT_CYAN "UFW")] $(_c LIGHT_YELLOW "Usage: ufw.del <rule_number> / port <port>")"
   exit 1
 fi
