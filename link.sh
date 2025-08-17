@@ -85,7 +85,7 @@ _load_functions() {
 
       [[ "${file_name}" =~ ^_ ]] && continue
 
-      if ! _build_function "${element}"; then
+      if ! _build_function "${element}" "${2-}"; then
         echo "Failed to build ${element}"
         continue
       fi
