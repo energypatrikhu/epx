@@ -4,7 +4,12 @@ __epx_update_bees() {
 
   local app_name="bees"
   local repository="Zygo/${app_name}"
-  local installed_version="$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')"
+
+  # Get the currently installed version of the app
+  local installed_version
+  if command -v beesd &> /dev/null; then
+    installed_version="$(beesd --version | grep -oP 'bees version \K[^\s]+')"
+  fi
 
   # Get the latest release from the app repository
   echo -e "\n> Getting the latest release from the ${app_name} repository"
@@ -22,6 +27,9 @@ __epx_update_bees() {
   # Setup temporary directories
   local tmp_dir="$(mktemp -d)"
   local build_dir="${tmp_dir}/${app_name}"
+  echo -e "\n> Created temporary directory: ${tmp_dir}"
+
+  trap 'rm -rf "${tmp_dir}"' EXIT
 
   # Download the latest release
   echo -e "\n> Downloading the latest release: ${latest_version}"
