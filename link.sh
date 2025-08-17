@@ -17,6 +17,7 @@ GLOBAL_INCLUDES=(
   "${EPX_HOME}/helpers/shared.sh"
   "${EPX_HOME}/helpers/colors.sh"
   "${EPX_HOME}/helpers/colorize.sh"
+  "${EPX_HOME}/helpers/check-sudo.sh"
   "${EPX_HOME}/helpers/check-command-installed.sh"
 )
 INCLUDE_GLOBAL_HEADERS="false"

@@ -4,13 +4,14 @@ __epx_update_bees() {
     exit 1
   fi
 
+  _check_sudo
   _cci wget tar make markdown jq
 
   . "${EPX_HOME}/.config/update-bees.config"
 
-  APP_NAME=bees
-  REPOSITORY=Zygo/${APP_NAME}
-  CURRENT_VERSION=$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')
+  local APP_NAME=bees
+  local REPOSITORY=Zygo/${APP_NAME}
+  local INSTALLED_VERSION=$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')
 
   # Check if the build directory exists
   if [[ ! -d "${EPX_BEES_SOURCE_PATH}" ]]; then
@@ -22,11 +23,11 @@ __epx_update_bees() {
   echo -e "\n> Getting the latest release from the ${APP_NAME} repository"
   LATEST_VERSION=$(curl "https://api.github.com/repos/${REPOSITORY}/tags" | jq -r '.[0].name')
 
-  echo -e "\n> Current version: ${CURRENT_VERSION}"
+  echo -e "\n> Installed version: ${INSTALLED_VERSION}"
   echo -e "> Latest version: ${LATEST_VERSION}"
 
   # Check if the latest version is the same as the current version
-  if [[ "${LATEST_VERSION}" == "${CURRENT_VERSION}" ]]; then
+  if [[ "${LATEST_VERSION}" == "${INSTALLED_VERSION}" ]]; then
     echo -e "\n> ${APP_NAME} is already up to date"
     return
   fi
