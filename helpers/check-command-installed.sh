@@ -8,7 +8,10 @@ _cci() {
   done
 
   if [[ ${#not_installed[@]} -ne 0 ]]; then
-    echo "Error: The following commands are not installed: ${not_installed[*]}. Please install them to use this script."
+    echo -e "$(_c LIGHT_RED "Error"): The following commands are not installed, please install them to use this script:"
+    for cmd in "${not_installed[@]}"; do
+      echo -e "  - $(_c LIGHT_YELLOW "${cmd}")"
+    done
     exit 1
   fi
 }
