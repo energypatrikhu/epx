@@ -28,6 +28,7 @@ _build_function() {
   local temp_file
   temp_file=$(mktemp)
 
+  # Write global includes
   if [[ "${include_headers}" == "true" ]]; then
     for include in "${GLOBAL_INCLUDES[@]}"; do
       if [[ -f "${include}" ]]; then
@@ -36,13 +37,6 @@ _build_function() {
       fi
     done
   fi
-  # Write global includes
-  for include in "${GLOBAL_INCLUDES[@]}"; do
-    if [[ -f "${include}" ]]; then
-      cat "${include}" >>"${temp_file}"
-      echo "" >>"${temp_file}"
-    fi
-  done
 
   while IFS= read -r line; do
     if [[ "${line}" =~ ^[[:space:]]*source[[:space:]]+([^\ ]+\.sh) ]]; then
