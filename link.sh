@@ -75,7 +75,7 @@ _load_functions() {
   local element
   for element in "${1-}"/*; do
     if [[ -d "${element}" ]]; then
-      _load_functions "${element}"
+      _load_functions "${element}" "${2-}"
       continue
     fi
 
