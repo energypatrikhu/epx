@@ -1,3 +1,3 @@
 _cci docker
 
-docker compose up -d
+docker compose up --detach --pull always
