@@ -28,9 +28,14 @@ _build_function() {
 
   # Write global includes
   for include in "${GLOBAL_INCLUDES[@]}"; do
-    echo "source \"${include}\"" >>"${temp_file}"
+    # Expand the include path and write its content directly
+    local include_path
+    include_path=$(eval echo "${include}")
+    if [[ -f "${include_path}" ]]; then
+      cat "${include_path}" >>"${temp_file}"
+      echo "" >>"${temp_file}"
+    fi
   done
-  echo "" >>"${temp_file}"
 
   while IFS= read -r line; do
     if [[ "${line}" =~ ^[[:space:]]*source[[:space:]]+([^\ ]+\.sh) ]]; then
