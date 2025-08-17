@@ -19,17 +19,16 @@ GLOBAL_INCLUDES=(
   "${EPX_HOME}/helpers/colorize.sh"
   "${EPX_HOME}/helpers/check-command-installed.sh"
 )
+INCLUDE_GLOBAL_HEADERS="false"
 
 # Inject global includes at the top of each script
 _build_function() {
   local output_file="${EPX_HOME}/scripts/$(basename "${1-}")"
-  local include_headers="${2-}"
-
   local temp_file
   temp_file=$(mktemp)
 
   # Write global includes
-  if [[ "${include_headers}" == "true" ]]; then
+  if [[ "${INCLUDE_GLOBAL_HEADERS}" == "true" ]]; then
     for include in "${GLOBAL_INCLUDES[@]}"; do
       if [[ -f "${include}" ]]; then
         cat "${include}" >>"${temp_file}"
@@ -75,7 +74,7 @@ _load_functions() {
   local element
   for element in "${1-}"/*; do
     if [[ -d "${element}" ]]; then
-      _load_functions "${element}" "${2-}"
+      _load_functions "${element}"
       continue
     fi
 
@@ -85,7 +84,7 @@ _load_functions() {
 
       [[ "${file_name}" =~ ^_ ]] && continue
 
-      if ! _build_function "${element}" "${2-}"; then
+      if ! _build_function "${element}"; then
         echo "Failed to build ${element}"
         continue
       fi
@@ -99,8 +98,10 @@ _load_functions() {
   done
 }
 
-_load_functions "${EPX_HOME}/commands" "false"
-_load_functions "${EPX_HOME}/scripts" "true"
+_load_functions "${EPX_HOME}/commands"
+
+INCLUDE_GLOBAL_HEADERS="true"
+_load_functions "${EPX_HOME}/scripts"
 
 # Find and remove broken symlinks in /usr/local/bin that point to /usr/local/epx/scripts
 find /usr/local/bin -maxdepth 1 -type l -exec bash -c '
