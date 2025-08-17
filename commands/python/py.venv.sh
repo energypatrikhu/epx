@@ -1,4 +1,6 @@
-_cci python3# help message
+_cci python3
+
+# help message
 if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "Usage: py.venv")"
   echo -e "[$(_c LIGHT_BLUE "Python - VENV")] $(_c LIGHT_YELLOW "Description: Activate, deactivate or create a Python virtual environment")"

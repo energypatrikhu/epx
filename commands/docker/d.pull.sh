@@ -1,4 +1,5 @@
 _cci dockerif [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "Usage: d.pull [<options>] [all / [container1, container2, ...]]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "  all") $(_c LIGHT_GREEN "Pull all containers defined in the config file")"

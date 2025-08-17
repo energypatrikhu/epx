@@ -1,4 +1,5 @@
 _cci dockerif [[ -z "${1-}" ]]; then
+
   echo -e "[$(_c LIGHT_BLUE 'Docker - Stop')] $(_c LIGHT_YELLOW "Usage: d.stop <all / container>")"
   exit
 fi

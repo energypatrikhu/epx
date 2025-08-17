@@ -1,4 +1,5 @@
 _cci dockerif [[ -z "${1-}" ]]; then
+
   echo -e "[$(_c LIGHT_BLUE "Docker - Logs")] $(_c LIGHT_YELLOW "Usage: d.logs <container> [--all | -a]")"
   exit
 fi

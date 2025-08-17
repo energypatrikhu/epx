@@ -1,4 +1,6 @@
-_cci pip# check if no arguments are provided
+_cci pip
+
+# check if no arguments are provided
 if [[ -z "${1-}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.remove <package>")"
 

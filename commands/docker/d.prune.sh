@@ -1,4 +1,5 @@
 _cci dockerif [[ -z "${1-}" ]]; then
+
   echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_YELLOW "Usage: d.prune <all / images / containers / volumes / networks> [options]")"
   exit
 fi

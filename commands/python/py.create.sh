@@ -1,4 +1,6 @@
-_cci python3# check if directory is provided
+_cci python3
+
+# check if directory is provided
 if [[ -z "${1-}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Create")] $(_c LIGHT_YELLOW "Usage: py.create <directory>")"
   exit 1

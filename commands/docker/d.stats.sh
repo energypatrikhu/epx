@@ -1,4 +1,5 @@
 _cci docker
+
 _strip_text() {
   printf "%s" "${1-}" | sed 's/\x1b\[[0-9;]*m//g'
 }

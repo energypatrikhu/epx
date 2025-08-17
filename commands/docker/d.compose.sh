@@ -1,4 +1,5 @@
 _cci dockerif [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+
   echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_YELLOW "Usage: d.compose [service name]")"
   exit
 fi

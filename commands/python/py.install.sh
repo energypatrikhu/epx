@@ -1,4 +1,6 @@
-_cci python3# if no arguments are provided, install from requirements.txt
+_cci python3
+
+# if no arguments are provided, install from requirements.txt
 if [[ -z "${1-}" ]]; then
   # check if requirements.txt exists
   if [[ ! -f requirements.txt ]]; then

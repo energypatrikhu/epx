@@ -1,4 +1,5 @@
 _cci dockerif [[ -z "${1-}" ]]; then
+
   echo -e "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_YELLOW "Usage: d.start <all / container>")"
   exit
 fi

@@ -1,4 +1,5 @@
 _cci docker
+
 if [[ -z $* ]]; then
   data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
 else

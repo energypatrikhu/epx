@@ -1,4 +1,5 @@
 _cci dockerif [[ -z "${1-}" ]]; then
+
   echo -e "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_YELLOW "Usage: d.restart <all / container>")"
   exit
 fi

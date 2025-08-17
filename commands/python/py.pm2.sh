@@ -1,4 +1,6 @@
-_cci python3 pm2# help message
+_cci python3 pm2
+
+# help message
 if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "Usage: py.pm2 [script] [name]"
   exit 0
