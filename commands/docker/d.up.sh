@@ -1,12 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/check-command-installed.sh"
-_cci docker
-
-source "${EPX_HOME}/helpers/colorize.sh"
-source "${EPX_HOME}/helpers/colors.sh"
-
-if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+_cci dockerif [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [<options>] [all / [container1, container2, ...]]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  --pull, -p") $(_c LIGHT_GREEN "Pull images before starting containers")"

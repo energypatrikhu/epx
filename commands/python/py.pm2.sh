@@ -1,12 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/check-command-installed.sh"
-_cci python3 pm2
-
-source "${EPX_HOME}/helpers/colorize.sh"
-source "${EPX_HOME}/helpers/colors.sh"
-
-# help message
+_cci python3 pm2# help message
 if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "Usage: py.pm2 [script] [name]"
   exit 0

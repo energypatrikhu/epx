@@ -12,10 +12,25 @@ echo "Building and Linking EPX commands to /usr/local/bin..."
 mkdir -p "${EPX_HOME}/scripts" 2>/dev/null
 rm -rf "${EPX_HOME}/scripts/"* 2>/dev/null
 
+GLOBAL_INCLUDES=(
+  "${EPX_HOME}/helpers/header.sh"
+  "${EPX_HOME}/helpers/shared.sh"
+  "${EPX_HOME}/helpers/colors.sh"
+  "${EPX_HOME}/helpers/colorize.sh"
+  "${EPX_HOME}/helpers/check-command-installed.sh"
+)
+
+# Inject global includes at the top of each script
 _build_function() {
   local output_file="${EPX_HOME}/scripts/$(basename "${1-}")"
   local temp_file
   temp_file=$(mktemp)
+
+  # Write global includes
+  for include in "${GLOBAL_INCLUDES[@]}"; do
+    echo "source \"${include}\"" >>"${temp_file}"
+  done
+  echo "" >>"${temp_file}"
 
   while IFS= read -r line; do
     if [[ "${line}" =~ ^[[:space:]]*source[[:space:]]+([^\ ]+\.sh) ]]; then

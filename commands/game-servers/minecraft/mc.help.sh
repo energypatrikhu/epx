@@ -1,8 +1,3 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/colorize.sh"
-source "${EPX_HOME}/helpers/colors.sh"
-
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Help")]"
 echo -e "  $(_c CYAN "Commands:")"
 echo -e "    $(_c LIGHT_CYAN "mc") - Start Minecraft Server"

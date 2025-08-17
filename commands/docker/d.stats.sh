@@ -1,12 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/check-command-installed.sh"
 _cci docker
-
-source "${EPX_HOME}/helpers/colorize.sh"
-source "${EPX_HOME}/helpers/colors.sh"
-source "${EPX_HOME}/helpers/shared.sh"
-
 _strip_text() {
   printf "%s" "${1-}" | sed 's/\x1b\[[0-9;]*m//g'
 }

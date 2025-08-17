@@ -1,6 +1,3 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/check-command-installed.sh"
 _cci time tar zstd
 
 if [[ $# -eq 0 ]]; then

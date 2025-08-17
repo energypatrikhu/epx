@@ -1,4 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
+
 
 if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   echo "Error: Minecraft configuration file not found. Please configure '${EPX_HOME}/.config/minecraft.config' and run 'mc.install'."

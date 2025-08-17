@@ -1,12 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/check-command-installed.sh"
-_cci pip
-
-source "${EPX_HOME}/helpers/colorize.sh"
-source "${EPX_HOME}/helpers/colors.sh"
-
-# check if no arguments are provided
+_cci pip# check if no arguments are provided
 if [[ -z "${1-}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.remove <package>")"
 

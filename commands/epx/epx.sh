@@ -1,8 +1,3 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/check-command-installed.sh"
-source "${EPX_HOME}/helpers/colorize.sh"
-source "${EPX_HOME}/helpers/colors.sh"
 
 declare -A EPX_UTILS
 EPX_UTILS["self-update"]="Update the EPX CLI to the latest version"

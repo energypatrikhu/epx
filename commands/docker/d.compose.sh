@@ -1,12 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
-
-source "${EPX_HOME}/helpers/check-command-installed.sh"
-_cci docker
-
-source "${EPX_HOME}/helpers/colorize.sh"
-source "${EPX_HOME}/helpers/colors.sh"
-
-if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+_cci dockerif [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_YELLOW "Usage: d.compose [service name]")"
   exit
 fi

@@ -1,4 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
+
 
 # No external dependencies needed - using only shell built-ins
 

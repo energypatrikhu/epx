@@ -1,4 +1,4 @@
-source "${EPX_HOME}/helpers/header.sh"
+
 
 if command -v eza &> /dev/null; then
   eza --all --long --group --header --icons=always --no-permissions --tree --level=1 "$@"
