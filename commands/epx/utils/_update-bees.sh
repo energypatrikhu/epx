@@ -32,8 +32,6 @@ __epx_update_bees() {
   # Check if the latest version is the same as the current version
   if [[ "${LATEST_VERSION}" == "${CURRENT_VERSION}" ]]; then
     echo -e "\n> ${APP_NAME} is already up to date"
-    cd - || return
-
     return
   fi
 
@@ -80,6 +78,4 @@ __epx_update_bees() {
   echo -e "${LATEST_VERSION}" >"${EPX_BEES_SOURCE_PATH}"/.version
 
   echo -e "\n> ${APP_NAME} has been successfully updated to version ${LATEST_VERSION}"
-
-  cd - || return
 }
