@@ -13,11 +13,11 @@ mkdir -p "${EPX_HOME}/scripts" 2>/dev/null
 rm -rf "${EPX_HOME}/scripts/"* 2>/dev/null
 
 GLOBAL_INCLUDES=(
-  "${EPX_HOME}/helpers/header.sh"
-  "${EPX_HOME}/helpers/shared.sh"
-  "${EPX_HOME}/helpers/colors.sh"
-  "${EPX_HOME}/helpers/colorize.sh"
-  "${EPX_HOME}/helpers/check-command-installed.sh"
+  "\${EPX_HOME}/helpers/header.sh"
+  "\${EPX_HOME}/helpers/shared.sh"
+  "\${EPX_HOME}/helpers/colors.sh"
+  "\${EPX_HOME}/helpers/colorize.sh"
+  "\${EPX_HOME}/helpers/check-command-installed.sh"
 )
 
 # Inject global includes at the top of each script
