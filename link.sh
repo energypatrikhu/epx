@@ -23,9 +23,19 @@ GLOBAL_INCLUDES=(
 # Inject global includes at the top of each script
 _build_function() {
   local output_file="${EPX_HOME}/scripts/$(basename "${1-}")"
+  local include_headers="${2-}"
+
   local temp_file
   temp_file=$(mktemp)
 
+  if [[ "${include_headers}" == "true" ]]; then
+    for include in "${GLOBAL_INCLUDES[@]}"; do
+      if [[ -f "${include}" ]]; then
+        cat "${include}" >>"${temp_file}"
+        echo "" >>"${temp_file}"
+      fi
+    done
+  fi
   # Write global includes
   for include in "${GLOBAL_INCLUDES[@]}"; do
     if [[ -f "${include}" ]]; then
@@ -95,8 +105,8 @@ _load_functions() {
   done
 }
 
-_load_functions "${EPX_HOME}/commands"
-_load_functions "${EPX_HOME}/scripts"
+_load_functions "${EPX_HOME}/commands" "true"
+_load_functions "${EPX_HOME}/scripts" "false"
 
 # Find and remove broken symlinks in /usr/local/bin that point to /usr/local/epx/scripts
 find /usr/local/bin -maxdepth 1 -type l -exec bash -c '
