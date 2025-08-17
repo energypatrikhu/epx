@@ -8,7 +8,7 @@ __epx_update_bees() {
   # Get the currently installed version of the app
   local installed_version
   if command -v beesd &> /dev/null; then
-    installed_version="$(beesd --version | grep -oP 'bees version \K[^\s]+')"
+    installed_version="$(beesd --help | grep -oP 'bees version \K[^\s]+')"
   fi
 
   # Get the latest release from the app repository
