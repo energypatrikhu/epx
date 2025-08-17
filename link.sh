@@ -13,11 +13,11 @@ mkdir -p "${EPX_HOME}/scripts" 2>/dev/null
 rm -rf "${EPX_HOME}/scripts/"* 2>/dev/null
 
 GLOBAL_INCLUDES=(
-  "\${EPX_HOME}/helpers/header.sh"
-  "\${EPX_HOME}/helpers/shared.sh"
-  "\${EPX_HOME}/helpers/colors.sh"
-  "\${EPX_HOME}/helpers/colorize.sh"
-  "\${EPX_HOME}/helpers/check-command-installed.sh"
+  "${EPX_HOME}/helpers/header.sh"
+  "${EPX_HOME}/helpers/shared.sh"
+  "${EPX_HOME}/helpers/colors.sh"
+  "${EPX_HOME}/helpers/colorize.sh"
+  "${EPX_HOME}/helpers/check-command-installed.sh"
 )
 
 # Inject global includes at the top of each script
@@ -28,10 +28,8 @@ _build_function() {
 
   # Write global includes
   for include in "${GLOBAL_INCLUDES[@]}"; do
-    # Replace variable reference with actual value without using eval
-    local include_path="${include/\${EPX_HOME}/$EPX_HOME}"
-    if [[ -f "${include_path}" ]]; then
-      cat "${include_path}" >>"${temp_file}"
+    if [[ -f "${include}" ]]; then
+      cat "${include}" >>"${temp_file}"
       echo "" >>"${temp_file}"
     fi
   done
