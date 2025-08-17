@@ -14,7 +14,7 @@ __epx_update_bees() {
 
   # Check if the '.version' file exists
   if [[ -f "${EPX_BEES_SOURCE_PATH}"/.version ]]; then
-    # Get the version number from the '.-version' file
+    # Get the version number from the '.version' file
     CURRENT_VERSION=$(cat "${EPX_BEES_SOURCE_PATH}"/.version)
     echo -e "\n> Current version: ${CURRENT_VERSION}"
   else
