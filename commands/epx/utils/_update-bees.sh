@@ -1,26 +1,21 @@
 __epx_update_bees() {
+  if [[ ! -f "${EPX_HOME}/.config/update-bees.config" ]]; then
+    echo -e "$(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/update-bees.config")"
+    exit 1
+  fi
+
   _cci wget tar make markdown jq
 
   . "${EPX_HOME}/.config/update-bees.config"
 
   APP_NAME=bees
   REPOSITORY=Zygo/${APP_NAME}
+  CURRENT_VERSION=$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')
 
   # Check if the build directory exists
   if [[ ! -d "${EPX_BEES_SOURCE_PATH}" ]]; then
     echo -e "\n> Creating the build directory"
     mkdir -p "${EPX_BEES_SOURCE_PATH}"
-  fi
-
-  # Check if the '.version' file exists
-  if [[ -f "${EPX_BEES_SOURCE_PATH}"/.version ]]; then
-    # Get the version number from the '.version' file
-    CURRENT_VERSION=$(cat "${EPX_BEES_SOURCE_PATH}"/.version)
-    echo -e "\n> Current version: ${CURRENT_VERSION}"
-  else
-    # Set the current version to 'unknown'
-    CURRENT_VERSION="unknown"
-    echo -e "\n> Current version: ${CURRENT_VERSION}"
   fi
 
   # Get the latest release from the app repository
@@ -73,9 +68,6 @@ __epx_update_bees() {
   # Remove the tarball
   echo -e "\n> Removing the tarball"
   rm -rf "${EPX_BEES_SOURCE_PATH}"/"${LATEST_VERSION}".tar.gz
-
-  # Write version number to '.version' file
-  echo -e "${LATEST_VERSION}" >"${EPX_BEES_SOURCE_PATH}"/.version
 
   echo -e "\n> ${APP_NAME} has been successfully updated to version ${LATEST_VERSION}"
 }
