@@ -57,13 +57,13 @@ __epx_backup__check_and_install_utils() {
 }
 
 __epx_backup__log_status_to_file() {
-  local status="${1}"
-  local logfile="${2}"
-  local input_path="${3}"
-  local output_path="${4}"
-  local output_zst_file="${5}"
-  local starting_date="${6}"
-  local backups_to_keep="${7}"
+  local status="${1-}"
+  local logfile="${2-}"
+  local input_path="${3-}"
+  local output_path="${4-}"
+  local output_zst_file="${5-}"
+  local starting_date="${6-}"
+  local backups_to_keep="${7-}"
 
   local current_date=$(date -d "${starting_date}" "+%Y. %m. %d %H:%M:%S")
   local backup_size="N/A"
@@ -83,9 +83,9 @@ __epx_backup__log_status_to_file() {
 }
 
 __epx_backup__compress() {
-  local input_dir="${1}"
-  local backup_file="${2}"
-  local excluded_array="${3}"
+  local input_dir="${1-}"
+  local backup_file="${2-}"
+  local excluded_array="${3-}"
 
   # Compress the backup directory with tar and zstd
   # Build --exclude options from excluded_array
@@ -100,10 +100,10 @@ __epx_backup__compress() {
 }
 
 __epx_backup() {
-  local input_path="${1}"
-  local output_path="${2}"
-  local backups_to_keep="${3}"
-  local excluded="${4-}"
+  local input_path="${1-}"
+  local output_path="${2-}"
+  local backups_to_keep="${3-}"
+  local excluded=""${4-}""
 
   # Stop the script if any of the required arguments are missing
   if [[ -z "${input_path}" || -z "${output_path}" || -z "${backups_to_keep}" ]]; then

@@ -26,7 +26,7 @@ if ! cp -f "${EPX_HOME}/.templates/docker/docker-compose.template" docker-compos
   exit
 fi
 
-if [[ -n "${1}" ]]; then
+if [[ -n "${1-}" ]]; then
   sed -i "s/CHANGE_ME/${1}/g" docker-compose.yml
 fi
 

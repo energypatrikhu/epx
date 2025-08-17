@@ -1,5 +1,5 @@
 __epx_load_helps() {
-  for element in "${1}"/*; do
+  for element in "${1-}"/*; do
     if [[ -d "${element}" ]]; then
       __epx_load_helps "${element}"
       continue

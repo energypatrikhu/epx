@@ -58,8 +58,8 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
     *)
-      if [[ ${#SOURCES[@]} -eq 0 ]] || [[ -z "$DESTINATION" ]]; then
-        if [[ -z "$DESTINATION" ]] && [[ ${#SOURCES[@]} -gt 0 ]]; then
+      if [[ ${#SOURCES[@]} -eq 0 ]] || [[ -z "${DESTINATION-}" ]]; then
+        if [[ -z "${DESTINATION-}" ]] && [[ ${#SOURCES[@]} -gt 0 ]]; then
           DESTINATION="$1"
         else
           SOURCES+=("$1")
@@ -78,7 +78,7 @@ if [[ ${#SOURCES[@]} -eq 0 ]]; then
   exit 1
 fi
 
-if [[ -z "$DESTINATION" ]]; then
+if [[ -z "${DESTINATION-}" ]]; then
   echo "Error: No destination specified" >&2
   show_usage
   exit 1

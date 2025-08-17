@@ -13,18 +13,18 @@ if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
 fi
 
 if [[ -n "${1-}" ]]; then
-  filename="${1}"
+  filename="${1-}"
 else
   filename="main.py"
 fi
 
 if [[ -n "${2-}" ]]; then
-  project_name="${2}"
+  project_name="${2-}"
 else
   project_name=$(basename "${PWD}")
 fi
 
-# start Python script with PM2, for name use "${2}" if not available use ${PWD} last directory name
+# start Python script with PM2, for name use ${2-} if not available use ${PWD} last directory name
 echo -e "[$(_c LIGHT_BLUE "Python - PM2")] Starting Python script with PM2"
 pm2 start "${filename}" --interpreter="${PWD}/.venv/bin/python" --name="${project_name}" &>/dev/null
 

@@ -6,12 +6,12 @@ _cci docker
 source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
-if [[ -z "${1}" ]]; then
+if [[ -z "${1-}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_YELLOW "Usage: d.restart <all / container>")"
   exit
 fi
 
-if [[ "${1}" == "all" ]]; then
+if [[ "${1-}" == "all" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "Restarting all containers...")"
   docker container restart $(docker ps -aq) >/dev/null 2>&1
   echo -e "[$(_c LIGHT_BLUE "Docker - Restart")] $(_c LIGHT_CYAN "All containers restarted")"

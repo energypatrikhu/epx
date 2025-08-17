@@ -2,7 +2,7 @@
 
 _load_auto() {
   local element
-  for element in "${1}"/*; do
+  for element in "${1-}"/*; do
     if [[ -d "${element}" ]]; then
       _load_auto "${element}"
       continue

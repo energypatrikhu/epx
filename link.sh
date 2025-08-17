@@ -13,7 +13,7 @@ mkdir -p "${EPX_HOME}/scripts" 2>/dev/null
 rm -rf "${EPX_HOME}/scripts/"* 2>/dev/null
 
 _build_function() {
-  local output_file="${EPX_HOME}/scripts/$(basename "${1}")"
+  local output_file="${EPX_HOME}/scripts/$(basename "${1-}")"
   local temp_file
   temp_file=$(mktemp)
 
@@ -34,7 +34,7 @@ _build_function() {
     else
       echo "${line}" >>"${temp_file}"
     fi
-  done <"${1}"
+  done <${1-}
 
   if [[ -f "${output_file}" ]]; then
     rm -f "${output_file}"
@@ -52,7 +52,7 @@ _build_function() {
 
 _load_functions() {
   local element
-  for element in "${1}"/*; do
+  for element in "${1-}"/*; do
     if [[ -d "${element}" ]]; then
       _load_functions "${element}"
       continue

@@ -11,7 +11,7 @@ fi
 export PROFILE_DIR="/etc/profile.d"
 export ENV_FILE="/etc/environment"
 
-if [[ -z "${EPX_HOME}" ]]; then
+if [[ -z "${EPX_HOME-}" ]]; then
   export EPX_HOME="/usr/local/epx"
 fi
 

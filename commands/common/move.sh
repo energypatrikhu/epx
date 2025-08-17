@@ -66,7 +66,7 @@ if [[ ${#SOURCES[@]} -eq 0 ]]; then
   exit 1
 fi
 
-if [[ -z "$DESTINATION" ]]; then
+if [[ -z "${DESTINATION-}" ]]; then
   echo "Error: No destination specified" >&2
   show_usage
   exit 1

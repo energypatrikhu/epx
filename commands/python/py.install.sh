@@ -7,7 +7,7 @@ source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
 # if no arguments are provided, install from requirements.txt
-if [[ -z "${1}" ]]; then
+if [[ -z "${1-}" ]]; then
   # check if requirements.txt exists
   if [[ ! -f requirements.txt ]]; then
     echo -e "[$(_c LIGHT_BLUE "Python - Install")] $(_c LIGHT_YELLOW "requirements.txt") $(_c LIGHT_RED "not found")"

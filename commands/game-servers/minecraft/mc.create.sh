@@ -8,8 +8,8 @@ fi
 
 source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
-server_type=${1}
-server_name=${2}
+server_type="${1-}"
+server_name="${2-}"
 
 if [[ -z "${server_type}" ]]; then
   echo "Usage: mc.create <server_type> [server_name]"

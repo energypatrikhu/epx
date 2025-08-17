@@ -6,12 +6,12 @@ _cci docker
 source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
-if [[ -z "${1}" ]]; then
+if [[ -z "${1-}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_YELLOW "Usage: d.rm <all / container>")"
   exit
 fi
 
-if [[ "${1}" == "all" ]]; then
+if [[ "${1-}" == "all" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_RED "Removing all containers...")"
   docker rm -f $(docker ps -aq) >/dev/null 2>&1
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_RED "All containers removed")"

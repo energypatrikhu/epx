@@ -11,7 +11,7 @@ if [[ -z "${1-}" ]]; then
   exit
 fi
 
-case "${1}" in
+case "${1-}" in
 all)
   echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_CYAN "Pruning all unused Docker resources...")"
   docker system prune --all --volumes "${@:2}"
@@ -33,7 +33,7 @@ networks)
   docker network prune "${@:2}"
   ;;
 *)
-  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_RED "Unknown option: "${1}"")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_RED "Unknown option: ${1-}")"
   exit 1
   ;;
 esac

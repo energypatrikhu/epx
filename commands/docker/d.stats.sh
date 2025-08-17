@@ -8,14 +8,14 @@ source "${EPX_HOME}/helpers/colors.sh"
 source "${EPX_HOME}/helpers/shared.sh"
 
 _strip_text() {
-  printf "%s" "${1}" | sed 's/\x1b\[[0-9;]*m//g'
+  printf "%s" "${1-}" | sed 's/\x1b\[[0-9;]*m//g'
 }
 
 _visible_length() {
-  _strip_text "${1}" | wc -m
+  _strip_text "${1-}" | wc -m
 }
 
-container_name="${1}"
+container_name="${1-}"
 
 # If no container name is provided or if the container name is "all", list all containers
 if [[ -z "${container_name}" || "${container_name}" = "all" ]]; then
@@ -171,8 +171,8 @@ print_separator() {
 }
 
 print_row() {
-  attr="${1}"
-  val="${2}"
+  attr="${1-}"
+  val="${2-}"
 
   visible_len=$(_visible_length "${val}")
   invisible_len=$((${#val} - visible_len))

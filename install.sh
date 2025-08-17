@@ -14,7 +14,7 @@ if ! command -v git &>/dev/null; then
 fi
 
 # Check if EPX_HOME is set, if not, set it to /usr/local/epx
-if [[ -z "${EPX_HOME}" ]]; then
+if [[ -z "${EPX_HOME-}" ]]; then
   EPX_HOME="/usr/local/epx"
 fi
 

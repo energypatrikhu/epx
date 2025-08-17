@@ -7,7 +7,7 @@ source "${EPX_HOME}/helpers/colorize.sh"
 source "${EPX_HOME}/helpers/colors.sh"
 
 # check if no arguments are provided
-if [[ -z "${1}" ]]; then
+if [[ -z "${1-}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.remove <package>")"
 
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Alias:")"
