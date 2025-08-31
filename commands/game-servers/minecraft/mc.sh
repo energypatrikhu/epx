@@ -50,7 +50,7 @@ fi
 
 file_basename=$(basename -- "${1-}")
 file_basename="${file_basename%.env}"
-server_type=$(echo "${file_basename}" | awk -F'_' '{print $2}')
+server_type=$(echo "${file_basename}" | awk -F'_' '{print $1}')
 project_name="mc_${file_basename}"
 compose_file_base="${MINECRAFT_PROJECT_DIR}/compose/docker-compose.base.yml"
 compose_file_full="${MINECRAFT_PROJECT_DIR}/compose/docker-compose.full.yml"
