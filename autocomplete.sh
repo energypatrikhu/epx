@@ -21,6 +21,6 @@ _load_autocomplete() {
 _load_autocomplete "${EPX_HOME}/commands"
 
 _epx_completions() {
-  _autocomplete "self-update update-bees backup"
+  _autocomplete "self-update mk-cert update-bees backup"
 }
 complete -F _epx_completions epx
