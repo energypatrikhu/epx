@@ -10,8 +10,8 @@ __epx_mk_cert() {
 
   if [[ -f "$DOMAIN.crt" && -f "$DOMAIN.key" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "Certificate files already exist:")"
-    echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- $DOMAIN.crt")"
-    echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- $DOMAIN.key")"
+    echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "-") $DOMAIN.crt"
+    echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "-") $DOMAIN.key"
     return 1
   fi
 
