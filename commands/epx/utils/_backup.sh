@@ -1,4 +1,4 @@
-get_distro() {
+__epx_backup__get_distro() {
   if [[ -f /etc/os-release ]]; then
     . /etc/os-release
     echo "${ID}"
@@ -7,7 +7,7 @@ get_distro() {
   fi
 }
 
-get_beesd_installed() {
+__epx_backup__get_beesd_installed() {
   if command -v beesd &>/dev/null; then
     return 0
   else
@@ -15,28 +15,28 @@ get_beesd_installed() {
   fi
 }
 
-stop_beesd() {
-  if get_beesd_installed; then
+__epx_backup__stop_beesd() {
+  if __epx_backup__get_beesd_installed; then
     echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Stopping all beesd processes...")"
     sudo systemctl stop beesd@*
   fi
 }
 
-start_beesd() {
-  if get_beesd_installed; then
+__epx_backup__start_beesd() {
+  if __epx_backup__get_beesd_installed; then
     echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
     sudo systemctl start beesd@* --all
   fi
 }
 
-check_and_install_utils() {
+__epx_backup__check_and_install_utils() {
   local required_utils=("rsync" "zstd" "tar")
 
   for util in "${required_utils[@]}"; do
     if ! command -v "${util}" &>/dev/null; then
       echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: ${util} is not installed. Installing ${util}...")"
 
-      local distro=$(get_distro)
+      local distro=$(__epx_backup__get_distro)
       case "${distro}" in
       debian | ubuntu)
         sudo apt-get update && sudo apt-get install -y "${util}"
@@ -56,7 +56,7 @@ check_and_install_utils() {
   done
 }
 
-log_status_to_file() {
+__epx_backup__log_status_to_file() {
   local status="${1-}"
   local logfile="${2-}"
   local input_path="${3-}"
@@ -79,10 +79,10 @@ log_status_to_file() {
   echo "${status} (${input_path}) (${backup_size}) (${total_size}) (${num_of_backups}/${backups_to_keep}) (${current_date})" >"${logfile}"
 
   # Start all beesd processes after creating a backup
-  start_beesd
+  __epx_backup__start_beesd
 }
 
-compress() {
+__epx_backup__compress() {
   local input_dir="${1-}"
   local backup_file="${2-}"
   local excluded_array="${3-}"
@@ -99,7 +99,7 @@ compress() {
   fi
 }
 
-main() {
+__epx_backup() {
   local input_path="${1-}"
   local output_path="${2-}"
   local backups_to_keep="${3-}"
@@ -112,7 +112,7 @@ main() {
   fi
 
   # Check if the required utilities are installed, if not, install them
-  if ! check_and_install_utils; then
+  if ! __epx_backup__check_and_install_utils; then
     echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_RED "Error: Failed to install required utilities.")"
     return 1
   fi
@@ -132,7 +132,7 @@ main() {
   echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Starting backup...")"
 
   # Stop all beesd processes before creating a backup
-  stop_beesd
+  __epx_backup__stop_beesd
 
   # Check if the input path exists and is a directory
   if [[ ! -d "${input_path}" ]]; then
@@ -151,8 +151,8 @@ main() {
 
   # Compress the input path into a tar.zst file
   echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
-  if ! compress "${input_path}" "${backup_file}" "${excluded_array[@]}"; then
-    log_status_to_file "Backup failed, failed to compress files" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
+  if ! __epx_backup__compress "${input_path}" "${backup_file}" "${excluded_array[@]}"; then
+    __epx_backup__log_status_to_file "Backup failed, failed to compress files" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
     return 1
   fi
 
@@ -163,13 +163,12 @@ main() {
   for backup in "${backups[@]}"; do
     echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Removing backup: ${output_path}/${backup}")"
     if ! rm -f "${output_path}/${backup}"; then
-      log_status_to_file "Backup failed, failed to remove old backups" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
+      __epx_backup__log_status_to_file "Backup failed, failed to remove old backups" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
       return 1
     fi
   done
 
   # Log the status to a file
   echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Logging status to file...")"
-  log_status_to_file "Backup created successfully" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
+  __epx_backup__log_status_to_file "Backup created successfully" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
 }
-main "$@"

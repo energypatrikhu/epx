@@ -3,8 +3,14 @@ declare -A EPX_UTILS
 EPX_UTILS["self-update"]="Update the EPX CLI to the latest version"
 source "${EPX_HOME}/commands/epx/utils/_self-update.sh"
 
+EPX_UTILS["mk-cert"]="Create a self-signed SSL certificate | <domain>"
+source "${EPX_HOME}/commands/epx/utils/_mk-cert.sh"
+
 EPX_UTILS["update-bees"]="Update bees to the latest version"
 source "${EPX_HOME}/commands/epx/utils/_update-bees.sh"
+
+EPX_UTILS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories,files separated with (,)]"
+source "${EPX_HOME}/commands/epx/utils/_backup.sh"
 
 EPX_UTILS["help"]="Display help information for EPX commands"
 source "${EPX_HOME}/commands/epx/utils/_help.sh"
