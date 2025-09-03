@@ -8,6 +8,13 @@ __epx_mk_cert() {
     return 1
   fi
 
+  if [[ -f "$DOMAIN.crt" && -f "$DOMAIN.key" ]]; then
+    echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "Certificate files already exist:")"
+    echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- $DOMAIN.crt")"
+    echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- $DOMAIN.key")"
+    return 1
+  fi
+
   local WILDCARD="*.$DOMAIN"
 
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Creating self-signed certificate for wildcard domain:") $WILDCARD"
