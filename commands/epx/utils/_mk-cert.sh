@@ -12,7 +12,8 @@ __epx_mk_cert() {
 
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Creating self-signed certificate for wildcard domain:") $WILDCARD"
 
-  cat <<EOF > req.cnf
+  local tmp_file=$(mktemp)
+  cat <<EOF > "$tmp_file"
 [req]
 distinguished_name = req_distinguished_name
 x509_extensions = v3_req
@@ -39,9 +40,9 @@ DNS.2   = *.$DOMAIN
 EOF
 
   openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
-    -keyout "$DOMAIN.key" -config req.cnf \
+    -keyout "$DOMAIN.key" -config "$tmp_file" \
     -out "$DOMAIN.crt" -sha256
-  rm req.cnf
+  rm "$tmp_file"
 
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Self-signed certificate creation completed successfully.")"
   echo ""
