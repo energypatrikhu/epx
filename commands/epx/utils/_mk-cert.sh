@@ -10,7 +10,7 @@ __epx_mk_cert() {
 
   local WILDCARD="*.$DOMAIN"
 
-  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Creating self-signed certificate for wildcard domain: $WILDCARD")"
+  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Creating self-signed certificate for wildcard domain:") $WILDCARD"
 
   cat <<EOF > req.cnf
 [req]
@@ -47,5 +47,5 @@ EOF
   echo ""
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "Next manual steps:")"
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Use") $DOMAIN.crt $(_c LIGHT_YELLOW "and") $DOMAIN.key $(_c LIGHT_YELLOW "to configure Apache/nginx")"
-  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Import") $DOMAIN.crt $(_c LIGHT_YELLOW "into Chrome settings:") chrome://settings/certificates $(_c LIGHT_YELLOW "> tab '") 'Authorities'"
+  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Import") $DOMAIN.crt $(_c LIGHT_YELLOW "into Chrome settings:") chrome://settings/certificates $(_c LIGHT_YELLOW ">") 'Authorities'"
 }
