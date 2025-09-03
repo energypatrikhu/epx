@@ -8,11 +8,13 @@ __epx_load_helps() {
     if [[ -f "${element}" && "${element}" == *.sh ]]; then
       if [[ "${element}" == *".help.sh" ]]; then
         . "${element}"
+        echo
       fi
     fi
   done
 }
 
 __epx_help() {
+  echo
   __epx_load_helps "${EPX_HOME}/commands"
 }
