@@ -46,6 +46,6 @@ EOF
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Self-signed certificate creation completed successfully.")"
   echo ""
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "Next manual steps:")"
-  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Use $DOMAIN.crt and $DOMAIN.key to configure Apache/nginx")"
-  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Import $DOMAIN.crt into Chrome settings: chrome://settings/certificates > tab 'Authorities'")"
+  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Use") $DOMAIN.crt $(_c LIGHT_YELLOW "and") $DOMAIN.key $(_c LIGHT_YELLOW "to configure Apache/nginx")"
+  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Import") $DOMAIN.crt $(_c LIGHT_YELLOW "into Chrome settings:") chrome://settings/certificates $(_c LIGHT_YELLOW "> tab '") 'Authorities'"
 }
