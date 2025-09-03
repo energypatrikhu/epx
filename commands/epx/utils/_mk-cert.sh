@@ -1,4 +1,4 @@
-__epx_mk-cert() {
+__epx_mk_cert() {
   _cci openssl
 
   local DOMAIN="${1-}"
