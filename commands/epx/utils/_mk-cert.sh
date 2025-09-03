@@ -10,7 +10,7 @@ __epx_mk_cert() {
 
   local WILDCARD="*.$DOMAIN"
 
-  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Creating certificate for wildcard domain: $WILDCARD")"
+  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Creating self-signed certificate for wildcard domain: $WILDCARD")"
 
   cat <<EOF > req.cnf
 [req]
@@ -43,7 +43,7 @@ EOF
     -out "$DOMAIN.crt" -sha256
   rm req.cnf
 
-  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Certificate creation completed successfully.")"
+  echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_GREEN "Self-signed certificate creation completed successfully.")"
   echo ""
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "Next manual steps:")"
   echo -e "[$(_c LIGHT_BLUE "Mk Cert")] $(_c LIGHT_YELLOW "- Use $DOMAIN.crt and $DOMAIN.key to configure Apache/nginx")"
