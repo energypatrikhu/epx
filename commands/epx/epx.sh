@@ -3,6 +3,9 @@ declare -A EPX_UTILS
 EPX_UTILS["self-update"]="Update the EPX CLI to the latest version"
 source "${EPX_HOME}/commands/epx/utils/_self-update.sh"
 
+EPX_UTILS["mk-cert"]="Create a self-signed SSL certificate | <domain>"
+source "${EPX_HOME}/commands/epx/utils/_mk-cert.sh"
+
 EPX_UTILS["update-bees"]="Update bees to the latest version"
 source "${EPX_HOME}/commands/epx/utils/_update-bees.sh"
 
