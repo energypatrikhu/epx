@@ -107,7 +107,7 @@ main() {
 
   # Stop the script if any of the required arguments are missing
   if [[ -z "${input_path}" || -z "${output_path}" || -z "${backups_to_keep}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Usage: epx backup <input path> <output path> <backups to keep> [excluded directories, files separated with (,)]")"
+    echo -e "[$(_c LIGHT_BLUE "Backup")] $(_c LIGHT_YELLOW "Usage: backup <input path> <output path> <backups to keep> [excluded directories, files separated with (,)]")"
     return 1
   fi
 
