@@ -42,7 +42,7 @@ __epx-mc-get-backup-enabled() {
 }
 
 if [[ -z "${1-}" ]]; then
-  echo "Usage: mc <server>"
+  echo "Usage: mc.start <server>"
   echo "Available servers:"
   __epx-mc-get-configs "${1-}" | sed 's/^/  /'
   exit 1

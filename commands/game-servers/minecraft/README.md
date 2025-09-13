@@ -151,7 +151,7 @@ Original repository: [minecraft-server](https://github.com/energypatrikhu/minecr
 3. Start the server:
 
     ```sh
-    mc curseforge_2025-02-16_all-the-mods-10
+    mc.start curseforge_2025-02-16_all-the-mods-10
     ```
 
 ---
