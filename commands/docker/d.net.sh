@@ -1,1 +1,1 @@
-source "${EPX_HOME}/commands/docker/d.net.sh"
+source "${EPX_HOME}/commands/docker/d.network.sh"
