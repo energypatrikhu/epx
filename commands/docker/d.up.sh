@@ -20,7 +20,7 @@ for arg in "$@"; do
     elif [[ "${arg}" =~ ^-*a(ll)?$ ]]; then
       opt_all=true
     else
-      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Unknown option: ${arg}")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Unknown option: ${arg}")"
       help
       exit 1
     fi
