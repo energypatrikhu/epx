@@ -1,9 +1,25 @@
 _cci python3 pm2
 
-# help message
-if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+help(){
   echo -e "Usage: py.pm2 [script] [name]"
-  exit 0
+}
+
+opt_help=false
+
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_RED "Unknown option: ${arg}")"
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  help
+  exit
 fi
 
 if [[ -n "${1-}" ]]; then
