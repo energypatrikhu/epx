@@ -12,7 +12,7 @@ _load_autocomplete() {
 
     if [[ -f "${element}" ]] && [[ "${element}" == *.sh ]]; then
       if [[ "${element}" == *"_autocomplete.sh" ]]; then
-        echo "Loading autocomplete from ${element}"
+        # echo "Loading autocomplete from ${element}"
         source "${element}"
       fi
     fi

@@ -10,7 +10,7 @@ _load_aliases() {
 
     if [[ -f "${element}" ]] && [[ "${element}" == *.sh ]]; then
       if [[ "${element}" == *"_alias.sh" ]]; then
-        echo "Loading alias from ${element}"
+        # echo "Loading alias from ${element}"
         source "${element}"
       fi
     fi
