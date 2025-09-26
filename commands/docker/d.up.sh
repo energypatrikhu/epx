@@ -1,19 +1,40 @@
 _cci docker
 
-if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
+help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [<options>] [all / [container1, container2, ...]]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  all") $(_c LIGHT_GREEN "Start all containers defined in the config file")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  [container1, container2, ...]") $(_c LIGHT_GREEN "Start specific containers by name")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If no arguments are provided, it will start the compose file in the current directory")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If the config file is not found, it will prompt to create one at ${EPX_HOME}/.config/docker.config")"
+}
+
+opt_help=false
+opt_all=false
+
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    elif [[ "${arg}" =~ ^-*a(ll)?$ ]]; then
+      opt_all=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Unknown option: ${arg}")"
+      help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  help
   exit
 fi
 
-if [[ "${1-}" = "all" ]]; then
+if [[ "${opt_all}" == "true" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Use 'd.up --help' for more information")"
+    help
     exit
   fi
 
@@ -33,7 +54,7 @@ fi
 if [[ -n $* ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Use 'd.up --help' for more information")"
+    help
     exit
   fi
 
@@ -57,7 +78,7 @@ fi
 # if nothing is provided, just start compose file in current directory
 if [[ ! -f "docker-compose.yml" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in current directory")"
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Use 'd.up --help' for more information")"
+  help
   exit
 fi
 
