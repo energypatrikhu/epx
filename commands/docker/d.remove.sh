@@ -1,6 +1,6 @@
 _cci docker
 
-if [[ -z "${1-}" ]]; then
+if [[ -z $* ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_YELLOW "Usage: d.rm <all / container>")"
   exit
 fi

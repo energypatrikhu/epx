@@ -1,6 +1,6 @@
 _cci docker
 
-if [[ -z "${1-}" ]]; then
+if [[ -z $* ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Attach")] $(_c LIGHT_YELLOW "Usage: d.attach <container>")"
   exit 1
 fi
