@@ -3,17 +3,11 @@ _cci docker
 if [[ "${1-}" =~ ^-*h(elp)?$ ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage: d.up [<options>] [all / [container1, container2, ...]]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  --pull, -p") $(_c LIGHT_GREEN "Pull images before starting containers")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  all") $(_c LIGHT_GREEN "Start all containers defined in the config file")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  [container1, container2, ...]") $(_c LIGHT_GREEN "Start specific containers by name")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If no arguments are provided, it will start the compose file in the current directory")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If the config file is not found, it will prompt to create one at ${EPX_HOME}/.config/docker.config")"
   exit
-fi
-
-pull=false
-if [[ "${1-}" = "--pull" ]] || [[ "${1-}" = "-p" ]]; then
-  pull=true
 fi
 
 if [[ "${1-}" = "all" ]]; then
@@ -53,10 +47,8 @@ if [[ -n $* ]]; then
       exit
     fi
 
-    if [[ "${pull}" = true ]]; then
-      docker compose -f "${dirname}/docker-compose.yml" pull
-    fi
-    docker compose -p "${c}" -f "${dirname}/docker-compose.yml" up -d
+    docker compose --file "${dirname}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
+    docker compose --file "${dirname}/docker-compose.yml" up --pull never --detach --no-build # start the container
     echo -e ""
   done
   exit
@@ -71,8 +63,6 @@ fi
 
 fbasename=$(basename -- "$(pwd)")
 
-if [[ "${pull}" = true ]]; then
-  docker compose -f docker-compose.yml pull
-fi
-docker compose -p "${fbasename}" -f docker-compose.yml up -d
+docker compose --file docker-compose.yml up --pull always --build --no-start # build if there are changes
+docker compose --file docker-compose.yml up --pull never --detach --no-build # start the container
 echo -e ""
