@@ -47,7 +47,7 @@ if [[ -n $* ]]; then
       exit
     fi
 
-    docker compose -f "${dirname}/docker-compose.yml" pull
+    docker compose --file "${dirname}/docker-compose.yml" pull
     echo -e ""
   done
   exit
@@ -62,5 +62,5 @@ fi
 
 fbasename=$(basename -- "$(pwd)")
 
-docker compose -f docker-compose.yml pull
+docker compose --file docker-compose.yml pull
 echo -e ""
