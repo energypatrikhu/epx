@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -o errexit
 set -o nounset
@@ -33,7 +33,7 @@ fi
 export EPX_BIN="${PROFILE_DIR}/00-epx.sh"
 if [[ ! -f "${EPX_BIN}" ]]; then
   echo "Creating ${EPX_BIN}"
-  echo "#!/usr/bin/env bash" | sudo tee "${EPX_BIN}" >/dev/null
+  echo "#!/bin/bash" | sudo tee "${EPX_BIN}" >/dev/null
 
   if [[ ! -f "${ENV_FILE}" ]]; then
     echo "export EPX_HOME=\"${EPX_HOME}\"" | sudo tee -a "${EPX_BIN}" >/dev/null
@@ -63,21 +63,22 @@ fi
 
 # Setup crontab for epx self-update
 export CRON_FILE="/etc/cron.daily/epx-self-update"
-export CRON_JOB="/usr/local/bin/epx self-update"
-if ! grep -qF "${CRON_JOB}" "${CRON_FILE}"; then
-  echo "Adding self-update cron job to ${CRON_FILE}"
-  echo "#!/usr/bin/env sh" | sudo tee "${CRON_FILE}" >/dev/null
-  echo "source ${EPX_BIN}" | sudo tee -a "${CRON_FILE}" >/dev/null
-  echo "${CRON_JOB}" | sudo tee -a "${CRON_FILE}" >/dev/null
-else
-  echo "Self-update cron job already exists in ${CRON_FILE}, checking content..."
+export CRON_JOB=$(cat <<EOF
+#!/bin/sh
+/usr/local/bin/epx self-update
+EOF
+)
 
-  if grep -qF "#!/usr/bin/env sh" "${CRON_FILE}"; then
-    echo "Updating self-update cron job in ${CRON_FILE}"
-    echo "" > "${CRON_FILE}"
-    echo "#!/usr/bin/env sh" | sudo tee "${CRON_FILE}" >/dev/null
-    echo "source ${EPX_BIN}" | sudo tee -a "${CRON_FILE}" >/dev/null
+if [[ ! -f "${CRON_FILE}" ]]; then
+  echo "Creating ${CRON_FILE}"
+  echo "${CRON_JOB}" | sudo tee -a "${CRON_FILE}" >/dev/null
+  sudo chmod +x "${CRON_FILE}"
+  echo "Added self-update job to ${CRON_FILE}"
+else
+  echo "${CRON_FILE} already exists, checking content..."
+  if ! grep -qF "${CRON_JOB}" "${CRON_FILE}"; then
     echo "${CRON_JOB}" | sudo tee -a "${CRON_FILE}" >/dev/null
+    echo "Fixed ${CRON_FILE} to include self-update job"
   fi
 fi
 
