@@ -17,8 +17,8 @@ fi
 
 if [[ -f "${ENV_FILE}" ]]; then
   if ! grep -Fq "EPX_HOME" "${ENV_FILE}"; then
-    echo "Adding EPX_HOME to ${ENV_FILE}"
     echo "EPX_HOME=\"${EPX_HOME}\"" >> "${ENV_FILE}"
+    echo "Added EPX_HOME to ${ENV_FILE}"
   fi
 fi
 
