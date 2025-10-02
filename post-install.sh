@@ -72,9 +72,9 @@ if [[ ! -f "${CRON_FILE}" ]]; then
   sudo chmod +x "${CRON_FILE}"
 else
   echo "${CRON_FILE} already exists, checking content..."
-  if ! grep -Fq "${CRON_JOB}" "${CRON_FILE}"; then
-    echo "${CRON_JOB}" >> "${CRON_FILE}"
-    echo "Fixed ${CRON_FILE} to include self-update job"
+  if ! cmp -s "${CRON_FILE}" <(echo "${CRON_JOB}"); then
+    echo "${CRON_JOB}" > "${CRON_FILE}"
+    echo "Fixed ${CRON_FILE} content"
   fi
 fi
 
