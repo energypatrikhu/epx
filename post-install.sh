@@ -19,13 +19,6 @@ if [[ -f "${ENV_FILE}" ]]; then
   if ! grep -Fq "EPX_HOME" "${ENV_FILE}"; then
     echo "Adding EPX_HOME to ${ENV_FILE}"
     echo "EPX_HOME=\"${EPX_HOME}\"" >> "${ENV_FILE}"
-  else
-    echo "EPX_HOME already exists in ${ENV_FILE}, checking content..."
-
-    if ! grep -Fq "EPX_HOME" "${ENV_FILE}"; then
-      echo "EPX_HOME=\"${EPX_HOME}\"" >> "${ENV_FILE}"
-      echo "Added EPX_HOME to ${ENV_FILE}"
-    fi
   fi
 fi
 
@@ -45,19 +38,26 @@ if [[ ! -f "${EPX_BIN}" ]]; then
 else
   echo "${EPX_BIN} already exists, checking content..."
 
+  if [[ ! -f "${ENV_FILE}" ]]; then
+    if ! grep -Fq "EPX_HOME" "${EPX_BIN}"; then
+      echo "export EPX_HOME=\"${EPX_HOME}\"" >> "${EPX_BIN}"
+      echo "${ENV_FILE} not found, added missing EPX_HOME to ${EPX_BIN}"
+    fi
+  fi
+
   if ! grep -Fq "aliases.sh" "${EPX_BIN}"; then
     echo "source \"\${EPX_HOME}/aliases.sh\"" >> "${EPX_BIN}"
-    echo "Added aliases.sh to ${EPX_BIN}"
+    echo "Added missing aliases.sh to ${EPX_BIN}"
   fi
 
   if ! grep -Fq "autoscripts.sh" "${EPX_BIN}"; then
     echo "source \"\${EPX_HOME}/autoscripts.sh\"" >> "${EPX_BIN}"
-    echo "Added autoscripts.sh to ${EPX_BIN}"
+    echo "Added missing autoscripts.sh to ${EPX_BIN}"
   fi
 
   if ! grep -Fq "autocomplete.sh" "${EPX_BIN}"; then
     echo "source \"\${EPX_HOME}/autocomplete.sh\"" >> "${EPX_BIN}"
-    echo "Added autocomplete.sh to ${EPX_BIN}"
+    echo "Added missing autocomplete.sh to ${EPX_BIN}"
   fi
 fi
 
@@ -70,7 +70,6 @@ if [[ ! -f "${CRON_FILE}" ]]; then
   echo "Creating ${CRON_FILE}"
   echo "${CRON_JOB}" > "${CRON_FILE}"
   sudo chmod +x "${CRON_FILE}"
-  echo "Added self-update job to ${CRON_FILE}"
 else
   echo "${CRON_FILE} already exists, checking content..."
   if ! grep -Fq "${CRON_JOB}" "${CRON_FILE}"; then
