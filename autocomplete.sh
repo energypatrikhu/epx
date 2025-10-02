@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 . "${EPX_HOME}/helpers/autocomplete.sh"
 
