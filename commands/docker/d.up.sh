@@ -41,10 +41,22 @@ if [[ "${opt_all}" == "true" ]]; then
 
   . "${EPX_HOME}/.config/docker.config"
 
+  local c_count=0
+  local c_amount=$(ls -1 "${CONTAINERS_DIR}" | wc -l)
   for d in "${CONTAINERS_DIR}"/*; do
+    local c_name=$(basename -- "${d}")
+    c_count=$((c_count + 1))
+
     if [[ -d "${d}" ]]; then
       if [[ -f "${d}/docker-compose.yml" ]]; then
-        d.up "$(basename -- "${d}")"
+        if [[ -f "${d}/.ignore-update" ]]; then
+          echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "[${c_count}/${c_amount}] Skipping ${c_name} as .ignore-update file is present in ${d}")"
+          continue
+        fi
+
+        echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c_name}...")"
+
+        d.up "${c_name}"
       fi
     fi
   done
@@ -61,14 +73,23 @@ if [[ -n $* ]]; then
 
   . "${EPX_HOME}/.config/docker.config"
 
+  local c_count=0
+  local c_amount=$#
   for c in "${@}"; do
     dirname="${CONTAINERS_DIR}/${c}"
+    c_count=$((c_count + 1))
 
     if [[ ! -f "${dirname}/docker-compose.yml" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in ${dirname}")"
       exit
     fi
 
+    if [[ -f "${dirname}/.ignore-update" ]]; then
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "[${c_count}/${c_amount}] Skipping ${c} as .ignore-update file is present in ${dirname}")"
+      continue
+    fi
+
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c}...")"
     docker compose --file "${dirname}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${dirname}/docker-compose.yml" up --pull never --detach --no-build # start the container
     echo -e ""
@@ -83,8 +104,12 @@ if [[ ! -f "docker-compose.yml" ]]; then
   exit
 fi
 
-fbasename=$(basename -- "$(pwd)")
+if [[ -f "${dirname}/.ignore-update" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "Skipping as .ignore-update file is present in current directory")"
+  exit
+fi
 
+echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "Starting compose file in current directory...")"
 docker compose --file docker-compose.yml up --pull always --build --no-start # build if there are changes
 docker compose --file docker-compose.yml up --pull never --detach --no-build # start the container
 echo -e ""
