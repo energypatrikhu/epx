@@ -43,21 +43,27 @@ if [[ "${opt_all}" == "true" ]]; then
   . "${EPX_HOME}/.config/docker.config"
 
   c_count=0
-  c_amount=$(find "${CONTAINERS_DIR}" -mindepth 1 -maxdepth 1 -type d | wc -l)
-  for d in "${CONTAINERS_DIR}"/*; do
-    if [[ -d "${d}" ]]; then
-      c_name=$(basename -- "${d}")
-      c_count=$((c_count + 1))
-
-      if [[ ! -f "${d}/docker-compose.yml" ]]; then
-        echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${d}, skipping...")"
-        continue
-      fi
-
-      echo -e "[$(_c LIGHT_BLUE "Docker - Pull") [${c_count}/${c_amount}] Pulling compose file in ${d}..."
-      docker compose --file "${d}/docker-compose.yml" pull
-      echo ""
+  c_amount=0
+  c_names=()
+  for c_dir in "${CONTAINERS_DIR}"/*; do
+    if [[ -d "${c_dir}" ]]; then
+      c_amount=$((c_amount + 1))
+      c_names+=("$(basename -- "${c_dir}")")
     fi
+  done
+
+  for c_name in "${c_names[@]}"; do
+    c_dir="${CONTAINERS_DIR}/${c_name}"
+    c_count=$((c_count + 1))
+
+    if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
+      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${c_dir}, skipping...")"
+      continue
+    fi
+
+    echo -e "[$(_c LIGHT_BLUE "Docker - Pull") [${c_count}/${c_amount}] Pulling compose file in ${c_dir}..."
+    docker compose --file "${c_dir}/docker-compose.yml" pull
+    echo ""
   done
   exit
 fi
@@ -74,17 +80,17 @@ if [[ -n $* ]]; then
 
   c_count=0
   c_amount=$#
-  for c in "${@}"; do
-    dirname="${CONTAINERS_DIR}/${c}"
+  for c_name in "${@}"; do
+    c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
 
-    if [[ ! -f "${dirname}/docker-compose.yml" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${dirname}, skipping...")"
+    if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
+      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${c_dir}, skipping...")"
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [${c_count}/${c_amount}] Pulling compose file in ${dirname}..."
-    docker compose --file "${dirname}/docker-compose.yml" pull
+    echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [${c_count}/${c_amount}] Pulling compose file in ${c_dir}..."
+    docker compose --file "${c_dir}/docker-compose.yml" pull
     echo ""
   done
   exit
