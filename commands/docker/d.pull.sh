@@ -61,7 +61,7 @@ if [[ "${opt_all}" == "true" ]]; then
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Pull") [${c_count}/${c_amount}] Pulling compose file in ${c_dir}..."
+    echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] Pulling compose file in ${c_dir}..."
     docker compose --file "${c_dir}/docker-compose.yml" pull
     echo ""
   done
@@ -89,7 +89,7 @@ if [[ -n $* ]]; then
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [${c_count}/${c_amount}] Pulling compose file in ${c_dir}..."
+    echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] Pulling compose file in ${c_dir}..."
     docker compose --file "${c_dir}/docker-compose.yml" pull
     echo ""
   done

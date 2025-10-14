@@ -66,7 +66,7 @@ if [[ "${opt_all}" == "true" ]]; then
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [${c_count}/${c_amount}] Starting ${c_name}..."
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] Starting $(_c LIGHT_BLUE "${c_name}")..."
     docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
     echo ""
@@ -100,7 +100,7 @@ if [[ -n $* ]]; then
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [${c_count}/${c_amount}] Starting ${c_name}..."
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] Starting $(_c LIGHT_BLUE "${c_name}")..."
     docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
     echo ""
