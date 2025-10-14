@@ -47,7 +47,7 @@ if [[ "${opt_all}" == "true" ]]; then
   for d in "${CONTAINERS_DIR}"/*; do
     c_count=$((c_count + 1))
 
-    if [[ -d "${d}" ]]; then
+    # if [[ -d "${d}" ]]; then
       c_name=$(basename -- "${d}")
 
       if [[ ! -f "${d}/docker-compose.yml" ]]; then
@@ -64,7 +64,7 @@ if [[ "${opt_all}" == "true" ]]; then
       docker compose --file "${d}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
       docker compose --file "${d}/docker-compose.yml" up --pull never --detach --no-build # start the container
       echo ""
-    fi
+    # fi
   done
   exit
 fi
