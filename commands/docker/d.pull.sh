@@ -53,6 +53,7 @@ if [[ "${opt_all}" == "true" ]]; then
   done
 
   for c_name in "${c_names[@]}"; do
+    echo
     c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
 
@@ -63,7 +64,6 @@ if [[ "${opt_all}" == "true" ]]; then
 
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Pulling compose file in") ${c_dir}$(_c LIGHT_BLUE "...")"
     docker compose --file "${c_dir}/docker-compose.yml" pull
-    echo ""
   done
   exit
 fi
@@ -81,6 +81,7 @@ if [[ -n $* ]]; then
   c_count=0
   c_amount=$#
   for c_name in "${@}"; do
+    echo
     c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
 
@@ -91,7 +92,6 @@ if [[ -n $* ]]; then
 
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Pulling compose file in") ${c_dir}$(_c LIGHT_BLUE "...")"
     docker compose --file "${c_dir}/docker-compose.yml" pull
-    echo ""
   done
   exit
 fi
@@ -105,4 +105,3 @@ fi
 
 echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] Pulling compose file in current directory..."
 docker compose --file docker-compose.yml pull
-echo ""

@@ -53,6 +53,7 @@ if [[ "${opt_all}" == "true" ]]; then
   done
 
   for c_name in "${c_names[@]}"; do
+    echo
     c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
 
@@ -69,7 +70,6 @@ if [[ "${opt_all}" == "true" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Starting") ${c_name}$(_c LIGHT_BLUE "...")"
     docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
-    echo ""
   done
   exit
 fi
@@ -87,6 +87,7 @@ if [[ -n $* ]]; then
   c_count=0
   c_amount=$#
   for c_name in "${@}"; do
+    echo
     c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
 
@@ -103,7 +104,6 @@ if [[ -n $* ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Starting") ${c_name}..."
     docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
-    echo ""
   done
   exit
 fi
@@ -123,4 +123,3 @@ fi
 echo -e "[$(_c LIGHT_BLUE "Docker - Up")] Starting compose file in current directory..."
 docker compose --file docker-compose.yml up --pull always --build --no-start # build if there are changes
 docker compose --file docker-compose.yml up --pull never --detach --no-build # start the container
-echo ""
