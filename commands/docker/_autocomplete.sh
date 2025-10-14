@@ -31,7 +31,7 @@ complete -F _d_autocomplete_list d.list
 complete -F _d_autocomplete_list d.ls
 
 _d_autocomplete_prune() {
-  _autocomplete "all images containers volumes networks"
+  _autocomplete "all images containers volumes networks build"
 }
 complete -F _d_autocomplete_prune d.prune
 
