@@ -43,7 +43,7 @@ if [[ "${opt_all}" == "true" ]]; then
   . "${EPX_HOME}/.config/docker.config"
 
   c_count=0
-  c_amount=$(ls -1 "${CONTAINERS_DIR}" | wc -l)
+  c_amount=$(find "${CONTAINERS_DIR}" -mindepth 1 -maxdepth 1 -type d | wc -l)
   for d in "${CONTAINERS_DIR}"/*; do
     c_count=$((c_count + 1))
 
