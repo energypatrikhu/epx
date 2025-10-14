@@ -45,10 +45,11 @@ if [[ "${opt_all}" == "true" ]]; then
   local c_count=0
   local c_amount=$(ls -1 "${CONTAINERS_DIR}" | wc -l)
   for d in "${CONTAINERS_DIR}"/*; do
-    local c_name=$(basename -- "${d}")
     c_count=$((c_count + 1))
 
     if [[ -d "${d}" ]]; then
+      local c_name=$(basename -- "${d}")
+
       if [[ ! -f "${d}/docker-compose.yml" ]]; then
         echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${d}, skipping...")"
         continue
@@ -62,7 +63,7 @@ if [[ "${opt_all}" == "true" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c_name}...")"
       docker compose --file "${d}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
       docker compose --file "${d}/docker-compose.yml" up --pull never --detach --no-build # start the container
-      echo -e ""
+      echo ""
     fi
   done
   exit
@@ -97,7 +98,7 @@ if [[ -n $* ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c}...")"
     docker compose --file "${dirname}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${dirname}/docker-compose.yml" up --pull never --detach --no-build # start the container
-    echo -e ""
+    echo ""
   done
   exit
 fi
@@ -117,4 +118,4 @@ fi
 echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "Starting compose file in current directory...")"
 docker compose --file docker-compose.yml up --pull always --build --no-start # build if there are changes
 docker compose --file docker-compose.yml up --pull never --detach --no-build # start the container
-echo -e ""
+echo ""
