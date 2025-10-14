@@ -60,7 +60,7 @@ if [[ "${opt_all}" == "true" ]]; then
         continue
       fi
 
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c_name}...")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [${c_count}/${c_amount}] Starting ${c_name}..."
       docker compose --file "${d}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
       docker compose --file "${d}/docker-compose.yml" up --pull never --detach --no-build # start the container
       echo ""
@@ -95,7 +95,7 @@ if [[ -n $* ]]; then
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c}...")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [${c_count}/${c_amount}] Starting ${c}..."
     docker compose --file "${dirname}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${dirname}/docker-compose.yml" up --pull never --detach --no-build # start the container
     echo ""
@@ -115,7 +115,7 @@ if [[ -f "${dirname}/.ignore-update" ]]; then
   exit
 fi
 
-echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "Starting compose file in current directory...")"
+echo -e "[$(_c LIGHT_BLUE "Docker - Up")] Starting compose file in current directory..."
 docker compose --file docker-compose.yml up --pull always --build --no-start # build if there are changes
 docker compose --file docker-compose.yml up --pull never --detach --no-build # start the container
 echo ""
