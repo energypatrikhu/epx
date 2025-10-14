@@ -7,7 +7,7 @@ help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -h | --help") $(_c LIGHT_GREEN "Show this help message")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  [container1, container2, ...]") $(_c LIGHT_GREEN "Start specific containers by name")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If no arguments are provided, it will start the compose file in the current directory")"
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If the config file is not found, it is necessary to create one at ${EPX_HOME}/.config/docker.config")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If the config file is not found, it is necessary to create one at") ${EPX_HOME}/.config/docker.config"
 }
 
 opt_help=false
@@ -20,7 +20,7 @@ for arg in "$@"; do
     elif [[ "${arg}" =~ ^-*a(ll)?$ ]]; then
       opt_all=true
     else
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Unknown option: ${arg}")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Unknown option:") ${arg}"
       help
       exit 1
     fi
@@ -35,7 +35,7 @@ fi
 # if all option is provided, start all containers defined in the config file
 if [[ "${opt_all}" == "true" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
     help
     exit
   fi
@@ -57,16 +57,16 @@ if [[ "${opt_all}" == "true" ]]; then
     c_count=$((c_count + 1))
 
     if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${c_dir}, skipping...")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
 
     if [[ -f "${c_dir}/.ignore-update" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "[${c_count}/${c_amount}] Skipping ${c_name} as .ignore-update file is present in ${c_dir}")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c YELLOW "Skipping") ${c_name} $(_c YELLOW "as") .ignore-update $(_c YELLOW "file is present in") ${c_dir}"
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] Starting $(_c LIGHT_BLUE "${c_name}")..."
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Starting") ${c_name}$(_c LIGHT_BLUE "...")"
     docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
     echo ""
@@ -77,7 +77,7 @@ fi
 # check if container name is provided
 if [[ -n $* ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
     help
     exit
   fi
@@ -91,16 +91,16 @@ if [[ -n $* ]]; then
     c_count=$((c_count + 1))
 
     if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${c_dir}, skipping...")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
 
     if [[ -f "${c_dir}/.ignore-update" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "[${c_count}/${c_amount}] Skipping ${c_name} as .ignore-update file is present in ${c_dir}")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c YELLOW "Skipping") ${c_name} $(_c YELLOW "as") .ignore-update $(_c YELLOW "file is present in") ${c_dir}"
       continue
     fi
 
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] Starting $(_c LIGHT_BLUE "${c_name}")..."
+    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Starting") ${c_name}..."
     docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
     docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
     echo ""
@@ -110,13 +110,13 @@ fi
 
 # if nothing is provided, just start compose file in current directory
 if [[ ! -f "docker-compose.yml" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in current directory")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] docker-compose.yml $(_c LIGHT_RED "not found in current directory")"
   help
   exit
 fi
 
 if [[ -f "${c_dir}/.ignore-update" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "Skipping as .ignore-update file is present in current directory")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "Skipping as") .ignore-update $(_c YELLOW "file is present in current directory")"
   exit
 fi
 
