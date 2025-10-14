@@ -42,13 +42,13 @@ if [[ "${opt_all}" == "true" ]]; then
 
   . "${EPX_HOME}/.config/docker.config"
 
-  local c_count=0
-  local c_amount=$(ls -1 "${CONTAINERS_DIR}" | wc -l)
+  c_count=0
+  c_amount=$(ls -1 "${CONTAINERS_DIR}" | wc -l)
   for d in "${CONTAINERS_DIR}"/*; do
     c_count=$((c_count + 1))
 
     if [[ -d "${d}" ]]; then
-      local c_name=$(basename -- "${d}")
+      c_name=$(basename -- "${d}")
 
       if [[ ! -f "${d}/docker-compose.yml" ]]; then
         echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${d}, skipping...")"
@@ -79,8 +79,8 @@ if [[ -n $* ]]; then
 
   . "${EPX_HOME}/.config/docker.config"
 
-  local c_count=0
-  local c_amount=$#
+  c_count=0
+  c_amount=$#
   for c in "${@}"; do
     dirname="${CONTAINERS_DIR}/${c}"
     c_count=$((c_count + 1))
