@@ -53,9 +53,9 @@ if [[ "${opt_all}" == "true" ]]; then
   done
 
   for c_name in "${c_names[@]}"; do
-    echo
     c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
+    echo
 
     if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
@@ -81,9 +81,9 @@ if [[ -n $* ]]; then
   c_count=0
   c_amount=$#
   for c_name in "${@}"; do
-    echo
     c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
+    echo
 
     if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
