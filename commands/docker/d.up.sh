@@ -32,6 +32,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
+# if all option is provided, start all containers defined in the config file
 if [[ "${opt_all}" == "true" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
@@ -48,16 +49,20 @@ if [[ "${opt_all}" == "true" ]]; then
     c_count=$((c_count + 1))
 
     if [[ -d "${d}" ]]; then
-      if [[ -f "${d}/docker-compose.yml" ]]; then
-        if [[ -f "${d}/.ignore-update" ]]; then
-          echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "[${c_count}/${c_amount}] Skipping ${c_name} as .ignore-update file is present in ${d}")"
-          continue
-        fi
-
-        echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c_name}...")"
-
-        d.up "${c_name}"
+      if [[ ! -f "${d}/docker-compose.yml" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${d}, skipping...")"
+        continue
       fi
+
+      if [[ -f "${d}/.ignore-update" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c YELLOW "[${c_count}/${c_amount}] Skipping ${c_name} as .ignore-update file is present in ${d}")"
+        continue
+      fi
+
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Starting ${c_name}...")"
+      docker compose --file "${d}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
+      docker compose --file "${d}/docker-compose.yml" up --pull never --detach --no-build # start the container
+      echo -e ""
     fi
   done
   exit
@@ -80,8 +85,8 @@ if [[ -n $* ]]; then
     c_count=$((c_count + 1))
 
     if [[ ! -f "${dirname}/docker-compose.yml" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "docker-compose.yml not found in ${dirname}")"
-      exit
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${dirname}, skipping...")"
+      continue
     fi
 
     if [[ -f "${dirname}/.ignore-update" ]]; then
