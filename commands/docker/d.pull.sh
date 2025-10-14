@@ -32,6 +32,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
+# if all option is provided, pull all containers defined in the config file
 if [[ "${opt_all}" == "true" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Config file not found, please create one at ${EPX_HOME}/.config/docker.config")"
@@ -41,11 +42,21 @@ if [[ "${opt_all}" == "true" ]]; then
 
   . "${EPX_HOME}/.config/docker.config"
 
+  local c_count=0
+  local c_amount=$(ls -1 "${CONTAINERS_DIR}" | wc -l)
   for d in "${CONTAINERS_DIR}"/*; do
     if [[ -d "${d}" ]]; then
-      if [[ -f "${d}/docker-compose.yml" ]]; then
-        d.pull "$(basename -- "${d}")"
+      local c_name=$(basename -- "${d}")
+      c_count=$((c_count + 1))
+
+      if [[ ! -f "${d}/docker-compose.yml" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${d}, skipping...")"
+        continue
       fi
+
+      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Pulling compose file in ${d}...")"
+      docker compose --file "${d}/docker-compose.yml" pull
+      echo ""
     fi
   done
   exit
@@ -61,16 +72,20 @@ if [[ -n $* ]]; then
 
   . "${EPX_HOME}/.config/docker.config"
 
+  local c_count=0
+  local c_amount=$#
   for c in "${@}"; do
     dirname="${CONTAINERS_DIR}/${c}"
+    c_count=$((c_count + 1))
 
     if [[ ! -f "${dirname}/docker-compose.yml" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "docker-compose.yml not found in ${dirname}")"
-      exit
+      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "[${c_count}/${c_amount}] docker-compose.yml not found in ${dirname}, skipping...")"
+      continue
     fi
 
+    echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_GREEN "[${c_count}/${c_amount}] Pulling compose file in ${dirname}...")"
     docker compose --file "${dirname}/docker-compose.yml" pull
-    echo -e ""
+    echo ""
   done
   exit
 fi
@@ -82,7 +97,6 @@ if [[ ! -f "docker-compose.yml" ]]; then
   exit
 fi
 
-fbasename=$(basename -- "$(pwd)")
-
+echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_GREEN "Pulling compose file in current directory...")"
 docker compose --file docker-compose.yml pull
-echo -e ""
+echo ""
