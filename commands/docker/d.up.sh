@@ -121,7 +121,7 @@ if [[ ! -f "docker-compose.yml" ]]; then
   exit
 fi
 
-if [[ -f "${c_dir}/.ignore-update" ]]; then
+if [[ -f ".ignore-update" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Skipping as") .ignore-update $(_c LIGHT_YELLOW "file is present in current directory")"
   exit
 fi
