@@ -108,7 +108,7 @@ if [[ -n $* ]]; then
   exit
 fi
 
-c_file="$(get_compose_filename "${c_dir}")"
+c_file="$(get_compose_filename)"
 
 # if nothing is provided, just start compose file in current directory
 if [[ -z "${c_file}" ]]; then
