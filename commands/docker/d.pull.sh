@@ -1,5 +1,7 @@
 _cci docker
 
+source "${EPX_HOME}/helpers/get-compose-filename.sh"
+
 help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_LIGHT_YELLOW "Usage: d.pull [<options>] [container1, container2, ...]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_LIGHT_YELLOW "Options:")"
@@ -60,13 +62,15 @@ if [[ "${opt_all}" == "true" ]]; then
       echo
     fi
 
-    if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
+    c_file="$(get_compose_filename "${c_dir}")"
+
+    if [[ -z "${c_file}" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
 
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Pulling compose file in") ${c_dir}$(_c LIGHT_BLUE "...")"
-    docker compose --file "${c_dir}/docker-compose.yml" pull
+    docker compose --file "${c_file}" pull
   done
   exit
 fi
@@ -91,7 +95,9 @@ if [[ -n $* ]]; then
       echo
     fi
 
-    if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
+    c_file="$(get_compose_filename "${c_dir}")"
+
+    if [[ -z "${c_file}" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
@@ -102,12 +108,14 @@ if [[ -n $* ]]; then
   exit
 fi
 
+c_file="$(get_compose_filename "${c_dir}")"
+
 # if nothing is provided, just start compose file in current directory
-if [[ ! -f "docker-compose.yml" ]]; then
+if [[ -z "${c_file}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] docker-compose.yml $(_c LIGHT_RED "not found in current directory")"
   help
   exit
 fi
 
 echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] Pulling compose file in current directory..."
-docker compose --file docker-compose.yml pull
+docker compose --file "${c_file}" pull

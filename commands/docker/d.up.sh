@@ -1,10 +1,13 @@
 _cci docker
 
+source "${EPX_HOME}/helpers/get-compose-filename.sh"
+
 help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "Usage: d.up [<options>] [container1, container2, ...]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "  -a | --all") $(_c LIGHT_GREEN "Start all containers defined in the config file")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "  -h | --help") $(_c LIGHT_GREEN "Show this help message")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "  -n | --no-cache") $(_c LIGHT_GREEN "Do not use cache when building images")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "  [container1, container2, ...]") $(_c LIGHT_GREEN "Start specific containers by name")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "  If no arguments are provided, it will start the compose file in the current directory")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_LIGHT_YELLOW "  If the config file is not found, it is necessary to create one at") ${EPX_HOME}/.config/docker.config"
@@ -12,6 +15,7 @@ help() {
 
 opt_help=false
 opt_all=false
+opt_no_cache=false
 
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
@@ -19,6 +23,8 @@ for arg in "$@"; do
       opt_help=true
     elif [[ "${arg}" =~ ^-*a(ll)?$ ]]; then
       opt_all=true
+    elif [[ "${arg}" =~ ^-*n(o-cache)?$ ]]; then
+      opt_no_cache=true
     else
       echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Unknown option:") ${arg}"
       help
@@ -31,6 +37,17 @@ if [[ "${opt_help}" == "true" ]]; then
   help
   exit
 fi
+
+docker_args=()
+if [[ "${opt_no_cache}" == "true" ]]; then
+  docker_args+=("--no-cache")
+fi
+
+c_up()  {
+  local c_file="${1}"
+  docker compose --file "${c_file}" up --pull always --build --no-start "${docker_args[@]}"
+  docker compose --file "${c_file}" up --pull never --detach --no-build
+}
 
 # if all option is provided, start all containers defined in the config file
 if [[ "${opt_all}" == "true" ]]; then
@@ -60,7 +77,8 @@ if [[ "${opt_all}" == "true" ]]; then
       echo
     fi
 
-    if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
+    c_file="$(get_compose_filename "${c_dir}")"
+    if [[ -z "${c_file}" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
@@ -71,8 +89,7 @@ if [[ "${opt_all}" == "true" ]]; then
     fi
 
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Starting") ${c_name}$(_c LIGHT_BLUE "...")"
-    docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
-    docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
+    c_up "${c_file}"
   done
   exit
 fi
@@ -97,7 +114,9 @@ if [[ -n $* ]]; then
       echo
     fi
 
-    if [[ ! -f "${c_dir}/docker-compose.yml" ]]; then
+    c_file="$(get_compose_filename "${c_dir}")"
+
+    if [[ -z "${c_file}" ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
@@ -108,14 +127,15 @@ if [[ -n $* ]]; then
     fi
 
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Starting") ${c_name}..."
-    docker compose --file "${c_dir}/docker-compose.yml" up --pull always --build --no-start # build if there are changes
-    docker compose --file "${c_dir}/docker-compose.yml" up --pull never --detach --no-build # start the container
+    c_up "${c_file}"
   done
   exit
 fi
 
+c_file="$(get_compose_filename "${c_dir}")"
+
 # if nothing is provided, just start compose file in current directory
-if [[ ! -f "docker-compose.yml" ]]; then
+if [[ -z "${c_file}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] docker-compose.yml $(_c LIGHT_RED "not found in current directory")"
   help
   exit
@@ -127,5 +147,4 @@ if [[ -f ".ignore-update" ]]; then
 fi
 
 echo -e "[$(_c LIGHT_BLUE "Docker - Up")] Starting compose file in current directory..."
-docker compose --file docker-compose.yml up --pull always --build --no-start # build if there are changes
-docker compose --file docker-compose.yml up --pull never --detach --no-build # start the container
+c_up "${c_file}"
