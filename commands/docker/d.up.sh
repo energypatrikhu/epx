@@ -45,8 +45,9 @@ fi
 
 c_up()  {
   local c_file="${1}"
-  docker compose --file "${c_file}" up --pull always --build --no-start "${docker_args[@]}"
-  docker compose --file "${c_file}" up --pull never --detach --no-build
+  docker compose --file "${c_file}" pull # pull latest image
+  docker compose --file "${c_file}" build "${docker_args[@]}" # build image
+  docker compose --file "${c_file}" up --pull never --detach --no-build --wait --yes # start container
 }
 
 # if all option is provided, start all containers defined in the config file
