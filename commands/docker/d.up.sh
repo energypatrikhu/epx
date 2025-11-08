@@ -45,8 +45,8 @@ fi
 
 c_up()  {
   local c_file="${1}"
-  docker compose --file "${c_file}" pull 2>/dev/null || true # Pull latest image, ignore errors
-  docker compose --file "${c_file}" build "${docker_args[@]}" 2>/dev/null || true # Build image, ignore errors
+  docker compose --file "${c_file}" pull || true # Pull latest image, ignore errors
+  docker compose --file "${c_file}" build "${docker_args[@]}" || true # Build image, ignore errors
   docker compose --file "${c_file}" up --pull never --detach --no-build --wait --yes # Start container
 }
 
