@@ -106,8 +106,17 @@ if [[ -n $* ]]; then
   . "${EPX_HOME}/.config/docker.config"
 
   c_count=0
-  c_amount=$#
-  for c_name in "${@}"; do
+  c_amount=0
+  container_names=()
+  for arg in "$@"; do
+    if [[ "${arg}" =~ ^-+ ]]; then
+      continue
+    fi
+    c_amount=$((c_amount + 1))
+    container_names+=("${arg}")
+  done
+
+  for c_name in "${container_names[@]}"; do
     c_dir="${CONTAINERS_DIR}/${c_name}"
     c_count=$((c_count + 1))
 
