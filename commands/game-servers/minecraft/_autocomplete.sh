@@ -6,7 +6,7 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
     configs="$(__epx-mc-get-configs "${1-}")"
     _autocomplete "${configs}"
   }
-  complete -F __epx-mc-list-configs mc
+  complete -F __epx-mc-list-configs mc.start
 
   __epx-mc-list-configs-examples() {
     local examples
