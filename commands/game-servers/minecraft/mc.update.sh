@@ -12,11 +12,6 @@ if [[ ! -d "${MINECRAFT_PROJECT_DIR}" ]]; then
   exit 1
 fi
 
-if ! command -v git &>/dev/null; then
-  echo "Error: git is not installed. Please install git to run this command."
-  exit 1
-fi
-
 cd "${MINECRAFT_PROJECT_DIR}" || exit
 if ! git pull; then
   echo "Error: Failed to update the Minecraft project."
