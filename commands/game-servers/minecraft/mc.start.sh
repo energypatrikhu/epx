@@ -19,18 +19,6 @@ __epx-mc-get-env-value() {
   local var_name="${2-}"
   grep -iE "^${var_name}\s*=" "${config_env}" | sed -E "s/^${var_name}\s*=\s*//I; s/[[:space:]]*$//"
 }
-__epx-mc-get-java-type() {
-  local config_env="${1-}"
-  local java_version=$(__epx-mc-get-env-value "${config_env}" "JAVA_VERSION")
-
-  # if version 8 use "graalvm-ce"
-  # else use "graalvm"
-  if [[ "${java_version}" == "8" ]]; then
-    echo "graalvm-ce"
-  else
-    echo "graalvm"
-  fi
-}
 __epx-mc-get-backup-enabled() {
   local config_env="${1-}"
   local backup_enabled=$(__epx-mc-get-env-value "${config_env}" "BACKUP")
@@ -55,7 +43,6 @@ project_name="mc_${file_basename}"
 compose_file_base="${MINECRAFT_PROJECT_DIR}/compose/docker-compose.base.yml"
 compose_file_full="${MINECRAFT_PROJECT_DIR}/compose/docker-compose.full.yml"
 config_env="${MINECRAFT_PROJECT_DIR}/configs/${file_basename}.env"
-java_type=$(__epx-mc-get-java-type "${config_env}")
 backup_enabled=$(__epx-mc-get-backup-enabled "${config_env}")
 
 if [[ ! -f "${config_env}" ]]; then
@@ -63,11 +50,10 @@ if [[ ! -f "${config_env}" ]]; then
   exit 1
 fi
 
-# create a tmp env file with the JAVA_TYPE variable
+# create a tmp env file to hold dynamic variables
 tmp_env_file=$(mktemp)
 echo "SERVER_TYPE = ${server_type}" >>"${tmp_env_file}"
 echo "SERVER_DIR = ${MINECRAFT_SERVERS_DIR}" >>"${tmp_env_file}"
-echo "JAVA_TYPE = ${java_type}" >>"${tmp_env_file}"
 
 echo -e "Starting Minecraft Server"
 if [[ "${backup_enabled}" == "true" ]]; then
