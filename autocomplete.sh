@@ -44,5 +44,5 @@ if [ -f "/usr/share/bash-completion/completions/docker" ]; then
 
     __start_docker
   }
-  complete -o default -o nospace -F _dc_completions dc
+  complete -F _dc_completions dc
 fi
