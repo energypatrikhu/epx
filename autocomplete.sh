@@ -31,12 +31,9 @@ if [ -f "/usr/share/bash-completion/completions/docker" ]; then
 
   # Custom completion for dc (docker compose)
   _dc_completions() {
-    local cur prev words cword
-    _init_completion || return
-
-    # Prepend "compose" to the command line for docker completion
-    words=("docker" "compose" "${words[@]:1}")
-    ((cword++))
+    # Modify COMP_WORDS to insert "compose" after the command
+    COMP_WORDS=("docker" "compose" "${COMP_WORDS[@]:1}")
+    COMP_CWORD=$((COMP_CWORD + 1))
 
     __start_docker
   }
