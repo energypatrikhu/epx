@@ -32,5 +32,10 @@ fi
 
 if [ -f "/usr/share/bash-completion/completions/docker" ]; then
   source /usr/share/bash-completion/completions/docker
-  complete -F __start_docker -C compose dc
+  __docker_compose_subcommand() {
+    COMP_WORDS=(docker compose "${COMP_WORDS[@]:1}")
+    ((COMP_CWORD++))
+    __docker_complete_subcommand
+  }
+  complete -F __docker_compose_subcommand dc
 fi
