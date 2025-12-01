@@ -6,7 +6,7 @@ if [[ -z $* ]]; then
 fi
 
 echo -e "[$(_c LIGHT_BLUE "Docker - Attach")] $(_c LIGHT_YELLOW "Warning: Attaching to container ${@}")"
-echo -e "[$(_c LIGHT_BLUE "Docker - Attach")] $(_c LIGHT_YELLOW "To detach: Press Ctrl+P followed by Ctrl+Q")"
+echo -e "[$(_c LIGHT_BLUE "Docker - Attach")] $(_c LIGHT_YELLOW "To detach: Press") Ctrl+P $(_c LIGHT_YELLOW "followed by") Ctrl+Q"
 read -p "Continue? (y/N): " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
