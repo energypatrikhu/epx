@@ -29,3 +29,8 @@ if [ -f "/usr/share/bash-completion/completions/docker" ]; then
   source /usr/share/bash-completion/completions/docker
   complete -F __start_docker d
 fi
+
+if [ -f "/usr/share/bash-completion/completions/docker" ]; then
+  source /usr/share/bash-completion/completions/docker
+  complete -F __start_docker -C compose dc
+fi
