@@ -75,6 +75,8 @@ if [ -f "/usr/share/bash-completion/completions/docker" ]; then
     done
     COMP_WORDS=("${new_words[@]}")
     COMP_CWORD=$((COMP_CWORD + 1))
+    COMP_LINE="${COMP_LINE/dc/docker compose}"
+    COMP_POINT=$((COMP_POINT + 14))
 
     __start_docker
   }
@@ -88,6 +90,15 @@ if [ -f "/usr/share/bash-completion/completions/docker" ]; then
     done
     COMP_WORDS=("${new_words[@]}")
     COMP_CWORD=$((COMP_CWORD + 1))
+
+    # Handle both d.net and d.network
+    if [[ "$COMP_LINE" == *"d.network"* ]]; then
+      COMP_LINE="${COMP_LINE/d.network/docker network}"
+      COMP_POINT=$((COMP_POINT + 5))
+    else
+      COMP_LINE="${COMP_LINE/d.net/docker network}"
+      COMP_POINT=$((COMP_POINT + 9))
+    fi
 
     __start_docker
   }
