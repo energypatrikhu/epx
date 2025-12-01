@@ -62,3 +62,35 @@ if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
   complete -F _d_autocomplete_compose d.up
   complete -F _d_autocomplete_compose d.pull
 fi
+
+if [ -f "/usr/share/bash-completion/completions/docker" ]; then
+  source /usr/share/bash-completion/completions/docker
+  complete -F __start_docker d
+
+  _dc_completions() {
+    local i
+    local -a new_words=("docker" "compose")
+    for ((i=1; i<${#COMP_WORDS[@]}; i++)); do
+      new_words+=("${COMP_WORDS[i]}")
+    done
+    COMP_WORDS=("${new_words[@]}")
+    COMP_CWORD=$((COMP_CWORD + 1))
+
+    __start_docker
+  }
+  complete -F _dc_completions dc
+
+  _d.net_completions() {
+    local i
+    local -a new_words=("docker" "network")
+    for ((i=1; i<${#COMP_WORDS[@]}; i++)); do
+      new_words+=("${COMP_WORDS[i]}")
+    done
+    COMP_WORDS=("${new_words[@]}")
+    COMP_CWORD=$((COMP_CWORD + 1))
+
+    __start_docker
+  }
+  complete -F _d.net_completions d.net
+  complete -F _d.net_completions d.network
+fi
