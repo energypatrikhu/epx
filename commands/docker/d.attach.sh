@@ -14,4 +14,4 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-docker container attach "${@}"
+docker container attach --detach-keys="ctrl-p,ctrl-q" "${@}"
