@@ -24,3 +24,8 @@ _epx_completions() {
   _autocomplete "self-update mk-cert update-bees backup"
 }
 complete -F _epx_completions epx
+
+if [ -f "/usr/share/bash-completion/completions/docker" ]; then
+  source /usr/share/bash-completion/completions/docker
+  complete -F __start_docker d
+fi
