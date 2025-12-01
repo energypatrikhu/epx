@@ -28,14 +28,17 @@ complete -F _epx_completions epx
 if [ -f "/usr/share/bash-completion/completions/docker" ]; then
   source /usr/share/bash-completion/completions/docker
   complete -F __start_docker d
-fi
 
-if [ -f "/usr/share/bash-completion/completions/docker" ]; then
-  source /usr/share/bash-completion/completions/docker
-  __docker_compose_subcommand() {
-    COMP_WORDS=(docker compose "${COMP_WORDS[@]:1}")
-    ((COMP_CWORD++))
-    __docker_complete_subcommand
+  # Custom completion for dc (docker compose)
+  _dc_completions() {
+    local cur prev words cword
+    _init_completion || return
+
+    # Prepend "compose" to the command line for docker completion
+    words=("docker" "compose" "${words[@]:1}")
+    ((cword++))
+
+    __start_docker
   }
-  complete -F __docker_compose_subcommand dc
+  complete -F _dc_completions dc
 fi
