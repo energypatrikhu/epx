@@ -14,7 +14,7 @@ available_servers="$(curl -sL https://raw.githubusercontent.com/GameServerManage
 opt_find=""
 if [[ -n "${1-}" ]]; then
   opt_find="${1}"
-  available_servers="$(echo "${available_servers}" | awk -F',' -v search="${opt_find}" 'NR==1 || tolower($0) ~ tolower(search) && tolower($0) !~ "[a-z]" tolower(search) "[a-z]"')"
+  available_servers="$(echo "${available_servers}" | awk -F',' -v search="${opt_find}" 'NR==1 || tolower($1) ~ "(^|[^a-z0-9])" tolower(search) "([^a-z0-9]|$)" || tolower($3) ~ "(^|[^a-z])" tolower(search) "([^a-z]|$)"')"
 fi
 
 echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_GREEN "Available game servers:")"
