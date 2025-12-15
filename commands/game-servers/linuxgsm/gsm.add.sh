@@ -20,6 +20,7 @@ available_tags="$(curl -sL https://raw.githubusercontent.com/GameServerManagers/
 if ! echo "${available_tags}" | grep -qx "${game_server_tag}"; then
   echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Invalid game server tag:") ${game_server_tag}"
   echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Available game server tags can be found at:") https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/data/serverlist.csv"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Or use:") gsm.list [search-term]"
   exit 1
 fi
 
