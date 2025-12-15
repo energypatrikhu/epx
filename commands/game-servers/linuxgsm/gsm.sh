@@ -10,9 +10,6 @@ if [[ -z "${game_server_name}" ]]; then
   echo -e "  $(_c LIGHT_CYAN "gsm") $(_c WHITE "terraria") $(_c LIGHT_CYAN "status")"
   echo -e "  $(_c LIGHT_PURPLE "gsm") $(_c WHITE "valheim") $(_c LIGHT_PURPLE "console")"
   echo -e "  $(_c LIGHT_BLUE "gsm") $(_c WHITE "rust") $(_c LIGHT_BLUE "details")"
-
-
-
   exit 1
 fi
 
