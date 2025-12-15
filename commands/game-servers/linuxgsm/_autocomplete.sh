@@ -14,7 +14,7 @@ _gsm_autocomplete_add() {
   servers="$(curl -sL https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/refs/heads/master/lgsm/data/serverlist.csv | cut -d, -f1 | tail -n +2)"
   _autocomplete "${servers}"
 }
-complete -F _gsm_autocomplete gsm.add
+complete -F _gsm_autocomplete_add gsm.add
 
 _gsm_autocomplete_compose() {
   . "${EPX_HOME}/.config/docker.config"
