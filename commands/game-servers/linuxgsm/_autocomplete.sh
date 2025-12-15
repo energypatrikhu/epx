@@ -27,5 +27,5 @@ _gsm_autocomplete_compose() {
   _autocomplete "${container_dirs[@]}"
 }
 if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
-  complete -F _d_autocomplete_compose gsm.up
+  complete -F _gsm_autocomplete_compose gsm.up
 fi
