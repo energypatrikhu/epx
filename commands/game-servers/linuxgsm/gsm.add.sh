@@ -9,9 +9,10 @@ fi
 
 game_server_tag="${1-}"
 if [[ -z "${game_server_tag}" ]]; then
-  echo "Usage: gsm.add <game-server-tag>"
-  echo "Example: gsm.add cs2"
-  echo "Available game server tags can be found at: https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/data/serverlist.csv"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Usage:") gsm.add <game-server-tag>"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_YELLOW "Example:") gsm.add cs2"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_YELLOW "Available game server tags can be found at:") https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/data/serverlist.csv"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_YELLOW "Or use:") gsm.list [search-term]"
   exit 1
 fi
 
