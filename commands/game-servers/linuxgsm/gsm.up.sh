@@ -2,7 +2,7 @@ _cci docker
 
 game_server_name="${1-}"
 if [[ -z "${game_server_name}" ]]; then
-  echo "Usage: gsm.up <game-server-name>"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Usage:") gsm.up <game-server-tag>"
   exit 1
 fi
 
