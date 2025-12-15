@@ -16,5 +16,5 @@ if [[ -z "${game_server_tag}" ]]; then
 fi
 
 mkdir -p "${CONTAINERS_DIR}/${game_server_tag}"
-cp "${EPX_HOME}/templates/linuxgsm/docker-compose.template" "${CONTAINERS_DIR}/${game_server_tag}/docker-compose.yml"
+cp "${EPX_HOME}/.templates/linuxgsm/docker-compose.template" "${CONTAINERS_DIR}/${game_server_tag}/docker-compose.yml"
 sed -i "s/TAG/${game_server_tag}/g" "${CONTAINERS_DIR}/${game_server_tag}/docker-compose.yml"
