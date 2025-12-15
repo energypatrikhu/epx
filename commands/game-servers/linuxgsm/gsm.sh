@@ -8,7 +8,7 @@ if [[ -z "${game_server_name}" ]]; then
   echo -e "  $(_c LIGHT_RED "gsm") $(_c WHITE "cs2") $(_c LIGHT_RED "stop")"
   echo -e "  $(_c LIGHT_YELLOW "gsm") $(_c WHITE "cs2") $(_c LIGHT_YELLOW "restart")"
   echo -e "  $(_c LIGHT_CYAN "gsm") $(_c WHITE "cs2") $(_c LIGHT_CYAN "status")"
-  echo -e "  $(_c MAGENTA "gsm") $(_c WHITE "cs2") $(_c MAGENTA "console")"
+  echo -e "  $(_c LIGHT_PURPLE "gsm") $(_c WHITE "cs2") $(_c LIGHT_PURPLE "console")"
   echo -e "  $(_c LIGHT_BLUE "gsm") $(_c WHITE "cs2") $(_c LIGHT_BLUE "details")"
 
 
