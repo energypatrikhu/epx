@@ -15,6 +15,11 @@ if [[ -z "${game_server_tag}" ]]; then
   exit 1
 fi
 
+if [[ -d "${CONTAINERS_DIR}/linuxgsm-${game_server_tag}" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "A LinuxGSM game server with tag") ${game_server_tag} $(_c LIGHT_RED "already exists.")"
+  exit 1
+fi
+
 mkdir -p "${CONTAINERS_DIR}/linuxgsm-${game_server_tag}"
 cp "${EPX_HOME}/.templates/linuxgsm/docker-compose.template" "${CONTAINERS_DIR}/linuxgsm-${game_server_tag}/docker-compose.yml"
 sed -i "s/TAG/${game_server_tag}/g" "${CONTAINERS_DIR}/linuxgsm-${game_server_tag}/docker-compose.yml"
