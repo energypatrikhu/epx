@@ -14,7 +14,7 @@ available_servers="$(curl -sL https://raw.githubusercontent.com/GameServerManage
 opt_find=""
 if [[ -n "${1-}" ]]; then
   opt_find="${1}"
-  available_servers="$(echo "${available_servers}" | grep -i "${opt_find}" | grep -v "^#")"
+  available_servers="$(echo "${available_servers}" | grep -iE "(^|,)${opt_find}(,|$)")"
 fi
 
 echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_GREEN "Available game servers:")"
