@@ -1,7 +1,7 @@
 services:
   linuxgsm-TAG:
     image: gameservermanagers/gameserver:TAG
-    container_name: gsm-TAGserver
+    container_name: linuxgsm-TAG
     volumes:
       - ./data:/data
     network_mode: host
