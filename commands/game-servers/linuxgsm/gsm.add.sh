@@ -9,8 +9,8 @@ fi
 
 game_server_tag="${1-}"
 if [[ -z "${game_server_tag}" ]]; then
-  echo "Usage: gm-add <game-server-tag>"
-  echo "Example: gm-add cs2"
+  echo "Usage: gsm.add <game-server-tag>"
+  echo "Example: gsm.add cs2"
   echo "Available game server tags can be found at: https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/data/serverlist.csv"
   exit 1
 fi
