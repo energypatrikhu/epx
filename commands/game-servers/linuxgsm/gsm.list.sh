@@ -13,5 +13,5 @@
 available_servers="$(curl -sL https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/refs/heads/master/lgsm/data/serverlist.csv)"
 echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_GREEN "Available game servers:")"
 echo "${available_servers}" | tail -n +2 | while IFS=, read -r shortname gameservername gamename os; do
-  echo -e "  $(_c LIGHT_YELLOW "${gamename} (${shortname})")"
+  echo -e "  $(_c LIGHT_YELLOW "${gamename}") $(_c LIGHT_CYAN "(${shortname})")"
 done
