@@ -20,3 +20,5 @@ cp "${EPX_HOME}/.templates/linuxgsm/docker-compose.template" "${CONTAINERS_DIR}/
 sed -i "s/TAG/${game_server_tag}/g" "${CONTAINERS_DIR}/linuxgsm-${game_server_tag}/docker-compose.yml"
 
 echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_GREEN "Successfully added LinuxGSM game server with tag") ${game_server_tag}"
+echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_GREEN "Starting") linuxgsm-${game_server_tag}..."
+d.up "/linuxgsm-${game_server_tag}/docker-compose.yml"
