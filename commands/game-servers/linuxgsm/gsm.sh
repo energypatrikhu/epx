@@ -7,4 +7,4 @@ if [[ -z "${game_server_name}" ]]; then
   exit 1
 fi
 
-docker exec -it --user linuxgsm gsm-${game_server_name} ./${game_server_name} ${*:2}
+docker exec -it --user linuxgsm linuxgsm-${game_server_name} ./${game_server_name} ${*:2}
