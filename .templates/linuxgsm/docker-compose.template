@@ -1,0 +1,8 @@
+services:
+  linuxgsm-TAG:
+    image: gameservermanagers/gameserver:TAG
+    container_name: gsm-TAGserver
+    volumes:
+      - ./data:/data
+    network_mode: host
+    restart: unless-stopped
