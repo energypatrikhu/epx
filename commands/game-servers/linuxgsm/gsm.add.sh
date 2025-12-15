@@ -15,6 +15,13 @@ if [[ -z "${game_server_tag}" ]]; then
   exit 1
 fi
 
+available_tags="$(curl -sL https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/refs/heads/master/lgsm/data/serverlist.csv | cut -d, -f1 | tail -n +2)"
+if ! echo "${available_tags}" | grep -qx "${game_server_tag}"; then
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Invalid game server tag:") ${game_server_tag}"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Available game server tags can be found at:") https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/data/serverlist.csv"
+  exit 1
+fi
+
 if [[ -d "${CONTAINERS_DIR}/linuxgsm-${game_server_tag}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "A LinuxGSM game server with tag") ${game_server_tag} $(_c LIGHT_RED "already exists.")"
   exit 1
