@@ -8,6 +8,14 @@ complete -F _gsm_autocomplete gsm.start
 complete -F _gsm_autocomplete gsm.stop
 complete -F _gsm_autocomplete gsm.rm
 
+_gsm_autocomplete_add() {
+  # https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/refs/heads/master/lgsm/data/serverlist.csv
+  local servers
+  servers="$(curl -sL https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/refs/heads/master/lgsm/data/serverlist.csv | cut -d, -f1 | tail -n +2)"
+  _autocomplete "${servers}"
+}
+complete -F _gsm_autocomplete gsm.add
+
 _gsm_autocomplete_compose() {
   . "${EPX_HOME}/.config/docker.config"
 
