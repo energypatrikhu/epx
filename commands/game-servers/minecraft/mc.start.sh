@@ -80,17 +80,17 @@ if [[ "${backup_enabled}" == "true" ]]; then
     -p "${project_name}" \
     --env-file "${tmp_env_file}" \
     --env-file "${config_env}" \
-    -f "${MINECRAFT_DIR}/internals/itzg-config.yml" \
-    -f "${MINECRAFT_DIR}/internals/itzg-mc-backup.yml" \
-    -f "${MINECRAFT_DIR}/internals/itzg-mc.yml" \
+    -f "${MINECRAFT_DIR}/internals/compose/itzg-config.yml" \
+    -f "${MINECRAFT_DIR}/internals/compose/itzg-mc-backup.yml" \
+    -f "${MINECRAFT_DIR}/internals/compose/itzg-mc.yml" \
     up -d
 else
   docker compose \
     -p "${project_name}" \
     --env-file "${tmp_env_file}" \
     --env-file "${config_env}" \
-    -f "${MINECRAFT_DIR}/internals/itzg-config.yml" \
-    -f "${MINECRAFT_DIR}/internals/itzg-mc.yml" \
+    -f "${MINECRAFT_DIR}/internals/compose/itzg-config.yml" \
+    -f "${MINECRAFT_DIR}/internals/compose/itzg-mc.yml" \
     up -d
 fi
 
