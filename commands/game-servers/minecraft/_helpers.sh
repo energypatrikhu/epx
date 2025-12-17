@@ -4,14 +4,14 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   __epx-mc-get-servers() {
     local servers
     if [[ -d "${MINECRAFT_DIR}/servers" ]] && [[ -n "$(/bin/ls -A "${MINECRAFT_DIR}/servers" 2>/dev/null)" ]]; then
-      servers=$(find "${MINECRAFT_DIR}/servers" -type d -maxdepth 1 -mindepth 1 -printf '%f\n')
+      servers=$(find "${MINECRAFT_DIR}/servers" -maxdepth 1 -mindepth 1 -type d -printf '%f\n')
     fi
     echo "${servers}"
   }
 
   __epx-mc-get-server-templates() {
     local templates
-    templates=$(find "${MINECRAFT_DIR}/internals/templates/platforms" -type f -maxdepth 1 -mindepth 1 -printf '%f\n')
+    templates=$(find "${MINECRAFT_DIR}/internals/templates/platforms" -maxdepth 1 -mindepth 1 -type f -printf '%f\n')
     echo "${templates}"
   }
 
