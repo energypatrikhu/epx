@@ -19,9 +19,11 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   complete -F __epx-mc-list-servers mc.up
 
   __epx-mc-list-server-templates() {
-    local templates
-    templates="$(__epx-mc-get-server-templates "${1-}")"
-    _autocomplete "${templates}"
+    if [[ ${COMP_CWORD} -eq 1 ]]; then
+      local templates
+      templates="$(__epx-mc-get-server-templates "${1-}")"
+      _autocomplete "${templates}"
+    fi
   }
   complete -F __epx-mc-list-server-templates mc.add
 fi
