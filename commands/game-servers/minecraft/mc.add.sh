@@ -25,6 +25,12 @@ if [[ -z "${server_type}" || -z "${server_name}" ]]; then
   exit 1
 fi
 
+if ! [[ "${server_name}" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+  echo "Error: Server name '${server_name}' contains invalid characters."
+  echo "Only alphanumeric characters, hyphens (-), periods (.), and underscores (_) are allowed."
+  exit 1
+fi
+
 if ! __epx-mc-get-server-templates | grep -qx "${server_type}"; then
   echo "Error: Server type '${server_type}' not found."
   echo "Available server types:"
