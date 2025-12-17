@@ -7,7 +7,7 @@ _cci docker
 
 . "${EPX_HOME}/.config/minecraft.config"
 
-if [[ -z "${MINECRAFT_DIR}" ]]; then
+if [[ -z "${MINECRAFT_DIR:-}" ]]; then
   echo "Error: MINECRAFT_DIR is not set in your configuration, please set it in your .config/minecraft.config file."
   exit 1
 fi
