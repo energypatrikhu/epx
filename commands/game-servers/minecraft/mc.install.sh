@@ -16,6 +16,9 @@ if ! git clone https://github.com/energypatrikhu/minecraft-server "${MINECRAFT_D
   exit 1
 fi
 
+echo "Setting up Minecraft project structure..."
+mkdir -p "${MINECRAFT_DIR}/servers"
+
 echo "Minecraft project install completed successfully."
 echo "You can now configure your Minecraft servers."
 echo "To pull changes from git, use 'mc.update'."
