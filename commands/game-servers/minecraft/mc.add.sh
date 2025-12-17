@@ -4,6 +4,11 @@ if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
 fi
 . "${EPX_HOME}/.config/minecraft.config"
 
+if [[ -z "${MINECRAFT_DIR}" ]]; then
+  echo "Error: MINECRAFT_DIR is not set in your configuration, please set it in your .config/minecraft.config file."
+  exit 1
+fi
+
 source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
 server_type="${1-}"

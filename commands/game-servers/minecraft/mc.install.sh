@@ -4,12 +4,12 @@ if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
 fi
 . "${EPX_HOME}/.config/minecraft.config"
 
-source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
-
 if [[ -z "${MINECRAFT_DIR}" ]]; then
   echo "Error: MINECRAFT_DIR is not set in your configuration, please set it in your .config/minecraft.config file."
   exit 1
 fi
+
+source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
 if ! git clone https://github.com/energypatrikhu/minecraft-server "${MINECRAFT_DIR}"; then
   echo "Error: Failed to clone the Minecraft server repository."
