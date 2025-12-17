@@ -3,9 +3,7 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
 
   __epx-mc-get-servers() {
     local servers
-    if [[ -d "${MINECRAFT_DIR}/servers" ]] && [[ -n "$(/bin/ls -A "${MINECRAFT_DIR}/servers" 2>/dev/null)" ]]; then
-      servers=$(find "${MINECRAFT_DIR}/servers" -maxdepth 1 -mindepth 1 -type d -printf '%f\n')
-    fi
+    servers=$(find "${MINECRAFT_DIR}/servers" -maxdepth 1 -mindepth 1 -type d -printf '%f\n')
     echo "${servers}"
   }
 
