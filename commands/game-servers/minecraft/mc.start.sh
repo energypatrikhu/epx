@@ -9,58 +9,50 @@ _cci docker
 
 source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
-if [[ ! -d "${MINECRAFT_PROJECT_DIR}" ]]; then
+if [[ ! -d "${MINECRAFT_DIR}" ]]; then
   echo "Error: Minecraft project directory does not exist. Please run 'mc.install' first."
   exit 1
 fi
 
-__epx-mc-get-env-value() {
-  local config_env="${1-}"
-  local var_name="${2-}"
-  grep -iE "^${var_name}\s*=" "${config_env}" | sed -E "s/^${var_name}\s*=\s*//I; s/[[:space:]]*$//"
-}
-__epx-mc-get-backup-enabled() {
-  local config_env="${1-}"
-  local backup_enabled=$(__epx-mc-get-env-value "${config_env}" "BACKUP")
-  if [[ "${backup_enabled,,}" == "true" ]]; then
-    echo "true"
-  else
-    echo "false"
-  fi
-}
+server_dir="${1-}"
 
-if [[ -z "${1-}" ]]; then
+if [[ -z "${server_dir}" ]]; then
   echo "Usage: mc.start <server>"
   echo "Available servers:"
-  __epx-mc-get-configs "${1-}" | sed 's/^/  /'
+  __epx-mc-get-servers "${server_dir}" | sed 's/^/  /'
   exit 1
 fi
 
-file_basename=$(basename -- "${1-}")
-file_basename="${file_basename%.env}"
-server_type=$(echo "${file_basename}" | awk -F'_' '{print $1}')
-project_name="mc_${file_basename}"
-compose_file_base="${MINECRAFT_PROJECT_DIR}/compose/docker-compose.base.yml"
-compose_file_full="${MINECRAFT_PROJECT_DIR}/compose/docker-compose.full.yml"
-config_env="${MINECRAFT_PROJECT_DIR}/configs/${file_basename}.env"
+if ! __epx-mc-get-servers | grep -qx "${server_dir}"; then
+  echo "Error: Server '${server_dir}' not found."
+  echo "Available servers:"
+  __epx-mc-get-servers | sed 's/^/  /'
+  exit 1
+fi
+
+server_dir_full="${MINECRAFT_DIR}/servers/${server_dir}"
+
+if [[ ! -d "${server_dir_full}" ]]; then
+  echo "Error: Server directory '${server_dir}' does not exist."
+  exit 1
+fi
+
+server_type=$(echo "${server_dir}" | awk -F'_' '{print $1}')
+server_name=$(echo "${server_dir}" | awk -F'_' '{print $2}')
+project_name="mc_${server_dir}"
+config_env="${server_dir_full}/config.env"
 backup_enabled=$(__epx-mc-get-backup-enabled "${config_env}")
-
-if [[ ! -f "${config_env}" ]]; then
-  echo "Error: Environment file ${config_env} does not exist."
-  exit 1
-fi
 
 # create a tmp env file to hold dynamic variables
 tmp_env_file=$(mktemp)
 echo "SERVER_TYPE = ${server_type}" >>"${tmp_env_file}"
-echo "SERVER_DIR = ${MINECRAFT_SERVERS_DIR}" >>"${tmp_env_file}"
+echo "SERVER_DIR = ${server_dir}" >>"${tmp_env_file}"
 
-echo -e "Starting Minecraft Server"
+echo "Starting Minecraft Server"
 if [[ "${backup_enabled}" == "true" ]]; then
-  echo "BACKUP_DIR = ${MINECRAFT_BACKUPS_DIR}" >>"${tmp_env_file}"
-  echo -e "> Backup is enabled"
+  echo "> Backup is enabled"
 else
-  echo -e "> Backup is disabled"
+  echo "> Backup is disabled"
 fi
 
 echo -e "> Environment Variables:"
@@ -80,28 +72,23 @@ else
 fi
 
 if [[ "${backup_enabled}" == "true" ]]; then
-  if [[ ! -f "${compose_file_full}" ]]; then
-    echo "Error: Docker Compose file ${compose_file_full} does not exist."
-    exit 1
-  fi
-
-  docker compose -p "${project_name}" \
+  docker compose \
+    -p "${project_name}" \
     --env-file "${tmp_env_file}" \
     --env-file "${config_env}" \
-    -f "${compose_file_full}" \
+    -f "${MINECRAFT_DIR}/internals/itzg-config.yml" \
+    -f "${MINECRAFT_DIR}/internals/itzg-mc-backup.yml" \
+    -f "${MINECRAFT_DIR}/internals/itzg-mc.yml" \
     up -d
 else
-  if [[ ! -f "${compose_file_base}" ]]; then
-    echo "Error: Docker Compose file ${compose_file_base} does not exist."
-    exit 1
-  fi
-
-  docker compose -p "${project_name}" \
+  docker compose \
+    -p "${project_name}" \
     --env-file "${tmp_env_file}" \
     --env-file "${config_env}" \
-    -f "${compose_file_base}" \
+    -f "${MINECRAFT_DIR}/internals/itzg-config.yml" \
+    -f "${MINECRAFT_DIR}/internals/itzg-mc.yml" \
     up -d
 fi
 
-# clean up the tmp env file
 rm -f "${tmp_env_file}"
+echo "Minecraft server '${server_dir}' started successfully."

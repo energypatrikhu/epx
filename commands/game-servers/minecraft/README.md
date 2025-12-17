@@ -1,203 +1,472 @@
-# Minecraft Server Management
+# Minecraft Server Management Commands
 
-> **Heads up:** This is a hobby project. While useful, it may contain bugs or breaking changes. Use at your own risk and always review scripts before running them on important systems.
+This collection of shell scripts provides an easy-to-use interface for managing Minecraft servers using Docker containers. The scripts integrate with the [minecraft-server](https://github.com/energypatrikhu/minecraft-server) project.
 
-This project provides a flexible Docker Compose-based setup for running various Minecraft server types (CurseForge, FTB, Fabric, NeoForge, etc.) with optional backup support and easy mod management.
+## Table of Contents
 
-This project is based on the [itzg/minecraft-server](https://github.com/itzg/docker-minecraft-server) and the [itzg/mc-backup](https://github.com/itzg/docker-mc-backup).
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Available Commands](#available-commands)
+  - [mc.install](#mcinstall)
+  - [mc.add](#mcadd)
+  - [mc.start](#mcstart)
+  - [mc.update](#mcupdate)
+- [Autocomplete](#autocomplete)
+- [Directory Structure](#directory-structure)
+- [Environment Variables](#environment-variables)
+- [Backup Configuration](#backup-configuration)
+- [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
 
-Original repository: [minecraft-server](https://github.com/energypatrikhu/minecraft-server)
+## Prerequisites
+
+- Docker and Docker Compose installed
+- Git installed
+- Bash shell
+- EPX shell scripts framework
+
+## Installation
+
+### 1. Configure Minecraft Settings
+
+Create a configuration file at `${EPX_HOME}/.config/minecraft.config`:
+
+```bash
+# Path where the minecraft-server project will be cloned
+MINECRAFT_DIR="/path/to/minecraft-project"
+```
+
+### 2. Install the Minecraft Project
+
+Run the installation command:
+
+```bash
+mc.install
+```
+
+This will:
+- Clone the [minecraft-server](https://github.com/energypatrikhu/minecraft-server) repository
+- Set up the project directory structure
+- Display next steps for configuration
+
+### 3. Configure CurseForge API Key
+
+After installation, set up your CurseForge API key:
+
+```bash
+echo "YOUR_API_KEY_HERE" > ${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt
+```
+
+## Configuration
+
+The configuration file `${EPX_HOME}/.config/minecraft.config` contains:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `MINECRAFT_DIR` | Base directory for Minecraft servers | `/opt/minecraft-servers` |
+
+## Available Commands
+
+### mc.install
+
+**Description:** Clones the minecraft-server project from GitHub and sets up the initial directory structure.
+
+**Usage:**
+```bash
+mc.install
+```
+
+**What it does:**
+- Validates that the configuration file exists
+- Clones the minecraft-server repository to `MINECRAFT_DIR`
+- Creates necessary directory structure
+- Provides post-installation instructions
+
+**Output:**
+```
+Minecraft project install completed successfully.
+You can now configure your Minecraft servers.
+To pull changes from git, use 'mc.update'.
+
+Minecraft project directory is located at /path/to/minecraft/servers
+Setup the curseforge api key in /path/to/minecraft/servers/internals/secrets/curseforge_api_key.txt
+Create a new server, use the command: mc.add <server_type> <server_name>
+To show available servers and usage, use the command: mc.list
+To start a server, use the command: mc.start <server_name>
+```
 
 ---
 
-## Quick Start
-- To get started, create configuration file for the minecraft commands
-  ```sh
-  cp $EPX_HOME/.config/minecraft.config.example $EPX_HOME/.config/minecraft.config
+### mc.add
+
+**Description:** Creates a new Minecraft server instance from a template.
+
+**Usage:**
+```bash
+mc.add <server_type> <server_name>
+```
+
+**Arguments:**
+- `server_type`: The type of Minecraft server (e.g., vanilla, forge, fabric, paper)
+- `server_name`: A custom name for your server instance
+
+**What it does:**
+- Creates a new server directory with the naming pattern: `{server_type}_{server_name}`
+- Sets up the following directory structure:
   ```
-  And edit the paths inside the file to match your setup, then restart the shell.
-
-- Next run `mc.install` to install the required dependencies.
-
-- For more details on how to set up a server, see the [Setting Up a Server](#setting-up-a-server-example) or [Creating a New Server Config with mc.create](#creating-a-new-server-config-with-mccreate) sections below.
-
-- For a quick overview of the available commands, run:
-  ```sh
-  mc.help
+  {server_type}_{server_name}/
+  ├── data/                    # Server data directory
+  ├── extras/                  # Additional files
+  │   ├── configs/            # Custom configuration files
+  │   ├── data/               # Extra data files
+  │   ├── mods/               # Manual mod installations
+  │   └── plugins/            # Manual plugin installations
+  ├── config.env              # Environment variables for the server
+  ├── mods.curseforge.txt     # CurseForge mod list
+  ├── mods.modrinth.txt       # Modrinth mod list
+  ├── ops.txt                 # Server operators list
+  └── whitelist.txt           # Whitelisted players
   ```
+- Populates configuration files from templates
+
+**Example:**
+```bash
+mc.add fabric my-survival-server
+# Creates: fabric_my-survival-server/
+```
+
+**Available Server Types:**
+To see all available server types, run the command without arguments:
+```bash
+mc.add
+```
+
+Common types include:
+- `vanilla` - Standard Minecraft server
+- `fabric` - Fabric modded server
+- `forge` - Forge modded server
+- `paper` - Paper (optimized) server
+- `spigot` - Spigot server
+- `purpur` - Purpur server
 
 ---
 
-## Environments
+### mc.start
 
-- **Default Environment Files:**
-  - Located in `configs/` (e.g., `configs/curseforge_2025-02-16_all-the-mods-10.env`)
-  - Each server has its own `.env` file. The filename format is:
+**Description:** Starts a Minecraft server using Docker Compose.
 
-    ```
-    <platform>_<YYYY-MM-DD>_<modpack-or-server-name>.env
-    ```
+**Usage:**
+```bash
+mc.start <server_directory>
+```
 
-    Example: `curseforge_2025-02-16_all-the-mods-10.env`
+**Arguments:**
+- `server_directory`: The full server directory name (e.g., `fabric_my-survival-server`)
 
-- **Changeable Variables:**
-  - Most variables in the `.env` files can be changed to suit your needs (e.g., `SERVER_NAME`, `WHITELIST`, `OPS`, `BACKUP`, etc.).
-  - See `configs/examples/` for template files for each platform.
-  - For more environment variables checkout the files located in `env/`.
+**What it does:**
+- Validates the server directory exists
+- Reads the server configuration from `config.env`
+- Checks if backup is enabled
+- Creates a Docker Compose project with the name: `mc_{server_directory}`
+- Starts the Docker containers:
+  - Minecraft server container (using itzg/minecraft-server)
+  - Backup container (if enabled)
+- Displays environment variables being used
+
+**Example:**
+```bash
+mc.start fabric_my-survival-server
+```
+
+**Output:**
+```
+Starting Minecraft Server
+> Backup is enabled
+> Environment Variables:
+  - VERSION=1.20.4
+  - TYPE=FABRIC
+  - MEMORY=4G
+  - SERVER_TYPE = fabric
+  - SERVER_DIR = fabric_my-survival-server
+Minecraft server 'fabric_my-survival-server' started successfully.
+```
+
+**Docker Compose Profiles:**
+The command automatically determines which Docker Compose files to use:
+- With backup: Uses `itzg-config.yml`, `itzg-mc-backup.yml`, and `itzg-mc.yml`
+- Without backup: Uses `itzg-config.yml` and `itzg-mc.yml`
+
+---
+
+### mc.update
+
+**Description:** Updates the minecraft-server project by pulling the latest changes from GitHub.
+
+**Usage:**
+```bash
+mc.update
+```
+
+**What it does:**
+- Changes to the Minecraft project directory
+- Runs `git pull` to fetch the latest updates
+- Updates templates, scripts, and configurations
+
+**Example:**
+```bash
+mc.update
+```
+
+**Output:**
+```
+Already up to date.
+Minecraft project updated successfully.
+```
+
+**When to use:**
+- When new server templates are available
+- When bug fixes or improvements are released
+- Periodically to stay up-to-date with the project
 
 ---
 
-## CurseForge API Key
+## Autocomplete
 
-- To download mods from CurseForge, you **must** set up your API key:
-  - Copy `secrets/curseforge_api_key.txt.example` to `secrets/curseforge_api_key.txt` and add your key.
+The scripts include bash autocomplete functionality for enhanced usability:
 
----
+### Autocomplete for Server Directories
+- `mc.start` - Shows available server directories
+- `mc.up` - Shows available server directories
 
-## Example Server Config
+### Autocomplete for Running Containers
+- `mc.restart` - Shows running Minecraft containers
+- `mc.stop` - Shows running Minecraft containers
+- `mc.rm` - Shows Minecraft containers
 
-- **Filename Structure:**
-  - `configs/<platform>_<date>_<name>.env`
-- **Example Content:**
-
-    ```ini
-    # configs/curseforge_2025-02-16_all-the-mods-10.env.example
-    CREATED_AT = 2025-02-16
-    SERVER_NAME = All The Mods 10
-    MODPACK_NAME = all-the-mods-10
-    MODPACK_VERSION = 2.39
-    MEMORY = 6G
-    JAVA_VERSION = 21
-    BACKUP = true
-    WHITELIST = player1, player2
-    OPS = player1
-    # ... other variables ...
-    ```
-
----
-
-## Enabling Backups
-
-- To enable the backup container, set `BACKUP = true` in your server's `.env` file.
-- To disable backups, either omit the `BACKUP` variable or set `BACKUP = false`.
-- The backup container will create backups in the `$MINECRAFT_BACKUPS_DIR/<platform>_<date>_<name>/` directory. (the base directory can be changed in the `$EPX_HOME/.config/minecraft.config` config by changing the variable `MINECRAFT_BACKUPS_DIR`)
-
----
+### Autocomplete for Server Types
+- `mc.add` - Shows available server type templates
 
 ## Directory Structure
 
-- **Default Directories:**
-  - Server data: `$MINECRAFT_SERVERS_DIR/<platform>_<date>_<name>/`
-    > Can be changed in `$EPX_HOME/.config/minecraft.config` by changing the variable `MINECRAFT_SERVERS_DIR`
-  - Configs: `configs/`
-  - Compose files: `compose/`
-  - Platform configs: `platforms/`
-  - Secrets: `secrets/`
-  - Backups: `$MINECRAFT_BACKUPS_DIR/`
-    > Can be changed in `$EPX_HOME/.config/minecraft.config` by changing the variable `MINECRAFT_BACKUPS_DIR`
+After installation and creating a server, your directory structure will look like:
 
----
-
-## Platform Configs
-
-- Platform-specific Docker Compose and config files are in `compose/` and `platforms/`.
-- Example Compose files:
-  - `compose/docker-compose.base.yml` (no backup)
-  - `compose/docker-compose.full.yml` (with backup)
-
----
-
-## Server Location
-
-- Each server runs in its own directory under `$MINECRAFT_SERVERS_DIR` (e.g., `$MINECRAFT_SERVERS_DIR/fabric_2025-07-05_bingo/`).
-
----
-
-## Whitelist, Ops, and Players
-
-- **Whitelist:**
-  - Controlled by the `WHITELIST` variable in the `.env` file, by default it is empty.
-  - To enable, list players in `WHITELIST`. (e.g., `WHITELIST = player1, player2`).
-- **Opped Players:**
-  - Set via the `OPS` variable (comma-separated list).
-
----
-
-## Adding Mods
-
-- **CurseForge:**
-  - Requires a valid API key in `secrets/curseforge_api_key.txt`.
-  - List mods in the `CURSEFORGE_MODS` variable in your `.env` file.
-- **Modrinth:**
-  - Supported via the `MODRINTH_MODS` variable as well.
-
----
-
-## Timezone
-
-- To change the timezone, edit or create `env/.tz.env` and set the `TZ` variable (e.g., `TZ=Europe/Berlin`).
-
----
-
-## Setting Up a Server (Example)
-
-1. Copy an example config from `configs/examples/`:
-
-    ```sh
-    cp configs/examples/@example.curseforge.env configs/curseforge_2025-02-16_all-the-mods-10.env
-    # Edit the new file as needed
-    ```
-2. Set up your CurseForge API key if using CurseForge mods.
-3. Start the server:
-
-    ```sh
-    mc.start curseforge_2025-02-16_all-the-mods-10
-    ```
-
----
-
-For more details, see comments in the example config files and the `$EPX_HOME/commands/game-servers/minecraft/mc.sh` script.
-
----
-
-## Creating a New Server Config with `mc.create`
-
-The `mc.create` command helps you quickly generate a new server configuration file from a template.
-
-- **Usage:**
-  ```sh
-  mc.create <server_type> [server_name]
-  ```
-  - `<server_type>`: The type of server (e.g., `curseforge`, `fabric`, `forge`, etc.).
-  - `[server_name]`: (Optional) The name for your server or modpack.
-
-- **How it works:**
-  - Copies the appropriate example config from `configs/examples/@example.<server_type>.env`.
-  - Creates a new file in `configs/` named `<server_type>_<YYYY-MM-DD>_<server_name>.env` (date is today).
-  - Fills in `CREATED_AT` and `SERVER_NAME` automatically.
-
-- **Example:**
-  ```sh
-  mc.create curseforge all-the-mods-10
-  # Creates configs/curseforge_2025-07-08_all-the-mods-10.env
-  ```
-  Edit the new file as needed, then start your server as usual.
-
-- **Tip:**
-  If you omit `[server_name]`, the filename will include `CHANGEME` and you'll be prompted to rename it.
-
----
-
-## Updating project files
-
-To update the project files, you can run the following command:
-
-```sh
-mc.update
 ```
-This command will pull the latest changes from the repository and update your local files accordingly. Make sure to review any changes before applying them, especially if you have custom configurations.
+${MINECRAFT_DIR}/
+├── internals/
+│   ├── secrets/
+│   │   └── curseforge_api_key.txt
+│   ├── templates/
+│   │   ├── platforms/          # Server type templates
+│   │   ├── backup              # Backup configuration template
+│   │   ├── properties          # Server properties template
+│   │   └── mods/
+│   │       ├── curseforge      # CurseForge mods template
+│   │       └── modrinth        # Modrinth mods template
+│   ├── itzg-config.yml         # Base Docker Compose config
+│   ├── itzg-mc-backup.yml      # Backup service config
+│   └── itzg-mc.yml             # Minecraft server config
+└── servers/
+    └── {server_type}_{date}_{name}/
+        ├── data/               # Minecraft server data
+        ├── extras/             # Additional files
+        ├── config.env          # Server environment variables
+        ├── mods.curseforge.txt # CurseForge mod IDs
+        ├── mods.modrinth.txt   # Modrinth mod slugs
+        ├── ops.txt             # Server operators
+        └── whitelist.txt       # Whitelisted players
+```
 
----
+## Environment Variables
 
-# Credits
-This project is inspired by the work of [itzg](https://github.com/itzg) and aims to provide a user-friendly way to manage Minecraft servers with Docker Compose.
+Each server has a `config.env` file that contains environment variables. Common variables include:
+
+### Server Configuration
+```bash
+# Minecraft version
+VERSION=1.20.4
+
+# Server type (VANILLA, FABRIC, FORGE, PAPER, etc.)
+TYPE=FABRIC
+
+# Memory allocation
+MEMORY=4G
+
+# Server port
+SERVER_PORT=25565
+```
+
+### Backup Configuration
+```bash
+# Enable/disable backups
+BACKUP=true
+
+# Backup interval (e.g., 2h, 30m)
+BACKUP_INTERVAL=2h
+
+# Number of backups to keep
+BACKUP_PRUNE_DAYS=7
+```
+
+### Server Properties
+```bash
+# Server name
+SERVER_NAME=My Minecraft Server
+
+# Difficulty (peaceful, easy, normal, hard)
+DIFFICULTY=normal
+
+# Game mode (survival, creative, adventure)
+MODE=survival
+
+# Max players
+MAX_PLAYERS=20
+
+# View distance
+VIEW_DISTANCE=10
+```
+
+For a complete list of available environment variables, refer to the [itzg/minecraft-server documentation](https://github.com/itzg/docker-minecraft-server).
+
+## Backup Configuration
+
+Backups are managed using the [itzg/mc-backup](https://github.com/itzg/docker-mc-backup) Docker image.
+
+### Enable Backups
+
+Set in your server's `config.env`:
+```bash
+BACKUP=true
+BACKUP_INTERVAL=2h
+BACKUP_PRUNE_DAYS=7
+```
+
+### Backup Location
+
+Backups are stored in the server's `data/backups` directory by default.
+
+### Manual Backup
+
+To trigger a manual backup, you can exec into the backup container:
+```bash
+docker exec mc_{server_directory}-backup backup now
+```
+
+## Examples
+
+### Example 1: Create a Fabric Modded Server
+
+```bash
+# Create the server
+mc.add fabric creative-build
+
+# Edit the configuration
+nano ${MINECRAFT_DIR}/servers/fabric_creative-build/config.env
+
+# Add some mods to mods.curseforge.txt
+echo "531761" >> ${MINECRAFT_DIR}/servers/fabric_creative-build/mods.curseforge.txt  # WorldEdit
+
+# Start the server
+mc.start fabric_creative-build
+```
+
+### Example 2: Create a Paper Server with Backups
+
+```bash
+# Create the server
+mc.add paper survival-world
+
+# Enable backups in config.env
+echo "BACKUP=true" >> ${MINECRAFT_DIR}/servers/paper_survival-world/config.env
+echo "BACKUP_INTERVAL=1h" >> ${MINECRAFT_DIR}/servers/paper_survival-world/config.env
+
+# Start the server
+mc.start paper_survival-world
+```
+
+### Example 3: Update and Restart a Server
+
+```bash
+# Update the project to get latest features
+mc.update
+
+# Stop the server
+docker compose -p mc_fabric_creative-build down
+
+# Restart the server with updated configuration
+mc.start fabric_creative-build
+```
+
+## Troubleshooting
+
+### Error: Minecraft configuration file not found
+
+**Problem:** The configuration file doesn't exist.
+
+**Solution:**
+```bash
+mkdir -p ${EPX_HOME}/.config
+echo 'MINECRAFT_DIR="/path/to/minecraft/servers"' > ${EPX_HOME}/.config/minecraft.config
+```
+
+### Error: Failed to clone the Minecraft server repository
+
+**Problem:** Git clone failed.
+
+**Solution:**
+- Check your internet connection
+- Verify Git is installed: `git --version`
+- Check if the directory already exists and remove it if needed
+
+### Error: Server directory does not exist
+
+**Problem:** You're trying to start a server that hasn't been created.
+
+**Solution:**
+- List available servers: Run `mc.start` without arguments
+- Create the server first: `mc.add <type> <name>`
+
+### Container won't start
+
+**Problem:** Docker container fails to start.
+
+**Solution:**
+- Check Docker logs: `docker logs mc_{server_directory}-server`
+- Verify EULA is accepted in `config.env`: `EULA=TRUE`
+- Check port conflicts: Ensure the `SERVER_PORT` isn't already in use
+- Verify memory allocation: Ensure your system has enough RAM
+
+### Mods not loading
+
+**Problem:** Mods listed in `mods.curseforge.txt` or `mods.modrinth.txt` aren't loading.
+
+**Solution:**
+- Verify your CurseForge API key is set correctly
+- Check the mod IDs are correct (numeric for CurseForge, slugs for Modrinth)
+- Check container logs for download errors
+- Ensure the mods are compatible with your Minecraft version
+
+### Permission issues
+
+**Problem:** Permission denied errors when accessing server files.
+
+**Solution:**
+- The server runs as a specific user inside the container
+- Check file permissions in the `data` directory
+- You may need to adjust ownership: `sudo chown -R $(id -u):$(id -g) ${MINECRAFT_DIR}/servers/{server_directory}/data`
+
+## Additional Resources
+
+- [minecraft-server Project Repository](https://github.com/energypatrikhu/minecraft-server)
+- [itzg/minecraft-server Documentation](https://github.com/itzg/docker-minecraft-server)
+- [itzg/mc-backup Documentation](https://github.com/itzg/docker-mc-backup)
+- [CurseForge API](https://docs.curseforge.com/)
+- [Modrinth API](https://docs.modrinth.com/)
+
+## Contributing
+
+If you find issues or have suggestions for improvements, please open an issue or pull request on the [minecraft-server repository](https://github.com/energypatrikhu/minecraft-server).
+
+## License
+
+These scripts are part of the EPX shell scripts framework. Refer to the main repository for license information.

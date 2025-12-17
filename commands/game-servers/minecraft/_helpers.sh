@@ -1,14 +1,31 @@
 if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   . "${EPX_HOME}/.config/minecraft.config"
 
-  __epx-mc-get-configs() {
-    local configs
-    configs=$(find "${MINECRAFT_PROJECT_DIR}/configs" -type f -name "*.env" -not \( -name "@*" \) -printf '%f\n' | sed 's/\.env$//')
-    echo "${configs}"
+  __epx-mc-get-servers() {
+    local servers
+    servers=$(find "${MINECRAFT_DIR}/servers" -type d -maxdepth 1 -mindepth 1 -printf '%f\n')
+    echo "${servers}"
   }
-  __epx-mc-get-configs-examples() {
-    local examples
-    examples=$(find "${MINECRAFT_PROJECT_DIR}/configs/examples" -type f -name "@*.env" -printf '%f\n' | sed 's/^@example.//' | sed 's/\.env$//')
-    echo "${examples}"
+
+  __epx-mc-get-server-templates() {
+    local templates
+    templates=$(find "${MINECRAFT_DIR}/internals/templates/platforms" -type f -maxdepth 1 -mindepth 1 -printf '%f\n')
+    echo "${templates}"
+  }
+
+  __epx-mc-get-env-value() {
+    local config_env="${1-}"
+    local var_name="${2-}"
+    grep -iE "^${var_name}\s*=" "${config_env}" | sed -E "s/^${var_name}\s*=\s*//I; s/[[:space:]]*$//"
+  }
+
+  __epx-mc-get-backup-enabled() {
+    local config_env="${1-}"
+    local backup_enabled=$(__epx-mc-get-env-value "${config_env}" "BACKUP")
+    if [[ "${backup_enabled,,}" == "true" ]]; then
+      echo "true"
+    else
+      echo "false"
+    fi
   }
 fi

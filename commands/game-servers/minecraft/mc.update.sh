@@ -7,12 +7,12 @@ _cci git
 
 . "${EPX_HOME}/.config/minecraft.config"
 
-if [[ ! -d "${MINECRAFT_PROJECT_DIR}" ]]; then
-  echo "Error: Minecraft project directory does not exist. Please run 'mc.setup' first."
+if [[ ! -d "${MINECRAFT_DIR}" ]]; then
+  echo "Error: Minecraft project directory does not exist. Please run 'mc.install' first."
   exit 1
 fi
 
-cd "${MINECRAFT_PROJECT_DIR}" || exit
+cd "${MINECRAFT_DIR}" || exit
 if ! git pull; then
   echo "Error: Failed to update the Minecraft project."
   exit 1
