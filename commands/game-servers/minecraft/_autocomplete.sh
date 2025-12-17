@@ -7,7 +7,6 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
     _autocomplete "${containers}"
   }
   complete -F __epx-mc-list-containers mc.restart
-  complete -F __epx-mc-list-containers mc.start
   complete -F __epx-mc-list-containers mc.stop
   complete -F __epx-mc-list-containers mc.rm
 
@@ -16,7 +15,7 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
     servers="$(__epx-mc-get-servers "${1-}")"
     _autocomplete "${servers}"
   }
-  complete -F __epx-mc-list-servers mc.up
+  complete -F __epx-mc-list-servers mc.start
 
   __epx-mc-list-server-templates() {
     if [[ ${COMP_CWORD} -eq 1 ]]; then
