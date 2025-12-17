@@ -1,6 +1,12 @@
 if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   . "${EPX_HOME}/.config/minecraft.config"
 
+  __epx-mc-get-containers() {
+    local servers
+    servers=$(docker ps -a --format '{{.Names}}' | grep '^mc-' | grep '-server$' | sed 's/^mc-//;s/-server$//')
+    echo "${servers}"
+  }
+
   __epx-mc-get-servers() {
     local servers
     servers=$(find "${MINECRAFT_DIR}/servers" -maxdepth 1 -mindepth 1 -type d -printf '%f\n')

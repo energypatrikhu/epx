@@ -8,6 +8,9 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   }
   complete -F __epx-mc-list-containers mc.restart
   complete -F __epx-mc-list-containers mc.stop
+  complete -F __epx-mc-list-containers mc.shell
+  complete -F __epx-mc-list-containers mc.attach
+  complete -F __epx-mc-list-containers mc.log
   complete -F __epx-mc-list-containers mc.rm
 
   __epx-mc-list-servers() {
