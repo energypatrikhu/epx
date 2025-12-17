@@ -1,1 +1,1 @@
-d.rm "mc-${1-}"
+d.rm "mc-${1-}-server"

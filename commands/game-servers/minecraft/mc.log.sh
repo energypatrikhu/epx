@@ -1,1 +1,1 @@
-d.log "mc-${1-}"
+d.log "mc-${1-}-server"

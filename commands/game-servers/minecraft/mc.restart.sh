@@ -1,1 +1,1 @@
-d.restart "mc-${1-}"
+d.restart "mc-${1-}-server"

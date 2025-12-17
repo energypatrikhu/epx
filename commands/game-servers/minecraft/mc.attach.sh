@@ -1,1 +1,1 @@
-d.attach "mc-${1-}"
+d.attach "mc-${1-}-server"
