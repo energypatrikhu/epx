@@ -79,3 +79,13 @@ fi
 
 rm -f "${tmp_env_file}"
 echo "Minecraft server '${server_dir}' started successfully."
+
+if [[ -f "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
+  if [[ ! -s "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
+    echo ""
+    echo "Warning: CurseForge API key file is empty. You may need to set your API key in '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt' to download CurseForge mods."
+  fi
+else
+  echo ""
+  echo "Warning: CurseForge API key file not found at '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt'. You may need to create this file and add your API key to download CurseForge mods."
+fi

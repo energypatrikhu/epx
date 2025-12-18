@@ -86,3 +86,14 @@ echo "${mods_modrinth_template_file_content}" >> "${server_directory}/mods.modri
 
 echo "Server '${server_name}' of type '${server_type}' created successfully at '${server_directory}'."
 echo "You can now customize the configuration files and start the server using 'mc.start ${server_type}_${server_name}'."
+echo "To view all servers, use the command: mc.list"
+
+if [[ -f "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
+  if [[ ! -s "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
+    echo ""
+    echo "Warning: CurseForge API key file is empty. You may need to set your API key in '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt' to download CurseForge mods."
+  fi
+else
+  echo ""
+  echo "Warning: CurseForge API key file not found at '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt'. You may need to create this file and add your API key to download CurseForge mods."
+fi
