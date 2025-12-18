@@ -78,12 +78,6 @@ if [[ -n "${api_key_warning}" ]] && [[ -f "${server_dir_full}/mods.curseforge.tx
   fi
 fi
 
-if [[ -n "${api_key_warning}" ]]; then
-  echo ""
-  echo "${api_key_warning}"
-  echo ""
-fi
-
 if [[ "${backup_enabled}" == "true" ]]; then
   docker compose \
     -p "${project_name}" \
@@ -106,12 +100,8 @@ fi
 rm -f "${tmp_env_file}"
 echo "Minecraft server '${server_dir}' started successfully."
 
-if [[ -f "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
-  if [[ ! -s "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
-    echo ""
-    echo "Warning: CurseForge API key file is empty. You may need to set your API key in '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt' to download CurseForge mods."
-  fi
-else
+if [[ -n "${api_key_warning}" ]]; then
   echo ""
-  echo "Warning: CurseForge API key file not found at '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt'. You may need to create this file and add your API key to download CurseForge mods."
+  echo "${api_key_warning}"
+  echo ""
 fi
