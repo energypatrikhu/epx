@@ -41,7 +41,7 @@ if [[ ! -d "${server_dir_full}" ]]; then
   exit 1
 fi
 
-server_type="$(_epx-mc-get-platform-type "${server_dir_full}")"
+server_type="$(__epx-mc-get-platform-type "${server_dir_full}")"
 project_name="mc_${server_dir}"
 config_env="${server_dir_full}/config.env"
 backup_enabled=$(__epx-mc-get-backup-enabled "${config_env}")
