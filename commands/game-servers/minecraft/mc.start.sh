@@ -59,22 +59,6 @@ else
   echo "> Backup is disabled"
 fi
 
-echo -e "> Environment Variables:"
-if [[ -s "${config_env}" ]]; then
-  grep -v '^[[:space:]]*#' "${config_env}" | grep -E '^[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=' | while IFS= read -r line; do
-    echo "  - ${line}"
-  done
-else
-  echo "  (No variables in ${config_env})"
-fi
-if [[ -s "${tmp_env_file}" ]]; then
-  grep -v '^[[:space:]]*#' "${tmp_env_file}" | grep -E '^[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=' | while IFS= read -r line; do
-    echo "  - ${line}"
-  done
-else
-  echo "  (No variables in ${tmp_env_file})"
-fi
-
 if [[ "${backup_enabled}" == "true" ]]; then
   docker compose \
     -p "${project_name}" \
