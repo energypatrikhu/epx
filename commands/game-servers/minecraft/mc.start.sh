@@ -41,14 +41,13 @@ if [[ ! -d "${server_dir_full}" ]]; then
   exit 1
 fi
 
-server_type=$(echo "${server_dir}" | awk -F'_' '{print $1}')
-server_name=$(echo "${server_dir}" | awk -F'_' '{print $2}')
 project_name="mc_${server_dir}"
 config_env="${server_dir_full}/config.env"
 backup_enabled=$(__epx-mc-get-backup-enabled "${config_env}")
 
 # create a tmp env file to hold dynamic variables
 tmp_env_file=$(mktemp)
+echo "SERVER_TYPE = $(__epx-mc-get-env-value "${config_env}" "SERVER_TYPE")" >>"${tmp_env_file}"
 echo "SERVER_DIR = ${server_dir}" >>"${tmp_env_file}"
 
 echo "Starting Minecraft Server"
