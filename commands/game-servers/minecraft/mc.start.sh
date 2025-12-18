@@ -68,12 +68,14 @@ else
 fi
 
 if [[ -n "${api_key_warning}" ]] && [[ -f "${server_dir_full}/mods.curseforge.txt" ]] && [[ -s "${server_dir_full}/mods.curseforge.txt" ]]; then
-  echo ""
-  echo "${api_key_warning}"
-  echo ""
-  echo "Error: Cannot start server because CurseForge mods are configured but API key is not set."
-  rm -f "${tmp_env_file}"
-  exit 1
+  if grep -v '^[[:space:]]*#' "${server_dir_full}/mods.curseforge.txt" | grep -q '[^[:space:]]'; then
+    echo ""
+    echo "${api_key_warning}"
+    echo ""
+    echo "Error: Cannot start server because CurseForge mods are configured but API key is not set."
+    rm -f "${tmp_env_file}"
+    exit 1
+  fi
 fi
 
 if [[ -n "${api_key_warning}" ]]; then
