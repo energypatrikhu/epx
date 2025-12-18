@@ -1,2 +1,5 @@
 d.restart "mc-${1-}-server"
-d.restart "mc-${1-}-backup" || true
+
+if docker ps -a --format '{{.Names}}' | grep -q "^mc-${1-}-backup$"; then
+  d.restart "mc-${1-}-backup" || true
+fi

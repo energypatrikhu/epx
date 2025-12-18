@@ -1,2 +1,5 @@
 d.stop "mc-${1-}-server"
-d.stop "mc-${1-}-backup" || true
+
+if docker ps -a --format '{{.Names}}' | grep -q "^mc-${1-}-backup$"; then
+  d.stop "mc-${1-}-backup" || true
+fi
