@@ -34,4 +34,12 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
       echo "false"
     fi
   }
+
+  _epx-mc-get-platform-type() {
+    local server_dir="${1-}"
+    local platform_type
+    platform_type=$(basename -- "${server_dir}")
+    platform_type=${platform_type%%_*}
+    echo "${platform_type}"
+  }
 fi

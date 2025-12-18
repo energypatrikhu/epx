@@ -61,6 +61,7 @@ mkdir -p "${server_directory}/extras/data"
 mkdir -p "${server_directory}/extras/mods"
 mkdir -p "${server_directory}/extras/plugins"
 
+touch "${server_directory}/.platform-${server_type}"
 touch "${server_directory}/config.env"
 touch "${server_directory}/mods.curseforge.txt"
 touch "${server_directory}/mods.modrinth.txt"
