@@ -84,4 +84,4 @@ echo "${mods_curseforge_template_file_content}" >> "${server_directory}/mods.cur
 echo "${mods_modrinth_template_file_content}" >> "${server_directory}/mods.modrinth.txt"
 
 echo "Server '${server_name}' of type '${server_type}' created successfully at '${server_directory}'."
-echo "You can now customize the configuration files and start the server using 'mc.up ${server_type}_${server_name}'."
+echo "You can now customize the configuration files and start the server using 'mc.start ${server_type}_${server_name}'."
