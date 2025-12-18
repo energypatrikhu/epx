@@ -38,10 +38,10 @@ if ! __epx-mc-get-server-templates | grep -qx "${server_type}"; then
   exit 1
 fi
 
-server_directory="${MINECRAFT_DIR}/servers/${server_type}_${server_name}"
+server_directory="${MINECRAFT_DIR}/servers/${server_name}"
 
 if [[ -d "${server_directory}" ]]; then
-  echo "Error: Server directory '${server_directory}' already exists."
+  echo "Error: Server directory '${server_name}' already exists."
   exit 1
 fi
 
@@ -75,7 +75,10 @@ mods_modrinth_template_file_content=$(cat "${mods_modrinth_template_file}")
 
 echo "Populating configuration files from templates..."
 
-echo "${platform_template_file_content}" > "${server_directory}/config.env"
+echo "# DO EDIT THE \"SERVER_TYPE\" ENVIRONMENT VARIABLE BELOW" >> "${server_directory}/config.env"
+echo "SERVER_TYPE = ${server_type}" >> "${server_directory}/config.env"
+echo "" >> "${server_directory}/config.env"
+echo "${platform_template_file_content}" >> "${server_directory}/config.env"
 echo "" >> "${server_directory}/config.env"
 echo "${backup_template_file_content}" >> "${server_directory}/config.env"
 echo "" >> "${server_directory}/config.env"
