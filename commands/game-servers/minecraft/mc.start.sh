@@ -58,6 +58,30 @@ else
   echo "> Backup is disabled"
 fi
 
+api_key_warning=""
+if [[ -f "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
+  if [[ ! -s "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
+    api_key_warning="Warning: CurseForge API key file is empty. You may need to set your API key in '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt' to download CurseForge mods."
+  fi
+else
+  api_key_warning="Warning: CurseForge API key file not found at '${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt'. You may need to create this file and add your API key to download CurseForge mods."
+fi
+
+if [[ -n "${api_key_warning}" ]] && [[ -f "${server_dir_full}/mods.curseforge.txt" ]] && [[ -s "${server_dir_full}/mods.curseforge.txt" ]]; then
+  echo ""
+  echo "${api_key_warning}"
+  echo ""
+  echo "Error: Cannot start server because CurseForge mods are configured but API key is not set."
+  rm -f "${tmp_env_file}"
+  exit 1
+fi
+
+if [[ -n "${api_key_warning}" ]]; then
+  echo ""
+  echo "${api_key_warning}"
+  echo ""
+fi
+
 if [[ "${backup_enabled}" == "true" ]]; then
   docker compose \
     -p "${project_name}" \
