@@ -75,16 +75,13 @@ mods_modrinth_template_file_content=$(cat "${mods_modrinth_template_file}")
 
 echo "Populating configuration files from templates..."
 
-echo "# DO EDIT THE \"SERVER_TYPE\" ENVIRONMENT VARIABLE BELOW" >> "${server_directory}/config.env"
-echo "SERVER_TYPE = ${server_type}" >> "${server_directory}/config.env"
-echo "" >> "${server_directory}/config.env"
 echo "${platform_template_file_content}" >> "${server_directory}/config.env"
 echo "" >> "${server_directory}/config.env"
 echo "${backup_template_file_content}" >> "${server_directory}/config.env"
 echo "" >> "${server_directory}/config.env"
 echo "${properties_template_file_content}" >> "${server_directory}/config.env"
-echo "${mods_curseforge_template_file_content}" > "${server_directory}/mods.curseforge.txt"
-echo "${mods_modrinth_template_file_content}" > "${server_directory}/mods.modrinth.txt"
+echo "${mods_curseforge_template_file_content}" >> "${server_directory}/mods.curseforge.txt"
+echo "${mods_modrinth_template_file_content}" >> "${server_directory}/mods.modrinth.txt"
 
 echo "Server '${server_name}' of type '${server_type}' created successfully at '${server_directory}'."
 echo "You can now customize the configuration files and start the server using 'mc.up ${server_type}_${server_name}'."
