@@ -16,7 +16,7 @@ if [[ ! -d "${MINECRAFT_DIR}" ]]; then
   exit 1
 fi
 
-cd "${MINECRAFT_DIR}" || exit
+cd "${MINECRAFT_DIR}/internals" || exit
 if ! git pull; then
   echo "Error: Failed to update the Minecraft project."
   exit 1
