@@ -35,11 +35,12 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
     fi
   }
 
-  _epx-mc-get-platform-type() {
+  __epx-mc-get-platform-type() {
     local server_dir="${1-}"
-    local platform_type
-    platform_type=$(basename -- "${server_dir}")
-    platform_type=${platform_type%%_*}
-    echo "${platform_type}"
+    local platform_file
+    platform_file=$(find "${server_dir}" -maxdepth 1 -name '.platform-*' -type f -printf '%f\n' | head -n 1)
+    if [[ -n "${platform_file}" ]]; then
+      echo "${platform_file#.platform-}"
+    fi
   }
 fi
