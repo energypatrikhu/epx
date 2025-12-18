@@ -11,7 +11,7 @@ fi
 
 source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
-if ! git clone https://github.com/energypatrikhu/minecraft-server "${MINECRAFT_DIR}"; then
+if ! git clone https://github.com/energypatrikhu/minecraft-server "${MINECRAFT_DIR}/internals"; then
   echo "Error: Failed to clone the Minecraft server repository."
   exit 1
 fi
