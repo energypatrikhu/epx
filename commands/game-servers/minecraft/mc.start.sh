@@ -61,6 +61,9 @@ fi
 if [[ -n "${whitelist_file_content}" ]]; then
   echo "WHITELIST = $(__epx-mc-multiline-to-comma-separated "${whitelist_file_content}")" >>"${tmp_env_file}"
 fi
+if [[ -f /proc/net/if_inet6 ]] || ip -6 addr show 2>/dev/null | grep -q "inet6"; then
+  echo "ENABLE_IPV6 = true" >>"${tmp_env_file}"
+fi
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_GREEN "Starting Minecraft Server")"
 if [[ "${backup_enabled}" == "true" ]]; then
