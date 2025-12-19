@@ -16,6 +16,6 @@ fi
 
 source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
-echo "Available Minecraft Servers:"
+echo -e "[$(_c LIGHT_BLUE "Minecraft - List")] $(_c LIGHT_GREEN "Available Minecraft Servers:")"
 __epx-mc-get-servers | sed 's/^/  /'
-echo "Usage: mc.start <server_name>"
+echo -e "[$(_c LIGHT_BLUE "Minecraft - List")] $(_c LIGHT_YELLOW "Usage:") $(_c LIGHT_CYAN "mc.start <server_name>")"

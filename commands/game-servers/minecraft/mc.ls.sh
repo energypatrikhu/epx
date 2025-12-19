@@ -16,5 +16,5 @@ fi
 
 source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
-echo "Minecraft containers:"
+echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")] $(_c LIGHT_GREEN "Minecraft containers:")"
 __epx-mc-get-containers | sed 's/^/  /'
