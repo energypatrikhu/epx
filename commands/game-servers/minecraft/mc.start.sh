@@ -72,10 +72,10 @@ fi
 api_key_warning=""
 if [[ -f "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
   if [[ ! -s "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt" ]]; then
-    api_key_warning="[$(_c LIGHT_BLUE \"Minecraft - Start\")] $(_c LIGHT_YELLOW \"Warning:\") CurseForge API key file is empty. You may need to set your API key in $(_c LIGHT_YELLOW \"${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt\") to download CurseForge mods."
+    api_key_warning="[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_YELLOW "Warning:") CurseForge API key file is empty. You may need to set your API key in $(_c LIGHT_YELLOW "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt") to download CurseForge mods."
   fi
 else
-  api_key_warning="[$(_c LIGHT_BLUE \"Minecraft - Start\")] $(_c LIGHT_YELLOW \"Warning:\") CurseForge API key file not found at $(_c LIGHT_YELLOW \"${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt\"). You may need to create this file and add your API key to download CurseForge mods."
+  api_key_warning="[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_YELLOW "Warning:") CurseForge API key file not found at $(_c LIGHT_YELLOW "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt"). You may need to create this file and add your API key to download CurseForge mods."
 fi
 
 if [[ -n "${api_key_warning}" ]] && [[ -f "${server_dir_full}/mods.curseforge.txt" ]] && [[ -s "${server_dir_full}/mods.curseforge.txt" ]]; then
@@ -83,7 +83,7 @@ if [[ -n "${api_key_warning}" ]] && [[ -f "${server_dir_full}/mods.curseforge.tx
     echo ""
     echo -e "${api_key_warning}"
     echo ""
-    echo -e "[$(_c LIGHT_BLUE \"Minecraft - Start\")] $(_c LIGHT_RED \"Error:\") Cannot start server because CurseForge mods are configured but API key is not set."
+    echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_RED "Error:") Cannot start server because CurseForge mods are configured but API key is not set."
     rm -f "${tmp_env_file}"
     exit 1
   fi
