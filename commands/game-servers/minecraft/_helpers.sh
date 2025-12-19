@@ -46,6 +46,6 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
 
   __epx-mc-multiline-to-comma-separated() {
     local input="${1-}"
-    echo "${input}" | tr '\n' ',' | sed 's/,$//'
+    echo "${input}" | tr '\r\n' ',' | sed 's/,$//'
   }
 fi
