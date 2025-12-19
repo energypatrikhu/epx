@@ -1,5 +1,5 @@
 if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
-  echo "Error: Minecraft configuration file not found. Please configure '${EPX_HOME}/.config/minecraft.config' and run 'mc.install'."
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List")] $(_c LIGHT_RED "Error:") Minecraft configuration file not found. Please configure $(_c LIGHT_YELLOW "${EPX_HOME}/.config/minecraft.config") and run $(_c LIGHT_CYAN "mc.install")"
   exit 1
 fi
 
@@ -10,7 +10,7 @@ if [[ -z "${MINECRAFT_DIR:-}" ]]; then
   exit 1
 fi
 if [[ ! -d "${MINECRAFT_DIR}" ]]; then
-  echo "Error: Minecraft project directory does not exist. Please run 'mc.install' first."
+  echo "Error: Minecraft project directory does not exist. Please run mc.install first."
   exit 1
 fi
 
