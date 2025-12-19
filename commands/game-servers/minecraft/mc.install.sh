@@ -18,6 +18,8 @@ fi
 
 echo "Setting up Minecraft project structure..."
 mkdir -p "${MINECRAFT_DIR}/servers"
+mkdir -p "${MINECRAFT_DIR}/internals/secrets"
+touch "${MINECRAFT_DIR}/internals/secrets/curseforge_api_key.txt"
 
 echo "Minecraft project install completed successfully."
 echo "You can now configure your Minecraft servers."
