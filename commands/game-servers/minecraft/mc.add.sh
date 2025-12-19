@@ -77,6 +77,7 @@ mods_modrinth_template_file_content=$(cat "${mods_modrinth_template_file}")
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Populating configuration files from templates..."
 
 echo "${platform_template_file_content}" >> "${server_directory}/config.env"
+echo "ENABLE_IPV6 = false" >> "${server_directory}/config.env"
 echo "" >> "${server_directory}/config.env"
 echo "${backup_template_file_content}" >> "${server_directory}/config.env"
 echo "" >> "${server_directory}/config.env"
