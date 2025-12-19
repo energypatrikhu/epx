@@ -61,7 +61,8 @@ fi
 if [[ -n "${whitelist_file_content}" ]]; then
   echo "WHITELIST = $(__epx-mc-multiline-to-comma-separated "${whitelist_file_content}")" >>"${tmp_env_file}"
 fi
-if [[ -f /proc/net/if_inet6 ]] || ip -6 addr show 2>/dev/null | grep -q "inet6"; then
+# Only enable IPv6 if it's actually usable (not just present)
+if [[ -f /proc/net/if_inet6 ]] && ip -6 addr show 2>/dev/null | grep -q "inet6" && ip6tables -L -n &>/dev/null; then
   echo "ENABLE_IPV6 = true" >>"${tmp_env_file}"
 fi
 
