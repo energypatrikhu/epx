@@ -43,4 +43,9 @@ if [[ -f "${EPX_HOME}/.config/minecraft.config" ]]; then
       echo "${platform_file#.platform-}"
     fi
   }
+
+  __epx-mc-multiline-to-comma-separated() {
+    local input="${1-}"
+    echo "${input}" | tr '\n' ',' | sed 's/,$//'
+  }
 fi

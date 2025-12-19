@@ -44,12 +44,23 @@ fi
 server_type="$(__epx-mc-get-platform-type "${server_dir_full}")"
 project_name="mc_${server_dir}"
 config_env="${server_dir_full}/config.env"
+whitelist_file="${server_dir_full}/whitelist.txt"
+ops_file="${server_dir_full}/ops.txt"
 backup_enabled=$(__epx-mc-get-backup-enabled "${config_env}")
+
+whitelist_file_content="$(grep -v '^[[:space:]]*#' "${whitelist_file}" | grep '[^[:space:]]')"
+ops_file_content="$(grep -v '^[[:space:]]*#' "${ops_file}" | grep '[^[:space:]]')"
 
 # create a tmp env file to hold dynamic variables
 tmp_env_file=$(mktemp)
 echo "SERVER_TYPE = ${server_type}" >>"${tmp_env_file}"
 echo "SERVER_DIR = ${server_dir}" >>"${tmp_env_file}"
+if [[ -n "${ops_file_content}" ]]; then
+  echo "OPS = $(__epx-mc-multiline-to-comma-separated "${ops_file_content}")" >>"${tmp_env_file}"
+fi
+if [[ -n "${whitelist_file_content}" ]]; then
+  echo "WHITELIST = $(__epx-mc-multiline-to-comma-separated "${whitelist_file_content}")" >>"${tmp_env_file}"
+fi
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_GREEN "Starting Minecraft Server")"
 if [[ "${backup_enabled}" == "true" ]]; then
