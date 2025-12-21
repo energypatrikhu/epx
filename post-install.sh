@@ -77,6 +77,11 @@ if command -v fish &> /dev/null; then
 # EPX Environment Setup for Fish Shell
 set -gx EPX_HOME "/usr/local/epx"
 
+# Source EPX aliases for fish
+if test -f "$EPX_HOME/aliases.fish"
+  source "$EPX_HOME/aliases.fish"
+end
+
 # Source EPX autocomplete for fish
 if test -f "$EPX_HOME/autocomplete.fish"
   source "$EPX_HOME/autocomplete.fish"
@@ -89,6 +94,17 @@ EOF
     if ! grep -Fq "EPX_HOME" "${EPX_FISH_CONFIG}"; then
       echo 'set -gx EPX_HOME "/usr/local/epx"' >> "${EPX_FISH_CONFIG}"
       echo "Added EPX_HOME to ${EPX_FISH_CONFIG}"
+    fi
+
+    if ! grep -Fq "aliases.fish" "${EPX_FISH_CONFIG}"; then
+      cat >> "${EPX_FISH_CONFIG}" << 'EOF'
+
+# Source EPX aliases for fish
+if test -f "$EPX_HOME/aliases.fish"
+  source "$EPX_HOME/aliases.fish"
+end
+EOF
+      echo "Added aliases.fish to ${EPX_FISH_CONFIG}"
     fi
 
     if ! grep -Fq "autocomplete.fish" "${EPX_FISH_CONFIG}"; then

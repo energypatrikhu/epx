@@ -1,23 +1,23 @@
 # Bash completions for LinuxGSM commands
-_gsm_autocomplete() {
+__epx_bash_gsm_containers() {
   local containers
   containers="$(docker ps -a --format '{{.Names}}' | grep '^linuxgsm-' | sed 's/^linuxgsm-//')"
   _autocomplete "${containers}"
 }
-complete -F _gsm_autocomplete gsm
-complete -F _gsm_autocomplete gsm.start
-complete -F _gsm_autocomplete gsm.stop
-complete -F _gsm_autocomplete gsm.rm
+complete -F __epx_bash_gsm_containers gsm
+complete -F __epx_bash_gsm_containers gsm.start
+complete -F __epx_bash_gsm_containers gsm.stop
+complete -F __epx_bash_gsm_containers gsm.rm
 
-_gsm_autocomplete_add() {
+__epx_bash_gsm_serverlist() {
   # https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/refs/heads/master/lgsm/data/serverlist.csv
   local servers
   servers="$(curl -sL https://raw.githubusercontent.com/GameServerManagers/LinuxGSM/refs/heads/master/lgsm/data/serverlist.csv | cut -d, -f1 | tail -n +2)"
   _autocomplete "${servers}"
 }
-complete -F _gsm_autocomplete_add gsm.add
+complete -F __epx_bash_gsm_serverlist gsm.add
 
-_gsm_autocomplete_compose() {
+__epx_bash_gsm_compose_directories() {
   . "${EPX_HOME}/.config/docker.config"
 
   local container_dirs=()
@@ -36,5 +36,5 @@ _gsm_autocomplete_compose() {
   _autocomplete "${container_dirs[@]}"
 }
 if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
-  complete -F _gsm_autocomplete_compose gsm.up
+  complete -F __epx_bash_gsm_compose_directories gsm.up
 fi

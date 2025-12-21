@@ -1,50 +1,49 @@
-# Bash completions for docker commands
-_d_autocomplete() {
+__epx_bash_d_containers() {
   local containers
   containers="$(docker ps -a --format '{{.Names}}')"
   _autocomplete "${containers}"
 }
-complete -F _d_autocomplete d.attach
-complete -F _d_autocomplete d.exec
-complete -F _d_autocomplete d.inspect
-complete -F _d_autocomplete d.i
-complete -F _d_autocomplete d.logs
-complete -F _d_autocomplete d.log
-complete -F _d_autocomplete d.shell
+complete -F __epx_bash_d_containers d.attach
+complete -F __epx_bash_d_containers d.exec
+complete -F __epx_bash_d_containers d.inspect
+complete -F __epx_bash_d_containers d.i
+complete -F __epx_bash_d_containers d.logs
+complete -F __epx_bash_d_containers d.log
+complete -F __epx_bash_d_containers d.shell
 
-_d_autocomplete_all() {
+__epx_bash_d_containers_with_all() {
   local containers
   containers="$(docker ps -a --format '{{.Names}}')"
   _autocomplete "all ${containers}"
 }
-complete -F _d_autocomplete_all d.remove
-complete -F _d_autocomplete_all d.rm
-complete -F _d_autocomplete_all d.restart
-complete -F _d_autocomplete_all d.start
-complete -F _d_autocomplete_all d.stop
-complete -F _d_autocomplete_all d.stats
-complete -F _d_autocomplete_all d.stat
+complete -F __epx_bash_d_containers_with_all d.remove
+complete -F __epx_bash_d_containers_with_all d.rm
+complete -F __epx_bash_d_containers_with_all d.restart
+complete -F __epx_bash_d_containers_with_all d.start
+complete -F __epx_bash_d_containers_with_all d.stop
+complete -F __epx_bash_d_containers_with_all d.stats
+complete -F __epx_bash_d_containers_with_all d.stat
 
-_d_autocomplete_list() {
+__epx_bash_d_containers_list() {
   _autocomplete "created restarting running removing paused exited dead"
 }
-complete -F _d_autocomplete_list d.list
-complete -F _d_autocomplete_list d.ls
+complete -F __epx_bash_d_containers_list d.list
+complete -F __epx_bash_d_containers_list d.ls
 
-_d_autocomplete_prune() {
+__epx_bash_d_containers_prune() {
   _autocomplete "all images containers volumes networks build"
 }
-complete -F _d_autocomplete_prune d.prune
+complete -F __epx_bash_d_containers_prune d.prune
 
-_d_autocomplete_templates() {
+__epx_bash_d_container_templates() {
   local available_templates
   available_templates="$(find "${EPX_HOME}"/.templates/docker/dockerfile -maxdepth 1 -type f -name '*.template' -exec basename {} .template \; | tr '\n' ' ')"
   _autocomplete "${available_templates}"
 }
-complete -F _d_autocomplete_templates d.make
-complete -F _d_autocomplete_templates d.mk
+complete -F __epx_bash_d_container_templates d.make
+complete -F __epx_bash_d_container_templates d.mk
 
-_d_autocomplete_compose() {
+__epx_bash_d_container_directories() {
   . "${EPX_HOME}/.config/docker.config"
 
   local container_dirs=()
@@ -60,15 +59,15 @@ _d_autocomplete_compose() {
   _autocomplete "${container_dirs[@]}"
 }
 if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
-  complete -F _d_autocomplete_compose d.up
-  complete -F _d_autocomplete_compose d.pull
+  complete -F __epx_bash_d_container_directories d.up
+  complete -F __epx_bash_d_container_directories d.pull
 fi
 
 if [ -f "/usr/share/bash-completion/completions/docker" ]; then
   source /usr/share/bash-completion/completions/docker
   complete -F __start_docker d
 
-  _dc_completions() {
+  __epx_bash_dc_completions() {
     local i
     local -a new_words=("docker" "compose")
     for ((i=1; i<${#COMP_WORDS[@]}; i++)); do
@@ -81,9 +80,9 @@ if [ -f "/usr/share/bash-completion/completions/docker" ]; then
 
     __start_docker
   }
-  complete -F _dc_completions dc
+  complete -F __epx_bash_dc_completions dc
 
-  _d.net_completions() {
+  __epx_bash_d_net_completions() {
     local i
     local -a new_words=("docker" "network")
     for ((i=1; i<${#COMP_WORDS[@]}; i++)); do
@@ -103,6 +102,6 @@ if [ -f "/usr/share/bash-completion/completions/docker" ]; then
 
     __start_docker
   }
-  complete -F _d.net_completions d.net
-  complete -F _d.net_completions d.network
+  complete -F __epx_bash_d_net_completions d.net
+  complete -F __epx_bash_d_net_completions d.network
 fi

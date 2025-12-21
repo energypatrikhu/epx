@@ -1,9 +1,7 @@
-# Fish autocomplete for EPX
-
-function __epx_load_autocomplete
+function __epx_fish_load_autocomplete
   for element in $argv[1]/*
     if test -d "$element"
-      __epx_load_autocomplete "$element"
+      __epx_fish_load_autocomplete "$element"
       continue
     end
 
@@ -16,7 +14,6 @@ function __epx_load_autocomplete
   end
 end
 
-__epx_load_autocomplete "$EPX_HOME/commands"
+__epx_fish_load_autocomplete "$EPX_HOME/commands"
 
-# EPX main completions
 complete -c epx -a 'self-update mk-cert update-bees backup'
