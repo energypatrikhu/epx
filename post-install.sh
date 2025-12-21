@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o errexit
 set -o nounset
@@ -29,7 +29,7 @@ EPX_FISH_CONFIG="${HOME}/.config/fish/conf.d/00-epx.fish"
 # Setup for bash/sh shells
 if [[ ! -f "${EPX_BIN}" ]]; then
   echo "Creating ${EPX_BIN}"
-  echo "#!/bin/bash" > "${EPX_BIN}"
+  echo "#!/usr/bin/env bash" > "${EPX_BIN}"
 
   if [[ ! -f "${ENV_FILE}" ]]; then
     echo "export EPX_HOME=\"${EPX_HOME}\"" >> "${EPX_BIN}"
