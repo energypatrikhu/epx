@@ -5,12 +5,12 @@ if test -f "$EPX_HOME/.config/minecraft.config"
     docker ps -a --format '{{.Names}}' | grep '^mc-' | grep '-server$' | sed 's/^mc-//;s/-server$//'
   end
 
-  complete -c mc.restart -a '(__epx_fish_mc_containers)'
-  complete -c mc.stop -a '(__epx_fish_mc_containers)'
-  complete -c mc.shell -a '(__epx_fish_mc_containers)'
-  complete -c mc.attach -a '(__epx_fish_mc_containers)'
-  complete -c mc.log -a '(__epx_fish_mc_containers)'
-  complete -c mc.rm -a '(__epx_fish_mc_containers)'
+  complete -c mc.restart -f -a '(__epx_fish_mc_containers)'
+  complete -c mc.stop -f -a '(__epx_fish_mc_containers)'
+  complete -c mc.shell -f -a '(__epx_fish_mc_containers)'
+  complete -c mc.attach -f -a '(__epx_fish_mc_containers)'
+  complete -c mc.log -f -a '(__epx_fish_mc_containers)'
+  complete -c mc.rm -f -a '(__epx_fish_mc_containers)'
 
   function __epx_fish_mc_servers
     set -l config_file "$EPX_HOME/.config/minecraft.config"
@@ -25,7 +25,7 @@ if test -f "$EPX_HOME/.config/minecraft.config"
     end
   end
 
-  complete -c mc.start -a '(__epx_fish_mc_servers)'
+  complete -c mc.start -f -a '(__epx_fish_mc_servers)'
 
   function __epx_fish_mc_templates
     set -l config_file "$EPX_HOME/.config/minecraft.config"
@@ -40,5 +40,5 @@ if test -f "$EPX_HOME/.config/minecraft.config"
     end
   end
 
-  complete -c mc.add -a '(__epx_fish_mc_templates)'
+  complete -c mc.add -f -a '(__epx_fish_mc_templates)'
 end
