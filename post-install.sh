@@ -24,6 +24,9 @@ fi
 
 # Add EPX_HOME and source epx.sh to the profile.d script
 EPX_BIN="${PROFILE_DIR}/00-epx.sh"
+EPX_FISH_CONFIG="${HOME}/.config/fish/conf.d/00-epx.fish"
+
+# Setup for bash/sh shells
 if [[ ! -f "${EPX_BIN}" ]]; then
   echo "Creating ${EPX_BIN}"
   echo "#!/bin/bash" > "${EPX_BIN}"
@@ -58,6 +61,46 @@ else
   if ! grep -Fq "autocomplete.sh" "${EPX_BIN}"; then
     echo "source \"\${EPX_HOME}/autocomplete.sh\"" >> "${EPX_BIN}"
     echo "Added missing autocomplete.sh to ${EPX_BIN}"
+  fi
+fi
+
+# Setup for fish shell
+if command -v fish &> /dev/null; then
+  echo "Detected fish shell, setting up fish configuration..."
+
+  # Create fish config directory if it doesn't exist
+  mkdir -p "$(dirname "${EPX_FISH_CONFIG}")"
+
+  if [[ ! -f "${EPX_FISH_CONFIG}" ]]; then
+    echo "Creating ${EPX_FISH_CONFIG}"
+    cat > "${EPX_FISH_CONFIG}" << 'EOF'
+# EPX Environment Setup for Fish Shell
+set -gx EPX_HOME "/usr/local/epx"
+
+# Source EPX autocomplete for fish
+if test -f "$EPX_HOME/autocomplete.fish"
+  source "$EPX_HOME/autocomplete.fish"
+end
+EOF
+    echo "Fish configuration created at ${EPX_FISH_CONFIG}"
+  else
+    echo "${EPX_FISH_CONFIG} already exists"
+
+    if ! grep -Fq "EPX_HOME" "${EPX_FISH_CONFIG}"; then
+      echo 'set -gx EPX_HOME "/usr/local/epx"' >> "${EPX_FISH_CONFIG}"
+      echo "Added EPX_HOME to ${EPX_FISH_CONFIG}"
+    fi
+
+    if ! grep -Fq "autocomplete.fish" "${EPX_FISH_CONFIG}"; then
+      cat >> "${EPX_FISH_CONFIG}" << 'EOF'
+
+# Source EPX autocomplete for fish
+if test -f "$EPX_HOME/autocomplete.fish"
+  source "$EPX_HOME/autocomplete.fish"
+end
+EOF
+      echo "Added autocomplete.fish to ${EPX_FISH_CONFIG}"
+    fi
   fi
 fi
 

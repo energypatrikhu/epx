@@ -20,14 +20,7 @@ _load_autocomplete() {
 }
 _load_autocomplete "${EPX_HOME}/commands"
 
-# Detect current shell
-_EPX_SHELL=$(_epx_detect_shell)
-
-if [ "$_EPX_SHELL" = "bash" ]; then
-  _epx_completions() {
-    _autocomplete "self-update mk-cert update-bees backup"
-  }
-  complete -F _epx_completions epx
-elif [ "$_EPX_SHELL" = "fish" ]; then
-  complete -c epx -a 'self-update mk-cert update-bees backup'
-fi
+_epx_completions() {
+  _autocomplete "self-update mk-cert update-bees backup"
+}
+complete -F _epx_completions epx
