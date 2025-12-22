@@ -131,11 +131,6 @@ if [[ -n $* ]]; then
       continue
     fi
 
-    if [[ -f "${c_dir}/.ignore-update" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_YELLOW "Skipping") ${c_name} $(_c LIGHT_YELLOW "as") .ignore-update $(_c LIGHT_YELLOW "file is present in") ${c_dir}"
-      continue
-    fi
-
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Starting") ${c_name}..."
     c_up "${c_file}"
   done
@@ -148,11 +143,6 @@ c_file="$(get_compose_filename)"
 if [[ -z "${c_file}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] docker-compose.yml $(_c LIGHT_RED "not found in current directory")"
   help
-  exit
-fi
-
-if [[ -f ".ignore-update" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Skipping as") .ignore-update $(_c LIGHT_YELLOW "file is present in current directory")"
   exit
 fi
 
