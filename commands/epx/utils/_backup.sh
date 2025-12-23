@@ -123,7 +123,6 @@ __epx_backup() {
 
   # Set backup info variables
   local backup_info="${output_path}/backup-info.log"
-  # local backup_dir="${output_path}/${current_timestamp}"
   local backup_file="${output_path}/${current_timestamp}.tar.zst"
 
   # Create an array of excluded directories and files
