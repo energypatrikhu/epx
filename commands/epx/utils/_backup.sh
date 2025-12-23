@@ -105,11 +105,11 @@ __epx_backup() {
   local input_path="${1-}"
   local output_path="${2-}"
   local backups_to_keep="${3-}"
-  local excluded=""${4-}""
+  local excluded=("${@:4}")
 
   # Stop the script if any of the required arguments are missing
   if [[ -z "${input_path}" || -z "${output_path}" || -z "${backups_to_keep}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Usage: epx backup <input path> <output path> <backups to keep> [excluded directories, files separated with (,)]")"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Usage: epx backup <input path> <output path> <backups to keep> [excluded directories, files separated with spaces]")"
     return 1
   fi
 
@@ -128,7 +128,7 @@ __epx_backup() {
   local backup_file="${output_path}/${current_timestamp}.tar.zst"
 
   # Create an array of excluded directories and files
-  mapfile -t excluded_array < <(echo "${excluded}" | tr "," "\n")
+  # mapfile -t excluded_array < <(echo "${excluded}" | tr "," "\n")
 
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Starting backup...")"
 
@@ -152,7 +152,7 @@ __epx_backup() {
 
   # Compress the input path into a tar.zst file
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
-  if ! __epx_backup__compress "${input_path}" "${backup_file}" "${excluded_array[@]}"; then
+  if ! __epx_backup__compress "${input_path}" "${backup_file}" "${excluded[@]}"; then
     __epx_backup__log_status_to_file "Backup failed, failed to compress files" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
     return 1
   fi
