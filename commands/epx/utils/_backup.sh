@@ -85,7 +85,7 @@ __epx_backup__log_status_to_file() {
 __epx_backup__compress() {
   local input_dir="${1-}"
   local backup_file="${2-}"
-  local excluded_array="${3-}"
+  local excluded_array=("${@:3}")
 
   # Compress the backup directory with tar and zstd
   # Build --exclude options from excluded_array
