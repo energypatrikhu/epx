@@ -100,6 +100,8 @@ __epx_backup__compress() {
 }
 
 __epx_backup() {
+  shopt -s globstar
+
   local input_path="${1-}"
   local output_path="${2-}"
   local backups_to_keep="${3-}"
