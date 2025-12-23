@@ -127,9 +127,6 @@ __epx_backup() {
   local backup_info="${output_path}/backup-info.log"
   local backup_file="${output_path}/${current_timestamp}.tar.zst"
 
-  # Create an array of excluded directories and files
-  # mapfile -t excluded_array < <(echo "${excluded}" | tr "," "\n")
-
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Starting backup...")"
 
   # Stop all beesd processes before creating a backup
