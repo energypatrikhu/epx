@@ -87,20 +87,35 @@ _list_raids() {
 
           local label=$(echo "$line" | grep -oP "Label: '\K[^']+|Label: \K\S+")
 
-          # Count devices for this specific filesystem
-          local device_count=$(echo "$btrfs_output" | grep -A 1 "uuid: $uuid" | grep -c "devid")
+          # Extract mount point and count devices from btrfs output
+          local mount_point=""
+          local device_count=0
+          local found_uuid=false
+
+          while IFS= read -r detail_line; do
+            if [[ "$detail_line" =~ "uuid: $uuid" ]]; then
+              found_uuid=true
+            elif [[ "$found_uuid" == true ]]; then
+              if [[ "$detail_line" =~ "Label:" ]]; then
+                # Hit next filesystem
+                break
+              elif [[ "$detail_line" =~ "devid" ]]; then
+                ((device_count++))
+                # Extract mount point from the first devid line
+                if [[ -z "$mount_point" ]]; then
+                  mount_point=$(echo "$detail_line" | sed 's/.*path //')
+                fi
+              fi
+            fi
+          done <<< "$btrfs_output"
 
           # Get RAID level dynamically
-          local raid_level="unknown"
-          local mount_point=$(btrfs filesystem show "$uuid" 2>/dev/null | grep "path" | head -1 | sed 's/.*path //')
-
+          local raid_level="single"
           if [[ -n "$mount_point" && -d "$mount_point" ]]; then
             local data_line=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data,")
             if [[ -n "$data_line" ]]; then
               # Extract between "Data," and ":"
               raid_level=$(echo "$data_line" | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]')
-            else
-              raid_level="single"
             fi
           fi
 
@@ -108,6 +123,7 @@ _list_raids() {
             _c "LIGHT_GREEN" "  ✓ [$raid_level] $label ($device_count devices)"
           else
             _c "WHITE" "  • [$raid_level] $label"
+          fi
           fi
         fi
       done <<< "$btrfs_output"
