@@ -87,8 +87,8 @@ _list_raids() {
             if [[ -n "$mount_point" && -d "$mount_point" ]]; then
               local usage_output=$(btrfs filesystem usage "$mount_point" 2>/dev/null || true)
               local data_line=$(echo "$usage_output" | grep "^Data," | head -1)
-              if [[ -n "$data_line" ]]; then
               echo $data_line
+              if [[ -n "$data_line" ]]; then
                 # Extract text between "Data," and ":" - e.g., "Data,RAID1:" -> "RAID1"
                 raid_level=$(echo "$data_line" | cut -d',' -f2 | cut -d':' -f1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
               fi
