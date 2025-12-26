@@ -85,7 +85,8 @@ _list_raids() {
           if [[ -n "$current_uuid" ]]; then
             local raid_level="single"
             if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-              raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]' 2>/dev/null || true)
+              local usage_output=$(btrfs filesystem usage "$mount_point" 2>/dev/null || true)
+              raid_level=$(echo "$usage_output" | grep "^Data," | head -1 | awk -F'[:,]' '{print $2}' | tr -d ' ' | tr '[:upper:]' '[:lower:]')
               [[ -z "$raid_level" ]] && raid_level="single"
             fi
             if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
@@ -112,7 +113,8 @@ _list_raids() {
       if [[ -n "$current_uuid" ]]; then
         local raid_level="single"
         if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-          raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]' 2>/dev/null || true)
+          local usage_output=$(btrfs filesystem usage "$mount_point" 2>/dev/null || true)
+          raid_level=$(echo "$usage_output" | grep "^Data," | head -1 | awk -F'[:,]' '{print $2}' | tr -d ' ' | tr '[:upper:]' '[:lower:]')
           [[ -z "$raid_level" ]] && raid_level="single"
         fi
         if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
