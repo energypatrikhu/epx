@@ -23,17 +23,49 @@ _list_disks() {
   fi
 }
 
-# List partitions with fdisk
+# List partitions with fdisk and btrfs
 _list_partitions() {
+  _print_section "Disk Partitions"
+
+  # Show fdisk partitions
   if command -v fdisk &> /dev/null; then
-    _print_section "Disk Partitions"
     local disks=$(lsblk -nd -o NAME | grep -E '^(sd|nvme|vd)' | head -10)
+    local has_partitions=false
+
     for disk in $disks; do
-      _c "LIGHT_BLUE" "  Disk /dev/$disk:"
-      fdisk -l "/dev/$disk" 2>/dev/null | grep -E "^/dev/" | while read -r line; do
-        _c "WHITE" "    $line"
-      done
+      local part_count=$(fdisk -l "/dev/$disk" 2>/dev/null | grep -c "^/dev/")
+      if [[ $part_count -gt 0 ]]; then
+        has_partitions=true
+        _c "LIGHT_BLUE" "  Disk /dev/$disk:"
+        fdisk -l "/dev/$disk" 2>/dev/null | grep -E "^/dev/" | while read -r line; do
+          _c "WHITE" "    $line"
+        done
+      fi
     done
+
+    if [[ "$has_partitions" == false ]]; then
+      _c "LIGHT_GRAY" "  No partitions found (check Btrfs RAID section below)"
+    fi
+  fi
+
+  # Show btrfs partitions and raids
+  if command -v btrfs &> /dev/null; then
+    local btrfs_devices=$(btrfs filesystem show 2>/dev/null | grep "devid\|Label:" | head -20)
+    if [[ -n "$btrfs_devices" ]]; then
+      echo ""
+      _c "LIGHT_CYAN" "  Btrfs Filesystems:"
+      btrfs filesystem show 2>/dev/null | while read -r line; do
+        if [[ "$line" =~ "Label:" ]]; then
+          _c "LIGHT_BLUE" "    $line"
+        elif [[ "$line" =~ "devid" ]]; then
+          if [[ "$line" =~ "missing" ]]; then
+            _c "LIGHT_RED" "      $line"
+          else
+            _c "WHITE" "      $line"
+          fi
+        fi
+      done
+    fi
   fi
 }
 
