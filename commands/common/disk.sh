@@ -86,7 +86,11 @@ _list_raids() {
             local raid_level="single"
             if [[ -n "$mount_point" && -d "$mount_point" ]]; then
               local usage_output=$(btrfs filesystem usage "$mount_point" 2>/dev/null || true)
-              raid_level=$(echo "$usage_output" | grep "^Data," | head -1 | awk -F'[:,]' '{print $2}' | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+              local data_line=$(echo "$usage_output" | grep "^Data," | head -1)
+              if [[ -n "$data_line" ]]; then
+                # Extract text between "Data," and ":" - e.g., "Data,RAID1:" -> "RAID1"
+                raid_level=$(echo "$data_line" | cut -d',' -f2 | cut -d':' -f1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+              fi
               [[ -z "$raid_level" ]] && raid_level="single"
             fi
             if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
@@ -114,7 +118,11 @@ _list_raids() {
         local raid_level="single"
         if [[ -n "$mount_point" && -d "$mount_point" ]]; then
           local usage_output=$(btrfs filesystem usage "$mount_point" 2>/dev/null || true)
-          raid_level=$(echo "$usage_output" | grep "^Data," | head -1 | awk -F'[:,]' '{print $2}' | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+          local data_line=$(echo "$usage_output" | grep "^Data," | head -1)
+          if [[ -n "$data_line" ]]; then
+            # Extract text between "Data," and ":" - e.g., "Data,RAID1:" -> "RAID1"
+            raid_level=$(echo "$data_line" | cut -d',' -f2 | cut -d':' -f1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+          fi
           [[ -z "$raid_level" ]] && raid_level="single"
         fi
         if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
