@@ -6,6 +6,7 @@ if [[ "${1-}" == --short ]] || [[ "${1-}" == -s ]] || [[ "${1-}" == "short" ]]; 
 fi
 
 echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Listing available Samba shares...")"
+echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_CYAN "Note: Use smb.list <short/--short/-s> to show only share names")"
 
 __fallback(){
   _cci grep sed
