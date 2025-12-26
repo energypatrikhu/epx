@@ -88,14 +88,14 @@ _list_raids() {
 
   # Check for btrfs filesystems with RAID
   if command -v btrfs &> /dev/null; then
-    local btrfs_raids=$(btrfs filesystem show 2>/dev/null | grep -i "raid\|missing" | head -20)
-    if [[ -n "$btrfs_raids" ]]; then
+    local btrfs_output=$(btrfs filesystem show 2>/dev/null)
+    if [[ -n "$btrfs_output" ]]; then
       raid_found=true
       _print_section "Btrfs RAID Status"
-      btrfs filesystem show 2>/dev/null | while read -r line; do
+      echo "$btrfs_output" | while read -r line; do
         if [[ "$line" =~ "Label:" ]]; then
           _c "LIGHT_BLUE" "  $line"
-        elif [[ "$line" =~ "devid\|missing\|RAID" ]]; then
+        elif [[ "$line" =~ "devid" ]]; then
           if [[ "$line" =~ "missing" ]]; then
             _c "LIGHT_RED" "    $line"
           else
