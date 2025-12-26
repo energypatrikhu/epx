@@ -1,0 +1,111 @@
+_print_header() {
+  local title="$1"
+  echo ""
+  _c "LIGHT_CYAN" "╔════════════════════════════════════════════════════════╗"
+  _c "LIGHT_CYAN" "║  $(_c "LIGHT_YELLOW" "$title")"
+  _c "LIGHT_CYAN" "╚════════════════════════════════════════════════════════╝"
+}
+
+_print_section() {
+  local title="$1"
+  echo ""
+  _c "LIGHT_GREEN" "▶ $title"
+  _c "LIGHT_GREEN" "────────────────────────────────────────────────────────"
+}
+
+# List disks with lsblk
+_list_disks() {
+  if command -v lsblk &> /dev/null; then
+    _print_section "Block Devices"
+    lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT -e 7,11,14 --tree
+  else
+    _c "LIGHT_RED" "lsblk not found"
+  fi
+}
+
+# List partitions with fdisk
+_list_partitions() {
+  if command -v fdisk &> /dev/null; then
+    _print_section "Disk Partitions"
+    local disks=$(lsblk -nd -o NAME | grep -E '^(sd|nvme|vd)' | head -10)
+    for disk in $disks; do
+      _c "LIGHT_BLUE" "  Disk /dev/$disk:"
+      fdisk -l "/dev/$disk" 2>/dev/null | grep -E "^/dev/" | while read -r line; do
+        _c "WHITE" "    $line"
+      done
+    done
+  fi
+}
+
+# List RAID status
+_list_raids() {
+  if [[ -f /proc/mdstat ]]; then
+    _print_section "RAID Status"
+
+    if grep -q md /proc/mdstat 2>/dev/null; then
+      while IFS= read -r line; do
+        if [[ "$line" =~ ^md ]]; then
+          _c "LIGHT_BLUE" "  $line"
+        elif [[ -n "$line" && ! "$line" =~ ^unused ]]; then
+          _c "WHITE" "    $line"
+        fi
+      done < /proc/mdstat
+    else
+      _c "LIGHT_GRAY" "  No RAID devices found"
+    fi
+  fi
+}
+
+# List disk usage by mount points
+_list_usage() {
+  _print_section "Disk Usage (Top Mounts)"
+
+  if command -v df &> /dev/null; then
+    df -h | tail -n +2 | sort -k5 -rn | head -10 | while read -r line; do
+      local usage=$(echo "$line" | awk '{print $5}' | sed 's/%//')
+      local device=$(echo "$line" | awk '{print $1}')
+      local mount=$(echo "$line" | awk '{print $NF}')
+
+      # Color code by usage percentage
+      if (( usage >= 90 )); then
+        _c "LIGHT_RED" "  $(_c "LIGHT_RED" "$device") $(printf '%3d%%' $usage) - $mount"
+      elif (( usage >= 75 )); then
+        _c "LIGHT_YELLOW" "  $(_c "LIGHT_YELLOW" "$device") $(printf '%3d%%' $usage) - $mount"
+      else
+        _c "LIGHT_GREEN" "  $(_c "LIGHT_GREEN" "$device") $(printf '%3d%%' $usage) - $mount"
+      fi
+    done
+  fi
+}
+
+# List smartctl info if available
+_list_smart() {
+  if command -v smartctl &> /dev/null; then
+    _print_section "SMART Status"
+
+    local disks=$(smartctl --scan | grep '/dev/' | awk '{print $1}' | head -5)
+    if [[ -n "$disks" ]]; then
+      for disk in $disks; do
+        local health=$(smartctl -H "$disk" 2>/dev/null | grep -i "overall-health" | awk '{print $NF}')
+        if [[ "$health" == "PASSED" ]]; then
+          _c "LIGHT_GREEN" "  $(_c "LIGHT_GREEN" "✓") $disk - $health"
+        elif [[ "$health" == "FAILED" ]]; then
+          _c "LIGHT_RED" "  $(_c "LIGHT_RED" "✗") $disk - $health"
+        else
+          _c "WHITE" "  $disk"
+        fi
+      done
+    else
+      _c "LIGHT_GRAY" "  No SMART devices found"
+    fi
+  fi
+}
+
+# Main execution
+_print_header "📦 DISK & RAID INFORMATION"
+_list_disks
+_list_partitions
+_list_raids
+_list_usage
+_list_smart
+echo ""
