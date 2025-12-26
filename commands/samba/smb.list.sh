@@ -2,7 +2,7 @@ _cci net
 
 echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Listing available Samba shares...")"
 
-if ! net conf listshares; then
+if ! net conf list; then
   _cci grep sed
 
   echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Falling back to parsing configuration file...")"
