@@ -95,7 +95,7 @@ _list_raids() {
           local mount_point=$(btrfs filesystem show "$uuid" 2>/dev/null | grep "path" | head -1 | grep -oP 'path \K/[^ ]+')
 
           if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-            raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep -E "^Data" | head -1 | grep -oP '(raid0|raid1|raid10|raid1c3|raid1c4|single|dup|RAID0|RAID1|RAID10|RAID1C3|RAID1C4|DUP)' | tr '[:upper:]' '[:lower:]' || echo "single")
+            raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | grep -oP ',\K[^:]+' | tr '[:upper:]' '[:lower:]' || echo "single")
           fi
 
           if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
