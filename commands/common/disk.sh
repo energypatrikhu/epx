@@ -80,7 +80,7 @@ _list_raids() {
       local mount_point=""
 
       while IFS= read -r line; do
-        if [[ "$line" =~ "Label:" ]]; then
+        if [[ "$line" == *"Label:"* ]]; then
           # Print previous filesystem if exists
           if [[ -n "$current_uuid" ]]; then
             local raid_level="single"
@@ -94,12 +94,12 @@ _list_raids() {
             fi
           fi
 
-          # Start new filesystem
-          current_uuid=$(echo "$line" | grep -oP 'uuid: \K[^ ]+')
-          current_label=$(echo "$line" | grep -oP "Label: '\K[^']+|Label: \K\S+")
+          # Start new filesystem - extract uuid and label with sed
+          current_uuid=$(echo "$line" | sed "s/.*uuid: //;s/ .*//" | head -1)
+          current_label=$(echo "$line" | sed "s/.*Label: //;s/ uuid.*//" | sed "s/'//g")
           device_count=0
           mount_point=""
-        elif [[ "$line" =~ "devid" ]]; then
+        elif [[ "$line" == *"devid"* ]]; then
           ((device_count++))
           if [[ -z "$mount_point" ]]; then
             mount_point=$(echo "$line" | sed 's/.*path //')
@@ -123,8 +123,8 @@ _list_raids() {
       # Show device details
       echo ""
       while IFS= read -r line; do
-        if [[ "$line" =~ "devid" ]]; then
-          if [[ "$line" =~ "missing" ]]; then
+        if [[ "$line" == *"devid"* ]]; then
+          if [[ "$line" == *"missing"* ]]; then
             _c "LIGHT_RED" "    $line"
           else
             _c "WHITE" "    $line"
