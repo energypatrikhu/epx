@@ -1,0 +1,28 @@
+_cci smbpasswd
+
+username="${1-}"
+if [[ -z "${username}" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_YELLOW "Usage: smb.add <username>")"
+  exit 1
+fi
+
+# Check if system user exists
+if ! id "${username}" > /dev/null 2>&1; then
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_YELLOW "System user '${username}' does not exist. Creating...")"
+  if ! useradd -M -s /sbin/nologin "${username}"; then
+    echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_RED "Failed to create system user '${username}'")"
+    exit 1
+  fi
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_GREEN "System user '${username}' created successfully")"
+else
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_YELLOW "System user '${username}' already exists")"
+fi
+
+# Add to Samba
+echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_YELLOW "Adding '${username}' to Samba. You will be prompted for a password.")"
+if smbpasswd -a "${username}"; then
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_GREEN "Samba user '${username}' added successfully")"
+else
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_RED "Failed to add Samba user '${username}'")"
+  exit 1
+fi
