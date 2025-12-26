@@ -1,8 +1,13 @@
 _cci net
 
+opt_short=false
+if [[ "${1-}" == --short ]] || [[ "${1-}" == -s ]] || [[ "${1-}" == "short" ]]; then
+  opt_short=true
+fi
+
 echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Listing available Samba shares...")"
 
-if ! net conf list; then
+__fallback(){
   _cci grep sed
 
   echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Falling back to parsing configuration file...")"
@@ -19,4 +24,13 @@ if ! net conf list; then
     echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_GREEN "Available shares:")"
     echo "${shares}"
   fi
+}
+
+conf_arg="list"
+if [[ "${opt_short}" == true ]]; then
+  conf_arg="listshares"
+fi
+
+if ! net conf "${conf_arg}"; then
+  __fallback
 fi
