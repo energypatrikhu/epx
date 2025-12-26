@@ -44,27 +44,7 @@ _list_partitions() {
     done
 
     if [[ "$has_partitions" == false ]]; then
-      _c "LIGHT_GRAY" "  No partitions found (check Btrfs RAID section below)"
-    fi
-  fi
-
-  # Show btrfs partitions and raids
-  if command -v btrfs &> /dev/null; then
-    local btrfs_devices=$(btrfs filesystem show 2>/dev/null | grep "devid\|Label:" | head -20)
-    if [[ -n "$btrfs_devices" ]]; then
-      echo ""
-      _c "LIGHT_CYAN" "  Btrfs Filesystems:"
-      btrfs filesystem show 2>/dev/null | while read -r line; do
-        if [[ "$line" =~ "Label:" ]]; then
-          _c "LIGHT_BLUE" "    $line"
-        elif [[ "$line" =~ "devid" ]]; then
-          if [[ "$line" =~ "missing" ]]; then
-            _c "LIGHT_RED" "      $line"
-          else
-            _c "WHITE" "      $line"
-          fi
-        fi
-      done
+      _c "LIGHT_GRAY" "  No partitions found"
     fi
   fi
 }
@@ -92,9 +72,19 @@ _list_raids() {
     if [[ -n "$btrfs_output" ]]; then
       raid_found=true
       _print_section "Btrfs RAID Status"
-      echo "$btrfs_output" | while read -r line; do
+
+      # Process each filesystem
+      while IFS= read -r line; do
         if [[ "$line" =~ "Label:" ]]; then
-          _c "LIGHT_BLUE" "  $line"
+          local uuid=$(echo "$line" | grep -oP 'uuid: \K[^ ]+')
+          local device_count=$(echo "$btrfs_output" | grep "uuid: $uuid" -A 50 | grep -c "devid")
+          local label=$(echo "$line" | grep -oP "Label: '\K[^']+|Label: \K\S+")
+
+          if [[ $device_count -gt 1 ]]; then
+            _c "LIGHT_GREEN" "  ✓ [$device_count-way RAID] $label ($uuid)"
+          else
+            _c "WHITE" "  • [Single device] $label ($uuid)"
+          fi
         elif [[ "$line" =~ "devid" ]]; then
           if [[ "$line" =~ "missing" ]]; then
             _c "LIGHT_RED" "    $line"
@@ -102,7 +92,7 @@ _list_raids() {
             _c "WHITE" "    $line"
           fi
         fi
-      done
+      done <<< "$btrfs_output"
     fi
   fi
 
