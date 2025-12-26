@@ -68,7 +68,7 @@ _list_raids() {
 
   # Check for btrfs filesystems with RAID
   if command -v btrfs &> /dev/null; then
-    local btrfs_output=$(btrfs filesystem show 2>/dev/null)
+    local btrfs_output=$(btrfs filesystem show 2>/dev/null || true)
     if [[ -n "$btrfs_output" ]]; then
       raid_found=true
       _print_section "Btrfs RAID Status"
@@ -85,7 +85,8 @@ _list_raids() {
           if [[ -n "$current_uuid" ]]; then
             local raid_level="single"
             if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-              raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]' || echo "single")
+              raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]' 2>/dev/null || true)
+              [[ -z "$raid_level" ]] && raid_level="single"
             fi
             if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
               _c "LIGHT_GREEN" "  ✓ [$raid_level] $current_label ($device_count devices)"
@@ -95,14 +96,14 @@ _list_raids() {
           fi
 
           # Start new filesystem - extract uuid and label with sed
-          current_uuid=$(echo "$line" | sed "s/.*uuid: //;s/ .*//" | head -1)
-          current_label=$(echo "$line" | sed "s/.*Label: //;s/ uuid.*//" | sed "s/'//g")
+          current_uuid=$(echo "$line" | sed "s/.*uuid: //;s/ .*//" 2>/dev/null || true)
+          current_label=$(echo "$line" | sed "s/.*Label: //;s/ uuid.*//" | sed "s/'//g" 2>/dev/null || true)
           device_count=0
           mount_point=""
         elif [[ "$line" == *"devid"* ]]; then
-          ((device_count++))
+          ((device_count++)) || true
           if [[ -z "$mount_point" ]]; then
-            mount_point=$(echo "$line" | sed 's/.*path //')
+            mount_point=$(echo "$line" | sed 's/.*path //' 2>/dev/null || true)
           fi
         fi
       done <<< "$btrfs_output"
@@ -111,7 +112,8 @@ _list_raids() {
       if [[ -n "$current_uuid" ]]; then
         local raid_level="single"
         if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-          raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]' || echo "single")
+          raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]' 2>/dev/null || true)
+          [[ -z "$raid_level" ]] && raid_level="single"
         fi
         if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
           _c "LIGHT_GREEN" "  ✓ [$raid_level] $current_label ($device_count devices)"
@@ -130,7 +132,7 @@ _list_raids() {
             _c "WHITE" "    $line"
           fi
         fi
-      done <<< "$btrfs_output"
+      done <<< "$btrfs_output" || true
     fi
   fi
 
