@@ -73,26 +73,50 @@ _list_raids() {
       raid_found=true
       _print_section "Btrfs RAID Status"
 
-      # Process each filesystem
+      # Build array of unique filesystems
+      local -a processed_uuids
       while IFS= read -r line; do
         if [[ "$line" =~ "Label:" ]]; then
           local uuid=$(echo "$line" | grep -oP 'uuid: \K[^ ]+')
-          local device_count=$(echo "$btrfs_output" | grep "uuid: $uuid" -A 50 | grep -c "devid")
+
+          # Skip if we already processed this uuid
+          if [[ " ${processed_uuids[*]} " =~ " ${uuid} " ]]; then
+            continue
+          fi
+          processed_uuids+=("$uuid")
+
           local label=$(echo "$line" | grep -oP "Label: '\K[^']+|Label: \K\S+")
 
-          if [[ $device_count -gt 1 ]]; then
-            _c "LIGHT_GREEN" "  ✓ [$device_count-way RAID] $label ($uuid)"
-          else
-            _c "WHITE" "  • [Single device] $label ($uuid)"
+          # Count devices for this specific filesystem
+          local device_count=$(echo "$btrfs_output" | grep -A 1 "uuid: $uuid" | grep -c "devid")
+
+          # Get RAID level dynamically
+          local raid_level="single"
+          local mount_point=$(btrfs filesystem show "$uuid" 2>/dev/null | grep "path" | head -1 | grep -oP 'path \K/[^ ]+')
+
+          if [[ -n "$mount_point" && -d "$mount_point" ]]; then
+            raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep -E "Data.*:" | head -1 | grep -oP '(raid0|raid1|raid10|raid1c3|raid1c4|single|dup)' || echo "single")
           fi
-        elif [[ "$line" =~ "devid" ]]; then
+
+          if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
+            _c "LIGHT_GREEN" "  ✓ [$raid_level] $label ($device_count devices)"
+          else
+            _c "WHITE" "  • [$raid_level] $label"
+          fi
+        fi
+      done <<< "$btrfs_output"
+
+      # Show device details
+      echo ""
+      echo "$btrfs_output" | while IFS= read -r line; do
+        if [[ "$line" =~ "devid" ]]; then
           if [[ "$line" =~ "missing" ]]; then
             _c "LIGHT_RED" "    $line"
           else
             _c "WHITE" "    $line"
           fi
         fi
-      done <<< "$btrfs_output"
+      done
     fi
   fi
 
