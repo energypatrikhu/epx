@@ -39,20 +39,73 @@ _list_partitions() {
 
 # List RAID status
 _list_raids() {
-  if [[ -f /proc/mdstat ]]; then
-    _print_section "RAID Status"
+  local raid_found=false
 
-    if grep -q md /proc/mdstat 2>/dev/null; then
-      while IFS= read -r line; do
-        if [[ "$line" =~ ^md ]]; then
+  # Check for mdraid
+  if [[ -f /proc/mdstat ]] && grep -q md /proc/mdstat 2>/dev/null; then
+    raid_found=true
+    _print_section "MD RAID Status"
+    while IFS= read -r line; do
+      if [[ "$line" =~ ^md ]]; then
+        _c "LIGHT_BLUE" "  $line"
+      elif [[ -n "$line" && ! "$line" =~ ^unused ]]; then
+        _c "WHITE" "    $line"
+      fi
+    done < /proc/mdstat
+  fi
+
+  # Check for btrfs filesystems with RAID
+  if command -v btrfs &> /dev/null; then
+    local btrfs_raids=$(btrfs filesystem show 2>/dev/null | grep -i "raid\|missing" | head -20)
+    if [[ -n "$btrfs_raids" ]]; then
+      raid_found=true
+      _print_section "Btrfs RAID Status"
+      btrfs filesystem show 2>/dev/null | while read -r line; do
+        if [[ "$line" =~ "Label:" ]]; then
           _c "LIGHT_BLUE" "  $line"
-        elif [[ -n "$line" && ! "$line" =~ ^unused ]]; then
-          _c "WHITE" "    $line"
+        elif [[ "$line" =~ "devid\|missing\|RAID" ]]; then
+          if [[ "$line" =~ "missing" ]]; then
+            _c "LIGHT_RED" "    $line"
+          else
+            _c "WHITE" "    $line"
+          fi
         fi
-      done < /proc/mdstat
-    else
-      _c "LIGHT_GRAY" "  No RAID devices found"
+      done
     fi
+  fi
+
+  # Check for LVM
+  if command -v lvs &> /dev/null; then
+    local lvm_vols=$(lvs --noheadings 2>/dev/null)
+    if [[ -n "$lvm_vols" ]]; then
+      raid_found=true
+      _print_section "LVM Volumes"
+      lvs --units=h -o lv_name,lv_size,vg_name,lv_attr 2>/dev/null | while read -r line; do
+        if [[ ! "$line" =~ "LV" ]]; then
+          _c "WHITE" "  $line"
+        fi
+      done
+    fi
+  fi
+
+  # Check for dmraid
+  if command -v dmraid &> /dev/null; then
+    local dm_raids=$(dmraid -r 2>/dev/null)
+    if [[ -n "$dm_raids" ]]; then
+      raid_found=true
+      _print_section "DM RAID Status"
+      dmraid -rr 2>/dev/null | while read -r line; do
+        if [[ -n "$line" ]]; then
+          _c "WHITE" "  $line"
+        fi
+      done
+    fi
+  fi
+
+  # If no RAID found
+  if [[ "$raid_found" == false ]]; then
+    _print_section "RAID Status"
+    _c "LIGHT_GRAY" "  No RAID devices found"
   fi
 }
 
