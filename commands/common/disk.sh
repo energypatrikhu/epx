@@ -124,7 +124,6 @@ _list_raids() {
           else
             _c "WHITE" "  • [$raid_level] $label"
           fi
-          fi
         fi
       done <<< "$btrfs_output"
 
