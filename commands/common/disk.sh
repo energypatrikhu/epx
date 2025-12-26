@@ -91,11 +91,17 @@ _list_raids() {
           local device_count=$(echo "$btrfs_output" | grep -A 1 "uuid: $uuid" | grep -c "devid")
 
           # Get RAID level dynamically
-          local raid_level="single"
-          local mount_point=$(btrfs filesystem show "$uuid" 2>/dev/null | grep "path" | head -1 | grep -oP 'path \K/[^ ]+')
+          local raid_level="unknown"
+          local mount_point=$(btrfs filesystem show "$uuid" 2>/dev/null | grep "path" | head -1 | sed 's/.*path //')
 
           if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-            raid_level=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data," | head -1 | grep -oP ',\K[^:]+' | tr '[:upper:]' '[:lower:]' || echo "single")
+            local data_line=$(btrfs filesystem usage "$mount_point" 2>/dev/null | grep "^Data,")
+            if [[ -n "$data_line" ]]; then
+              # Extract between "Data," and ":"
+              raid_level=$(echo "$data_line" | sed 's/^Data,//;s/:.*$//' | tr '[:upper:]' '[:lower:]')
+            else
+              raid_level="single"
+            fi
           fi
 
           if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
