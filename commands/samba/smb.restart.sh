@@ -2,23 +2,45 @@ _cci samba
 
 echo "Restarting Samba service..."
 
-if command -v service &> /dev/null; then
-  if ! service smbd restart; then
-    echo "Samba service 'smbd' not found using service command."
-    exit 1
-  else
-    echo "Samba service restarted using service command."
-    exit 0
-  fi
-elif command -v systemctl &> /dev/null; then
-  if ! systemctl restart smbd; then
-    echo "Failed to restart Samba service 'smbd' using systemctl."
-    exit 1
-  else
+# Try systemctl first (most common on modern systems)
+if command -v systemctl &> /dev/null; then
+  if systemctl restart smbd 2>/dev/null || systemctl restart smb 2>/dev/null || systemctl restart samba 2>/dev/null; then
     echo "Samba service restarted using systemctl."
     exit 0
   fi
-else
-  echo "Cannot restart Samba services: neither systemctl nor service command found."
-  exit 1
 fi
+
+# Try service command
+if command -v service &> /dev/null; then
+  if service smbd restart 2>/dev/null || service smb restart 2>/dev/null || service samba restart 2>/dev/null; then
+    echo "Samba service restarted using service command."
+    exit 0
+  fi
+fi
+
+# Try /etc/init.d scripts
+if [ -f /etc/init.d/smbd ]; then
+  /etc/init.d/smbd restart
+  echo "Samba service restarted using init.d script."
+  exit 0
+elif [ -f /etc/init.d/samba ]; then
+  /etc/init.d/samba restart
+  echo "Samba service restarted using init.d script."
+  exit 0
+elif [ -f /etc/init.d/smb ]; then
+  /etc/init.d/smb restart
+  echo "Samba service restarted using init.d script."
+  exit 0
+fi
+
+# Try rc-service (OpenRC)
+if command -v rc-service &> /dev/null; then
+  if rc-service samba restart 2>/dev/null || rc-service smbd restart 2>/dev/null; then
+    echo "Samba service restarted using rc-service."
+    exit 0
+  fi
+fi
+
+echo "Cannot restart Samba services: no supported service management system found."
+echo "Tried: systemctl, service, /etc/init.d, and rc-service"
+exit 1
