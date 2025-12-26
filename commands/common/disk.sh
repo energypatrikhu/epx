@@ -178,18 +178,20 @@ _list_usage() {
   _print_section "Disk Usage (Top Mounts)"
 
   if command -v df &> /dev/null; then
-    df -h | tail -n +2 | sort -k5 -rn | head -10 | while read -r line; do
-      local usage=$(echo "$line" | awk '{print $5}' | sed 's/%//')
+    df -h 2>/dev/null | tail -n +2 | sort -k5 -rn 2>/dev/null | head -10 | while read -r line; do
+      local usage=$(echo "$line" | awk '{print $5}' | sed 's/%//' 2>/dev/null || echo "0")
       local device=$(echo "$line" | awk '{print $1}')
       local mount=$(echo "$line" | awk '{print $NF}')
 
       # Color code by usage percentage
-      if (( usage >= 90 )); then
-        _c "LIGHT_RED" "  $(_c "LIGHT_RED" "$device") $(printf '%3d%%' $usage) - $mount"
-      elif (( usage >= 75 )); then
-        _c "LIGHT_YELLOW" "  $(_c "LIGHT_YELLOW" "$device") $(printf '%3d%%' $usage) - $mount"
-      else
-        _c "LIGHT_GREEN" "  $(_c "LIGHT_GREEN" "$device") $(printf '%3d%%' $usage) - $mount"
+      if [[ "$usage" =~ ^[0-9]+$ ]]; then
+        if (( usage >= 90 )); then
+          _c "LIGHT_RED" "  $device $(printf '%3d%%' $usage) - $mount"
+        elif (( usage >= 75 )); then
+          _c "LIGHT_YELLOW" "  $device $(printf '%3d%%' $usage) - $mount"
+        else
+          _c "LIGHT_GREEN" "  $device $(printf '%3d%%' $usage) - $mount"
+        fi
       fi
     done
   fi
@@ -200,14 +202,16 @@ _list_smart() {
   if command -v smartctl &> /dev/null; then
     _print_section "SMART Status"
 
-    local disks=$(smartctl --scan | grep '/dev/' | awk '{print $1}' | head -5)
+    local disks=$(smartctl --scan 2>/dev/null | grep '/dev/' | awk '{print $1}' | head -5)
     if [[ -n "$disks" ]]; then
       for disk in $disks; do
         local health=$(smartctl -H "$disk" 2>/dev/null | grep -i "overall-health" | awk '{print $NF}')
         if [[ "$health" == "PASSED" ]]; then
-          _c "LIGHT_GREEN" "  $(_c "LIGHT_GREEN" "✓") $disk - $health"
+          _c "LIGHT_GREEN" "  ✓ $disk - $health"
         elif [[ "$health" == "FAILED" ]]; then
-          _c "LIGHT_RED" "  $(_c "LIGHT_RED" "✗") $disk - $health"
+          _c "LIGHT_RED" "  ✗ $disk - $health"
+        elif [[ -n "$health" ]]; then
+          _c "WHITE" "  $disk - $health"
         else
           _c "WHITE" "  $disk"
         fi
@@ -220,9 +224,9 @@ _list_smart() {
 
 # Main execution
 _print_header "📦 DISK & RAID INFORMATION"
-_list_disks
-_list_partitions
-_list_raids
-_list_usage
-_list_smart
+_list_disks || true
+_list_partitions || true
+_list_raids || true
+_list_usage || true
+_list_smart || true
 echo ""
