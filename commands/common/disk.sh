@@ -68,74 +68,55 @@ _list_raids() {
 
   # Check for btrfs filesystems with RAID
   if command -v btrfs &> /dev/null; then
-    local btrfs_output=$(btrfs filesystem show 2>/dev/null || true)
-    if [[ -n "$btrfs_output" ]]; then
+    local btrfs_show=$(btrfs filesystem show 2>/dev/null)
+    if [[ -n "$btrfs_show" ]]; then
       raid_found=true
       _print_section "Btrfs RAID Status"
 
-      # Process filesystems
-      local current_uuid=""
-      local current_label=""
-      local device_count=0
-      local mount_point=""
+      # Extract unique filesystem UUIDs
+      local uuids=($(echo "$btrfs_show" | grep -oP 'uuid: \K[a-f0-9-]+'))
 
-      while IFS= read -r line; do
-        if [[ "$line" == *"Label:"* ]]; then
-          # Print previous filesystem if exists
-          if [[ -n "$current_uuid" ]]; then
-            local raid_level="single"
-            if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-              local usage_output=$(btrfs filesystem usage "$mount_point" 2>/dev/null || true)
-              local data_line=$(echo "$usage_output" | grep "^Data," | head -1)
-              echo $data_line
-              if [[ -n "$data_line" ]]; then
-                # Extract text between "Data," and ":" - e.g., "Data,RAID1:" -> "RAID1"
-                raid_level=$(echo "$data_line" | cut -d',' -f2 | cut -d':' -f1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
-              fi
-              [[ -z "$raid_level" ]] && raid_level="single"
+      for uuid in "${uuids[@]}"; do
+        # Get filesystem info
+        local fs_info=$(echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | grep -B 1 "uuid: $uuid")
+        local label=$(echo "$fs_info" | grep "Label:" | sed 's/.*Label: //;s/ uuid.*//' | tr -d "'")
+
+        # Count devices and get mount point
+        local devices=()
+        local mount_point=""
+        while IFS= read -r dev_line; do
+          if [[ "$dev_line" == *"devid"* ]]; then
+            devices+=("$dev_line")
+            if [[ -z "$mount_point" ]]; then
+              mount_point=$(echo "$dev_line" | awk '{print $NF}')
             fi
-            if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
-              _c "LIGHT_GREEN" "  ✓ [$raid_level] $current_label ($device_count devices)"
-            else
-              _c "WHITE" "  • [$raid_level] $current_label"
-            fi
+          elif [[ "$dev_line" == *"Label:"* ]] && [[ "$dev_line" != *"$uuid"* ]]; then
+            break
           fi
+        done < <(echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | tail -n +2)
 
-          # Start new filesystem - extract uuid and label with sed
-          current_uuid=$(echo "$line" | sed "s/.*uuid: //;s/ .*//" 2>/dev/null || true)
-          current_label=$(echo "$line" | sed "s/.*Label: //;s/ uuid.*//" | sed "s/'//g" 2>/dev/null || true)
-          device_count=0
-          mount_point=""
-        elif [[ "$line" == *"devid"* ]]; then
-          ((device_count++)) || true
-          if [[ -z "$mount_point" ]]; then
-            mount_point=$(echo "$line" | sed 's/.*path //' 2>/dev/null || true)
-          fi
-        fi
-      done <<< "$btrfs_output"
+        local device_count=${#devices[@]}
 
-      # Print last filesystem
-      if [[ -n "$current_uuid" ]]; then
+        # Detect RAID level
         local raid_level="single"
-        if [[ -n "$mount_point" && -d "$mount_point" ]]; then
-          local usage_output=$(btrfs filesystem usage "$mount_point" 2>/dev/null || true)
-          local data_line=$(echo "$usage_output" | grep "^Data," | head -1)
-          if [[ -n "$data_line" ]]; then
-            # Extract text between "Data," and ":" - e.g., "Data,RAID1:" -> "RAID1"
-            raid_level=$(echo "$data_line" | cut -d',' -f2 | cut -d':' -f1 | tr -d ' ' | tr '[:upper:]' '[:lower:]')
+        if [[ -n "$mount_point" ]] && [[ -e "$mount_point" ]]; then
+          local data_profile=$(btrfs filesystem usage "$mount_point" 2>/dev/null | awk '/^Data,/ {sub(/^Data,/, ""); sub(/:.*/, ""); print; exit}')
+          if [[ -n "$data_profile" ]]; then
+            raid_level=$(echo "$data_profile" | tr -d ' ' | tr '[:upper:]' '[:lower:]')
           fi
-          [[ -z "$raid_level" ]] && raid_level="single"
         fi
+
+        # Display filesystem info
         if [[ $device_count -gt 1 ]] || [[ "$raid_level" != "single" ]]; then
-          _c "LIGHT_GREEN" "  ✓ [$raid_level] $current_label ($device_count devices)"
+          _c "LIGHT_GREEN" "  ✓ [$raid_level] $label ($device_count devices)"
         else
-          _c "WHITE" "  • [$raid_level] $current_label"
+          _c "WHITE" "  • [$raid_level] $label"
         fi
-      fi
+      done
 
       # Show device details
       echo ""
-      while IFS= read -r line; do
+      echo "$btrfs_show" | while IFS= read -r line; do
         if [[ "$line" == *"devid"* ]]; then
           if [[ "$line" == *"missing"* ]]; then
             _c "LIGHT_RED" "    $line"
@@ -143,7 +124,7 @@ _list_raids() {
             _c "WHITE" "    $line"
           fi
         fi
-      done <<< "$btrfs_output" || true
+      done
     fi
   fi
 
