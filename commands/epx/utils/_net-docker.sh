@@ -76,7 +76,7 @@ __epx_net_docker() {
       # Split on ' -> ' and color each part
       local container_port=$(echo "$port_map" | cut -d' ' -f1)
       local host_binding=$(echo "$port_map" | cut -d' ' -f3-)
-      echo "      • $(_c LIGHT_CYAN "$container_port") $(_c DARK_GRAY "→") $(_c LIGHT_GREEN "$host_binding")"
+      echo "      • $(_c LIGHT_CYAN "$container_port") → $(_c LIGHT_GREEN "$host_binding")"
       done
     else
       echo "    Port Mappings: $(_c LIGHT_YELLOW "None")"
