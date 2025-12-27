@@ -1,44 +1,6 @@
-#!/bin/bash
-
 # Full network status dashboard
 
-# Border width configuration
-BORDER_WIDTH=61
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
-
-# Helper function to calculate visual width (emojis count as 2)
-_visual_length() {
-  local str="$1"
-  local len=${#str}
-  # Count emojis (rough estimation - emojis are typically in Unicode ranges)
-  local emoji_count=$(echo -n "$str" | grep -oP '[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]' | wc -l)
-  echo $((len + emoji_count))
-}
-
-# Helper to print a bordered line
-_print_line() {
-  local text="$1"
-  local visual_len=$(_visual_length "$text")
-  local padding=$((BORDER_CONTENT_WIDTH - visual_len))
-  printf "│ %s%*s │\n" "$text" $padding ""
-}
-
-# Helper to print a separator
-_print_separator() {
-  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print top border
-_print_top() {
-  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print bottom border
-_print_bottom() {
-  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-__net_stat_dashboard() {
+__epx_net_stat__dashboard() {
   local width=$BORDER_WIDTH
   local os_info=$(cat /etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d'"' -f2 || echo "Unknown Linux")
   local hostname=$(hostname)
@@ -58,20 +20,17 @@ __net_stat_dashboard() {
   clear
 
   # Header
-  _print_top
-  printf "│ 🌐 NETWORK STATUS — %-37s │\n" "$os_info"
-  _print_separator
-  printf "│ Hostname     : %-44s │\n" "$hostname"
-  printf "│ Uptime       : %-44s │\n" "$uptime"
-  printf "│ Network Mode : %-42s │\n" "$network_mode"
-  printf "│ Default IF   : %-44s │\n" "${default_if:-N/A}"
-  printf "│ Gateway      : %-44s │\n" "${gateway:-N/A}"
-  printf "│ DNS          : %-44s │\n" "${dns_servers:-N/A}"
+  echo "🌐 NETWORK STATUS — $os_info"
+  echo "══════════════════════════════════════════════════════════════════════════════"
+  echo "  Hostname     : $hostname"
+  echo "  Uptime       : $uptime"
+  echo "  Network Mode : $network_mode"
+  echo "  Default IF   : ${default_if:-N/A}"
+  echo "  Gateway      : ${gateway:-N/A}"
+  echo "  DNS          : ${dns_servers:-N/A}"
 
   # Interfaces Section
-  _print_separator
-  echo "│ 📡 INTERFACES                                                │"
-  echo "│                                                             │"
+  _print_section "📡 INTERFACES"
 
   # Get interfaces
   for iface in $(ip -o link show | awk -F': ' '{print $2}' | grep -v '^lo$'); do
@@ -89,22 +48,19 @@ __net_stat_dashboard() {
       local total_errors=$((rx_errors + tx_errors))
       local drops=$(($(cat /sys/class/net/$iface/statistics/rx_dropped 2>/dev/null || echo 0) + $(cat /sys/class/net/$iface/statistics/tx_dropped 2>/dev/null || echo 0)))
 
-      printf "│ %-6s UP   %-6s %-40s │\n" "$iface" "$speed" "${ip_addr:-No IP}"
-      printf "│        RX:  %-6s GB   TX:  %-6s GB                      │\n" "$rx_gb" "$tx_gb"
-      printf "│        Errors: %-3d   Drops: %-3d                          │\n" "$total_errors" "$drops"
-      echo "│                                                             │"
+      echo "  $iface UP   $speed ${ip_addr:-No IP}"
+      echo "    RX:  $rx_gb GB   TX:  $tx_gb GB"
+      echo "    Errors: $total_errors   Drops: $drops"
     else
-      printf "│ %-6s DOWN                                                  │\n" "$iface"
+      echo "  $iface DOWN"
     fi
   done
 
   # Loopback
-  printf "│ lo     UP   127.0.0.1                                       │\n"
+  echo "  lo     UP   127.0.0.1"
 
   # Real-time Traffic Section
-  _print_separator
-  printf "│ 🚀 REAL-TIME TRAFFIC (%-35s │\n" "$default_if)"
-  echo "│                                                             │"
+  _print_section "🚀 REAL-TIME TRAFFIC ($default_if)"
 
   if [[ -n "$default_if" && -e "/sys/class/net/$default_if/statistics/rx_bytes" ]]; then
     local rx1=$(cat /sys/class/net/$default_if/statistics/rx_bytes)
@@ -124,128 +80,119 @@ __net_stat_dashboard() {
     local rx_graph=$(printf '█%.0s' $(seq 1 $rx_bars))$(printf '░%.0s' $(seq 1 $((20-rx_bars))))
     local tx_graph=$(printf '█%.0s' $(seq 1 $tx_bars))$(printf '░%.0s' $(seq 1 $((20-tx_bars))))
 
-    printf "│ RX: %s  %-6s MB/s                          │\n" "$rx_graph" "$rx_rate"
-    printf "│ TX: %s  %-6s MB/s                          │\n" "$tx_graph" "$tx_rate"
+    echo "  RX: $rx_graph  $rx_rate MB/s"
+    echo "  TX: $tx_graph  $tx_rate MB/s"
   else
-    echo "│ Traffic data unavailable                                    │"
+    echo "  Traffic data unavailable"
   fi
 
   # Connections Section
-  _print_separator
-  echo "│ 🔌 CONNECTIONS                                               │"
-  echo "│                                                             │"
+  _print_section "🔌 CONNECTIONS"
 
   local established=$(ss -tan | grep ESTAB | wc -l)
   local listen=$(ss -tln | grep LISTEN | wc -l)
   local time_wait=$(ss -tan | grep TIME-WAIT | wc -l)
 
-  printf "│ ESTABLISHED : %-45d │\n" "$established"
-  printf "│ LISTEN      : %-45d │\n" "$listen"
-  printf "│ TIME_WAIT   : %-45d │\n" "$time_wait"
-  echo "│                                                             │"
-  echo "│ Top Remote IPs:                                             │"
+  echo "  ESTABLISHED : $established"
+  echo "  LISTEN      : $listen"
+  echo "  TIME_WAIT   : $time_wait"
+  echo ""
+  echo "  Top Remote IPs:"
 
   ss -tan | grep ESTAB | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -rn | head -3 | while read count ip; do
     local hostname=$(getent hosts "$ip" 2>/dev/null | awk '{print $2}' | head -1)
-    printf "│  • %-15s (%-34s │\n" "$ip" "${hostname:-Unknown})"
+    echo "    • $ip (${hostname:-Unknown})"
   done
 
   # Docker Section
-  _print_separator
-  echo "│ 🐳 DOCKER NETWORK                                            │"
-  echo "│                                                             │"
+  _print_section "🐳 DOCKER NETWORK"
 
   if command -v docker &>/dev/null && docker ps &>/dev/null; then
     local container_count=$(docker ps --format '{{.Names}}' | wc -l)
     local docker_bridge=$(docker network inspect bridge 2>/dev/null | grep -A1 '"Subnet"' | grep -o '[0-9.]*\/[0-9]*' | head -1)
 
-    printf "│ Containers online : %-40d │\n" "$container_count"
-    printf "│ Docker bridge     : %-40s │\n" "${docker_bridge:-N/A}"
+    echo "  Containers online : $container_count"
+    echo "  Docker bridge     : ${docker_bridge:-N/A}"
 
     # Get first container IP as example
     local first_container=$(docker ps --format '{{.Names}}' | head -1)
     if [[ -n "$first_container" ]]; then
       local container_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$first_container" 2>/dev/null)
-      printf "│ %-15s : %-40s │\n" "$first_container" "${container_ip:-N/A}"
+      echo "  $first_container : ${container_ip:-N/A}"
     fi
 
-    echo "│                                                             │"
-    echo "│ Port mappings:                                              │"
+    echo ""
+    echo "  Port mappings:"
 
     docker ps --format '{{.Names}}\t{{.Ports}}' | head -5 | while IFS=$'\t' read name ports; do
       local port=$(echo "$ports" | grep -o '[0-9]*->' | head -1 | tr -d '->')
       if [[ -n "$port" ]]; then
-        printf "│  • %-5s → %-48s │\n" "$port" "$name"
+        echo "    • $port → $name"
       fi
     done
   else
-    echo "│ Docker not available or not running                         │"
+    echo "  Docker not available or not running"
   fi
 
   # Connectivity Tests Section
-  _print_separator
-  echo "│ 🧪 CONNECTIVITY TESTS                                        │"
-  echo "│                                                             │"
+  _print_section "🧪 CONNECTIVITY TESTS"
 
   # Ping gateway
   if [[ -n "$gateway" ]]; then
     local gw_ping=$(ping -c 1 -W 2 "$gateway" 2>/dev/null | grep time= | awk -F'time=' '{print $2}' | awk '{print $1}')
     if [[ -n "$gw_ping" ]]; then
-      printf "│ Ping gateway  : %-3s ms  ✅                                 │\n" "${gw_ping%.*}"
+      echo "  Ping gateway  : ${gw_ping%.*} ms  ✅"
     else
-      printf "│ Ping gateway  : FAILED  ❌                                 │\n"
+      echo "  Ping gateway  : FAILED  ❌"
     fi
   fi
 
   # Ping Cloudflare DNS
   local cf_ping=$(ping -c 1 -W 2 1.1.1.1 2>/dev/null | grep time= | awk -F'time=' '{print $2}' | awk '{print $1}')
   if [[ -n "$cf_ping" ]]; then
-    printf "│ Ping 1.1.1.1  : %-3s ms ✅                                 │\n" "${cf_ping%.*}"
+    echo "  Ping 1.1.1.1  : ${cf_ping%.*} ms ✅"
   else
-    printf "│ Ping 1.1.1.1  : FAILED ❌                                  │\n"
+    echo "  Ping 1.1.1.1  : FAILED ❌"
   fi
 
   # DNS test
   if nslookup google.com &>/dev/null; then
-    printf "│ Internet DNS  : OK     ✅                                  │\n"
+    echo "  Internet DNS  : OK     ✅"
   else
-    printf "│ Internet DNS  : FAILED ❌                                  │\n"
+    echo "  Internet DNS  : FAILED ❌"
   fi
 
   # HA reachable (if port 8123 is listening)
   if ss -tln | grep -q ':8123 '; then
-    printf "│ HA reachable  : YES    ✅                                  │\n"
+    echo "  HA reachable  : YES    ✅"
   else
-    printf "│ HA reachable  : NO     ❌                                  │\n"
+    echo "  HA reachable  : NO     ❌"
   fi
 
   # Firewall Section
-  _print_separator
-  echo "│ 🔐 FIREWALL (UFW)                                            │"
-  echo "│                                                             │"
+  _print_section "🔐 FIREWALL (UFW)"
 
   if command -v ufw &>/dev/null; then
     local ufw_status=$(ufw status 2>/dev/null | grep Status | awk '{print $2}' | tr '[:lower:]' '[:upper:]')
     local ufw_rules=$(ufw status numbered 2>/dev/null | grep -c '^\[')
 
-    printf "│ Status  : %-50s │\n" "${ufw_status:-UNKNOWN}"
-    printf "│ Rules   : %-50d │\n" "${ufw_rules:-0}"
-    printf "│ Blocked : 0 (last 24h)                                      │\n"
+    echo "  Status  : ${ufw_status:-UNKNOWN}"
+    echo "  Rules   : ${ufw_rules:-0}"
+    echo "  Blocked : 0 (last 24h)"
   else
-    echo "│ UFW not installed                                           │"
+    echo "  UFW not installed"
   fi
 
   # Footer
-  _print_separator
-  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
-  echo "│ Press [r] refresh | [q] quit | [d] docker | [h] HA          │"
-  _print_bottom
+  echo ""
+  echo "⏱️  Last update: $timestamp"
+  echo "Press [r] refresh | [q] quit | [d] docker | [h] HA"
 }
 
 # Interactive loop
-__net_stat_interactive() {
+__epx_net_stat__interactive() {
   while true; do
-    __net_stat_dashboard
+    __epx_net_stat__stat_dashboard
 
     read -t 10 -n 1 key
     case $key in
@@ -271,5 +218,5 @@ __net_stat_interactive() {
 }
 
 __epx_net_stat() {
-  __net_stat_interactive
+  __epx_net_stat__interactive
 }

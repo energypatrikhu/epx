@@ -1,32 +1,11 @@
-#!/bin/bash
-
 # Network interfaces detailed view
-# Border width configuration
-BORDER_WIDTH=61
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
 
-# Helper to print top border
-_print_top() {
-  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print separator
-_print_separator() {
-  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print bottom border
-_print_bottom() {
-  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-__epx_net-if() {
+__epx_net_if() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear
-  _print_top
-  echo "│ 📡 NETWORK INTERFACES                                        │"
-  _print_separator
+  echo "📡 NETWORK INTERFACES"
+  echo "══════════════════════════════════════════════════════════════════════════════"
 
   # Iterate through all network interfaces
   for iface in $(ip -o link show | awk -F': ' '{print $2}'); do
@@ -40,13 +19,13 @@ __epx_net-if() {
     # Get IPv6 addresses
     local ipv6_addrs=$(ip -6 addr show "$iface" 2>/dev/null | grep inet6 | grep -v 'scope link' | awk '{print $2}')
 
-    echo "│                                                             │"
-    printf "│ ┌─ %-57s │\n" "$iface"
-    printf "│ │  State      : %-46s │\n" "$state"
-    printf "│ │  MTU        : %-46s │\n" "${mtu:-N/A}"
+    echo ""
+    echo "  $iface"
+    echo "    State      : $state"
+    echo "    MTU        : ${mtu:-N/A}"
 
     if [[ -n "$mac" ]]; then
-      printf "│ │  MAC        : %-46s │\n" "$mac"
+      echo "    MAC        : $mac"
     fi
 
     # Speed and duplex (only for physical interfaces)
@@ -55,29 +34,29 @@ __epx_net-if() {
       local duplex=$(ethtool "$iface" 2>/dev/null | grep Duplex | awk '{print $2}')
 
       if [[ -n "$speed" ]]; then
-        printf "│ │  Speed      : %-46s │\n" "$speed"
+        echo "    Speed      : $speed"
       fi
 
       if [[ -n "$duplex" ]]; then
-        printf "│ │  Duplex     : %-46s │\n" "$duplex"
+        echo "    Duplex     : $duplex"
       fi
     fi
 
     # IPv4 addresses
     if [[ -n "$ipv4_addrs" ]]; then
-      echo "│ │                                                           │"
-      echo "│ │  IPv4 Addresses:                                          │"
+      echo ""
+      echo "    IPv4 Addresses:"
       while IFS= read -r addr; do
-        printf "│ │    • %-52s │\n" "$addr"
+        echo "      • $addr"
       done <<< "$ipv4_addrs"
     fi
 
     # IPv6 addresses
     if [[ -n "$ipv6_addrs" ]]; then
-      echo "│ │                                                           │"
-      echo "│ │  IPv6 Addresses:                                          │"
+      echo ""
+      echo "    IPv6 Addresses:"
       while IFS= read -r addr; do
-        printf "│ │    • %-52s │\n" "$addr"
+        echo "      • $addr"
       done <<< "$ipv6_addrs"
     fi
 
@@ -95,28 +74,22 @@ __epx_net-if() {
       local rx_gb=$(awk "BEGIN {printf \"%.2f\", $rx_bytes/1024/1024/1024}")
       local tx_gb=$(awk "BEGIN {printf \"%.2f\", $tx_bytes/1024/1024/1024}")
 
-      echo "│ │                                                           │"
-      echo "│ │  Statistics:                                              │"
-      printf "│ │    RX: %-5s GB (%-10s packets)                  │\n" "$rx_gb" "$rx_packets"
-      printf "│ │    TX: %-5s GB (%-10s packets)                  │\n" "$tx_gb" "$tx_packets"
-      printf "│ │    Errors: RX=%-5s TX=%-5s                         │\n" "$rx_errors" "$tx_errors"
-      printf "│ │    Dropped: RX=%-5s TX=%-5s                        │\n" "$rx_dropped" "$tx_dropped"
+      echo ""
+      echo "    Statistics:"
+      echo "      RX: $rx_gb GB ($rx_packets packets)"
+      echo "      TX: $tx_gb GB ($tx_packets packets)"
+      echo "      Errors: RX=$rx_errors TX=$tx_errors"
+      echo "      Dropped: RX=$rx_dropped TX=$tx_dropped"
     fi
-
-    echo "│ └─────────────────────────────────────────────────────────  │"
   done
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ ROUTING TABLE                                               │"
-  echo "│                                                             │"
+  _print_section "ROUTING TABLE"
 
   # Show routing table
   ip route | head -10 | while read -r route; do
-    printf "│ %s │\n" "$(printf '%-59s' "$route")"
+    echo "  $route"
   done
 
-  _print_separator
-  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
-  _print_bottom
+  echo ""
+  echo "⏱️  Last update: $timestamp"
 }

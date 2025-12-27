@@ -1,51 +1,24 @@
-#!/bin/bash
-
 # Network connectivity tests
-# Border width configuration
-BORDER_WIDTH=61
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
 
-# Helper to print top border
-_print_top() {
-  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print separator
-_print_separator() {
-  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print bottom border
-_print_bottom() {
-  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-__epx_net-test() {
+__epx_net_test() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear
-  _print_top
-  echo "│ 🧪 NETWORK CONNECTIVITY TESTS                                │"
-  _print_separator
-  echo "│ Testing network connectivity...                             │"
-  echo "│                                                             │"
+  echo "🧪 NETWORK CONNECTIVITY TESTS"
+  echo "══════════════════════════════════════════════════════════════════════════════"
+  echo "Testing network connectivity..."
 
   # Get network info
   local default_if=$(ip route | grep default | awk '{print $5}' | head -1)
   local gateway=$(ip route | grep default | awk '{print $3}' | head -1)
   local public_ip=$(curl -s -m 5 ifconfig.me 2>/dev/null || echo "Unknown")
 
-  _print_separator
-  echo "│ NETWORK CONFIGURATION                                       │"
-  echo "│                                                             │"
-  printf "│ Default Interface : %-40s │\n" "${default_if:-N/A}"
-  printf "│ Default Gateway   : %-40s │\n" "${gateway:-N/A}"
-  printf "│ Public IP         : %-40s │\n" "${public_ip:0:40}"
+  _print_section "NETWORK CONFIGURATION"
+  echo "  Default Interface : ${default_if:-N/A}"
+  echo "  Default Gateway   : ${gateway:-N/A}"
+  echo "  Public IP         : ${public_ip:0:40}"
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ GATEWAY CONNECTIVITY                                        │"
-  echo "│                                                             │"
+  _print_section "GATEWAY CONNECTIVITY"
 
   # Test gateway ping
   if [[ -n "$gateway" ]]; then
@@ -54,24 +27,21 @@ __epx_net-test() {
 
     if [[ $gw_success -eq 1 ]]; then
       local gw_ping=$(echo "$gw_result" | grep 'avg' | awk -F'/' '{print $5}')
-      printf "│ Gateway (%-15s                                     │\n" "$gateway)"
-      printf "│   Status    : ✅ REACHABLE                               │\n"
-      printf "│   Latency   : %.1f ms (avg)                             │\n" "$gw_ping"
+      echo "  Gateway ($gateway)"
+      echo "    Status    : ✅ REACHABLE"
+      printf "    Latency   : %.1f ms (avg)\n" "$gw_ping"
 
       local packet_loss=$(echo "$gw_result" | grep 'packet loss' | awk '{print $(NF-5)}')
-      printf "│   Loss      : %-46s │\n" "$packet_loss"
+      echo "    Loss      : $packet_loss"
     else
-      printf "│ Gateway (%-15s                                     │\n" "$gateway)"
-      printf "│   Status    : ❌ UNREACHABLE                             │\n"
+      echo "  Gateway ($gateway)"
+      echo "    Status    : ❌ UNREACHABLE"
     fi
   else
-    printf "│ No default gateway configured                           │\n"
+    echo "  No default gateway configured"
   fi
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ INTERNET CONNECTIVITY                                       │"
-  echo "│                                                             │"
+  _print_section "INTERNET CONNECTIVITY"
 
   # Test public DNS servers
   declare -A dns_servers=(
@@ -87,19 +57,16 @@ __epx_net-test() {
 
     if [[ $success -eq 1 ]]; then
       local avg_ping=$(echo "$result" | grep 'avg' | awk -F'/' '{print $5}')
-      printf "│ %-15s (%-9s                                │\n" "$name" "$ip)"
-      printf "│   Status    : ✅ REACHABLE                               │\n"
-      printf "│   Latency   : %.1f ms (avg)                             │\n" "$avg_ping"
+      echo "  $name ($ip)"
+      echo "    Status    : ✅ REACHABLE"
+      printf "    Latency   : %.1f ms (avg)\n" "$avg_ping"
     else
-      printf "│ %-15s (%-9s                                │\n" "$name" "$ip)"
-      printf "│   Status    : ❌ UNREACHABLE                             │\n"
+      echo "  $name ($ip)"
+      echo "    Status    : ❌ UNREACHABLE"
     fi
-    echo "│                                                             │"
   done
 
-  _print_separator
-  echo "│ DNS RESOLUTION                                              │"
-  echo "│                                                             │"
+  _print_section "DNS RESOLUTION"
 
   # Test DNS resolution
   declare -a test_domains=(
@@ -112,16 +79,13 @@ __epx_net-test() {
     local dns_result=$(nslookup "$domain" 2>/dev/null | grep -A1 'Name:' | tail -1 | awk '{print $2}')
 
     if [[ -n "$dns_result" ]]; then
-      printf "│ %-20s → ✅ %-34s │\n" "$domain" "$dns_result"
+      echo "  $domain → ✅ $dns_result"
     else
-      printf "│ %-20s → ❌ %-34s │\n" "$domain" "FAILED"
+      echo "  $domain → ❌ FAILED"
     fi
   done
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ HTTP/HTTPS CONNECTIVITY                                     │"
-  echo "│                                                             │"
+  _print_section "HTTP/HTTPS CONNECTIVITY"
 
   # Test HTTP/HTTPS
   declare -A web_tests=(
@@ -135,16 +99,14 @@ __epx_net-test() {
     local http_code=$(curl -s -o /dev/null -w "%{http_code}" -m 5 "$url" 2>/dev/null)
 
     if [[ "$http_code" == "200" || "$http_code" == "301" || "$http_code" == "302" ]]; then
-      printf "│ %-25s → ✅ OK (HTTP %-3s              │\n" "$name" "$http_code)"
+      echo "  $name → ✅ OK (HTTP $http_code)"
     else
-      printf "│ %-25s → ❌ FAILED                       │\n" "$name"
+      echo "  $name → ❌ FAILED"
     fi
+    echo ""
   done
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ LOCAL SERVICES                                              │"
-  echo "│                                                             │"
+  _print_section "LOCAL SERVICES"
 
   # Test common local services
   declare -A local_services=(
@@ -159,34 +121,28 @@ __epx_net-test() {
     local port="${local_services[$service]}"
 
     if ss -tln | grep -q ":$port "; then
-      printf "│ %-25s (Port %-5s → ✅ LISTENING      │\n" "$service" "$port)"
+      echo "  $service (Port $port → ✅ LISTENING"
     else
-      printf "│ %-25s (Port %-5s → ❌ NOT LISTENING  │\n" "$service" "$port)"
+      echo "  $service (Port $port → ❌ NOT LISTENING"
     fi
   done
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ TRACEROUTE TO 8.8.8.8                                       │"
-  echo "│                                                             │"
+  _print_section "TRACEROUTE TO 8.8.8.8"
 
   # Quick traceroute (first 5 hops)
   if command -v traceroute &>/dev/null; then
     traceroute -m 5 -w 1 8.8.8.8 2>/dev/null | tail -n +2 | head -5 | while read -r line; do
-      printf "│ %s │\n" "$(printf '%-59s' "$line")"
+      echo "  $line"
     done
   else
-    echo "│ traceroute command not available                            │"
+    echo "  traceroute command not available"
   fi
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ BANDWIDTH TEST                                              │"
-  echo "│                                                             │"
+  _print_section "BANDWIDTH TEST"
 
   # Download speed test (using curl to download a small file)
   if command -v curl &>/dev/null; then
-    echo "│ Testing download speed... (this may take a few seconds)    │"
+    echo "  Testing download speed... (this may take a few seconds)"
 
     local test_url="http://speedtest.ftp.otenet.gr/files/test1Mb.db"
     local start_time=$(date +%s.%N)
@@ -195,14 +151,12 @@ __epx_net-test() {
     local duration=$(awk "BEGIN {print $end_time - $start_time}")
     local speed=$(awk "BEGIN {printf \"%.2f\", 8 / $duration}")
 
-    printf "│ Download speed: ~%.2f Mbps                               │\n" "$speed"
+    printf "  Download speed: ~%.2f Mbps\n" "$speed"
   else
-    echo "│ curl not available for speed test                          │"
+    echo "  curl not available for speed test"
   fi
 
-  echo "│                                                             │"
-  _print_separator
-  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
-  echo "│ Tip: Run 'epx net:test' regularly to monitor connectivity   │"
-  _print_bottom
+  echo ""
+  echo "⏱️  Last update: $timestamp"
+  echo "Tip: Run 'epx net:test' regularly to monitor connectivity"
 }

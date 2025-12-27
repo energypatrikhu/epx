@@ -1,26 +1,6 @@
-#!/bin/bash
-
 # Docker networking detailed view
-# Border width configuration
-BORDER_WIDTH=61
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
 
-# Helper to print top border
-_print_top() {
-  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print separator
-_print_separator() {
-  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print bottom border
-_print_bottom() {
-  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-__epx_net-docker() {
+__epx_net_docker() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   if ! command -v docker &>/dev/null; then
@@ -34,85 +14,75 @@ __epx_net-docker() {
   fi
 
   clear
-  _print_top
-  echo "│ 🐳 DOCKER NETWORKING                                         │"
-  _print_separator
+  echo "🐳 DOCKER NETWORKING"
+  echo "══════════════════════════════════════════════════════════════════════════════"
 
   # Docker daemon info
-  echo "│ DOCKER STATUS                                               │"
-  echo "│                                                             │"
+  _print_section "DOCKER STATUS"
 
   local container_count=$(docker ps --format '{{.Names}}' | wc -l)
   local container_total=$(docker ps -a --format '{{.Names}}' | wc -l)
   local image_count=$(docker images -q | wc -l)
   local network_count=$(docker network ls -q | wc -l)
 
-  printf "│ Running containers  : %-37d │\n" "$container_count"
-  printf "│ Total containers    : %-37d │\n" "$container_total"
-  printf "│ Images              : %-37d │\n" "$image_count"
-  printf "│ Networks            : %-37d │\n" "$network_count"
+  echo "  Running containers  : $container_count"
+  echo "  Total containers    : $container_total"
+  echo "  Images              : $image_count"
+  echo "  Networks            : $network_count"
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ DOCKER NETWORKS                                             │"
-  echo "│                                                             │"
+  _print_section "DOCKER NETWORKS"
 
   # List all docker networks
   docker network ls --format '{{.Name}}\t{{.Driver}}\t{{.Scope}}' | while IFS=$'\t' read name driver scope; do
-    printf "│ %-20s  Driver: %-10s  Scope: %-8s │\n" "$name" "$driver" "$scope"
+    printf "  %-20s  Driver: %-10s  Scope: %-8s\n" "$name" "$driver" "$scope"
 
     # Get network details
     local subnet=$(docker network inspect "$name" 2>/dev/null | grep -A1 '"Subnet"' | grep -o '[0-9.]*\/[0-9]*' | head -1)
     local gateway=$(docker network inspect "$name" 2>/dev/null | grep '"Gateway"' | head -1 | grep -o '[0-9.]*' | head -1)
 
     if [[ -n "$subnet" ]]; then
-      printf "│   Subnet: %-50s │\n" "$subnet"
+      printf "    Subnet: %-50s\n" "$subnet"
     fi
     if [[ -n "$gateway" ]]; then
-      printf "│   Gateway: %-49s │\n" "$gateway"
+      printf "    Gateway: %-49s\n" "$gateway"
     fi
 
     # Count containers on this network
     local container_count=$(docker network inspect "$name" 2>/dev/null | grep -c '"Name":' | tail -1)
-    printf "│   Containers: %-46d │\n" "$((container_count - 1))"
-    echo "│                                                             │"
+    printf "    Containers: %-46d\n" "$((container_count - 1))"
+    echo ""
   done
 
-  _print_separator
-  echo "│ CONTAINER NETWORK DETAILS                                   │"
-  echo "│                                                             │"
+  _print_section "CONTAINER NETWORK DETAILS"
 
   # List containers with their network info
   docker ps --format '{{.Names}}' | while read container; do
-    printf "│ ┌─ %-57s │\n" "$container"
+    printf "  Container: %s\n" "$container"
 
     # Get IP addresses
     local ip_addr=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' "$container" 2>/dev/null | awk '{print $1}')
     local network=$(docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{end}}' "$container" 2>/dev/null | awk '{print $1}')
     local mac=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.MacAddress}} {{end}}' "$container" 2>/dev/null | awk '{print $1}')
 
-    printf "│ │  Network    : %-46s │\n" "${network:-N/A}"
-    printf "│ │  IP Address : %-46s │\n" "${ip_addr:-N/A}"
-    printf "│ │  MAC Address: %-46s │\n" "${mac:-N/A}"
+    echo "    Network    : ${network:-N/A}"
+    echo "    IP Address : ${ip_addr:-N/A}"
+    echo "    MAC Address: ${mac:-N/A}"
 
     # Get port mappings
     local ports=$(docker port "$container" 2>/dev/null)
     if [[ -n "$ports" ]]; then
-      echo "│ │  Port Mappings:                                           │"
+      echo "    Port Mappings:"
       echo "$ports" | while read port_map; do
-        printf "│ │    %-54s │\n" "$port_map"
+        echo "      • $port_map"
       done
     else
-      echo "│ │  Port Mappings: None                                      │"
+      echo "    Port Mappings: None"
     fi
 
-    echo "│ └─────────────────────────────────────────────────────────  │"
-    echo "│                                                             │"
+    echo ""
   done
 
-  _print_separator
-  echo "│ PORT MAPPINGS SUMMARY                                       │"
-  echo "│                                                             │"
+  _print_section "PORT MAPPINGS SUMMARY"
 
   # List all port mappings
   docker ps --format '{{.Names}}\t{{.Ports}}' | while IFS=$'\t' read name ports; do
@@ -120,21 +90,18 @@ __epx_net-docker() {
       # Extract host ports
       echo "$ports" | grep -o '[0-9]*->' | while read port_map; do
         local host_port=$(echo "$port_map" | tr -d '->')
-        printf "│ Host:%-5s → %-47s │\n" "$host_port" "$name"
+        printf "  Host:%-5s → %-47s\n" "$host_port" "$name"
       done
     fi
   done
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ CONTAINER CONNECTIVITY                                      │"
-  echo "│                                                             │"
+  _print_section "CONTAINER CONNECTIVITY"
 
   # Test connectivity between containers
   local first_container=$(docker ps --format '{{.Names}}' | head -1)
   if [[ -n "$first_container" ]]; then
-    printf "│ Testing from: %-46s │\n" "${first_container:0:46}"
-    echo "│                                                             │"
+    echo "  Testing from: $first_container"
+    echo ""
 
     docker ps --format '{{.Names}}' | grep -v "^$first_container$" | head -5 | while read target; do
       local target_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$target" 2>/dev/null)
@@ -142,31 +109,26 @@ __epx_net-docker() {
       if [[ -n "$target_ip" ]]; then
         local ping_result=$(docker exec "$first_container" ping -c 1 -W 1 "$target_ip" 2>/dev/null)
         if echo "$ping_result" | grep -q "1 received"; then
-          printf "│ ✅ %-20s → %-32s │\n" "${target:0:20}" "$target_ip"
+          printf "  ✅ %-20s → %-32s\n" "${target:0:20}" "$target_ip"
         else
-          printf "│ ❌ %-20s → %-32s │\n" "${target:0:20}" "$target_ip"
+          printf "  ❌ %-20s → %-32s\n" "${target:0:20}" "$target_ip"
         fi
       fi
     done
   else
-    echo "│ No running containers to test                              │"
+    echo "  No running containers to test"
   fi
 
-  echo "│                                                             │"
-  _print_separator
-  echo "│ DOCKER IPTABLES RULES                                       │"
-  echo "│                                                             │"
+  _print_section "DOCKER IPTABLES RULES"
 
   # Check if docker has iptables rules
   local docker_chain_count=$(iptables -t nat -L -n 2>/dev/null | grep -c DOCKER || echo 0)
-  printf "│ Docker NAT rules    : %-37d │\n" "$docker_chain_count"
+  echo "  Docker NAT rules    : $docker_chain_count"
 
   local forward_count=$(iptables -L DOCKER -n 2>/dev/null | grep -c ACCEPT || echo 0)
-  printf "│ Docker FORWARD rules: %-37d │\n" "$forward_count"
+  echo "  Docker FORWARD rules: $forward_count"
 
-  echo "│                                                             │"
-  _print_separator
-  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
-  echo "│ Tip: Use 'docker network inspect <network>' for details     │"
-  _print_bottom
+  echo ""
+  echo "⏱️  Last update: $timestamp"
+  echo "Tip: Use 'docker network inspect <network>' for details"
 }

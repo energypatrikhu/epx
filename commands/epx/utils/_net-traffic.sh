@@ -1,27 +1,6 @@
-#!/bin/bash
-
 # Real-time network traffic monitoring
 
-# Border width configuration
-BORDER_WIDTH=61
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
-
-# Helper to print top border
-_print_top() {
-  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print separator
-_print_separator() {
-  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-# Helper to print bottom border
-_print_bottom() {
-  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
-
-__net_traffic_monitor() {
+__epx_net_traffic__monitor() {
   local iface="${1:-$(ip route | grep default | awk '{print $5}' | head -1)}"
 
   if [[ -z "$iface" ]]; then
@@ -43,11 +22,9 @@ __net_traffic_monitor() {
   declare -a rx_history
   declare -a tx_history
 
-  _print_top
-  printf "│ 🚀 REAL-TIME TRAFFIC MONITOR — %-28s │\n" "$iface"
-  _print_separator
-  echo "│ Press Ctrl+C to exit                                        │"
-  _print_bottom
+  echo "🚀 REAL-TIME TRAFFIC MONITOR — $iface"
+  echo "══════════════════════════════════════════════════════════════════════════════"
+  echo "Press Ctrl+C to exit"
   echo ""
 
   local prev_rx=$(cat /sys/class/net/$iface/statistics/rx_bytes)
@@ -124,23 +101,21 @@ __net_traffic_monitor() {
     local total_rx_gb=$(awk "BEGIN {printf \"%.2f\", $curr_rx/1024/1024/1024}")
     local total_tx_gb=$(awk "BEGIN {printf \"%.2f\", $curr_tx/1024/1024/1024}")
 
-    _print_top
-    printf "│ 🚀 REAL-TIME TRAFFIC MONITOR — %-27s │\n" "$iface"
-    _print_separator
-    printf "│ Time: %-54s │\n" "$timestamp"
-    echo "│                                                             │"
-    printf "│ ▼ DOWNLOAD: %-46s │\n" "$rx_display $rx_unit"
-    printf "│ %-61s │\n" "$rx_graph"
-    echo "│                                                             │"
-    printf "│ ▲ UPLOAD:   %-46s │\n" "$tx_display $tx_unit"
-    printf "│ %-61s │\n" "$tx_graph"
-    echo "│                                                             │"
-    _print_separator
-    echo "│ CUMULATIVE TOTALS                                           │"
-    printf "│ Total RX: %-13s GB                                  │\n" "$total_rx_gb"
-    printf "│ Total TX: %-13s GB                                  │\n" "$total_tx_gb"
-    _print_separator
-    echo "│ PACKET STATISTICS                                           │"
+    echo "🚀 REAL-TIME TRAFFIC MONITOR — $iface"
+    echo "══════════════════════════════════════════════════════════════════════════════"
+    echo "Time: $timestamp"
+    echo ""
+    echo "▼ DOWNLOAD: $rx_display $rx_unit"
+    echo "$rx_graph"
+    echo ""
+    echo "▲ UPLOAD:   $tx_display $tx_unit"
+    echo "$tx_graph"
+    echo ""
+    echo "▶ CUMULATIVE TOTALS"
+    echo "Total RX: $total_rx_gb GB"
+    echo "Total TX: $total_tx_gb GB"
+    echo ""
+    echo "▶ PACKET STATISTICS"
 
     local rx_packets=$(cat /sys/class/net/$iface/statistics/rx_packets 2>/dev/null || echo 0)
     local tx_packets=$(cat /sys/class/net/$iface/statistics/tx_packets 2>/dev/null || echo 0)
@@ -149,11 +124,10 @@ __net_traffic_monitor() {
     local rx_dropped=$(cat /sys/class/net/$iface/statistics/rx_dropped 2>/dev/null || echo 0)
     local tx_dropped=$(cat /sys/class/net/$iface/statistics/tx_dropped 2>/dev/null || echo 0)
 
-    printf "│ RX Packets: %-10s  Errors: %-4s  Dropped: %-5s   │\n" "$rx_packets" "$rx_errors" "$rx_dropped"
-    printf "│ TX Packets: %-10s  Errors: %-4s  Dropped: %-5s   │\n" "$tx_packets" "$tx_errors" "$tx_dropped"
-    _print_separator
-    echo "│ Press Ctrl+C to exit                                        │"
-    _print_bottom
+    echo "RX Packets: $rx_packets  Errors: $rx_errors  Dropped: $rx_dropped"
+    echo "TX Packets: $tx_packets  Errors: $tx_errors  Dropped: $tx_dropped"
+    echo ""
+    echo "Press Ctrl+C to exit"
 
     prev_rx=$curr_rx
     prev_tx=$curr_tx
@@ -186,5 +160,5 @@ __epx_net_traffic() {
     fi
   fi
 
-  __net_traffic_monitor "$iface"
+  __epx_net_traffic__monitor "$iface"
 }
