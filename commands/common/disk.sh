@@ -65,16 +65,33 @@ _list_raids() {
     raid_found=true
     _print_section "MD RAID Status"
     local in_device=false
+    local device_name=""
     while IFS= read -r line; do
       if [[ "$line" =~ ^md ]]; then
         in_device=true
+        device_name=$(echo "$line" | awk '{print $1}')
+        local status=$(echo "$line" | awk '{print $3}')
+        local raid_type=$(echo "$line" | awk '{print $4}')
+        local members=$(echo "$line" | cut -d' ' -f5-)
+
         echo ""
-        echo "  $line"
+        if [[ "$status" == "active" ]]; then
+          echo -n "  ✓ "
+          _c "LIGHT_GREEN" "[$raid_type]"
+          echo -n " $device_name "
+          _c "LIGHT_GRAY" "($members)"
+        else
+          echo -n "  ✗ "
+          _c "LIGHT_RED" "[$raid_type]"
+          echo -n " $device_name "
+          _c "LIGHT_GRAY" "($members)"
+        fi
+        echo ""
       elif [[ "$in_device" == true ]]; then
         if [[ "$line" =~ ^Personalities || "$line" =~ ^unused ]]; then
           in_device=false
         elif [[ -n "$line" ]]; then
-          echo "      $line"
+          _c "WHITE" "      $line"
         fi
       fi
     done < /proc/mdstat
