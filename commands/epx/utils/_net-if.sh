@@ -21,6 +21,7 @@ __epx_net_if() {
 
     echo ""
     echo "  $iface"
+    echo "  ────────────────────────────────────────────────────────────────────────────"
     echo "    State      : $state"
     echo "    MTU        : ${mtu:-N/A}"
 
@@ -82,7 +83,6 @@ __epx_net_if() {
       echo "      Dropped: RX=$rx_dropped TX=$tx_dropped"
     fi
 
-    echo "    ─────────────────────────────────────────────────────────────────────────"
   done
 
   _print_section "ROUTING TABLE"
