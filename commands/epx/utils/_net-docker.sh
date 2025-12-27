@@ -57,7 +57,8 @@ __epx_net_docker() {
 
   # List containers with their network info
   docker ps --format '{{.Names}}' | while read container; do
-    printf "  Container: %s\n" "$container"
+    printf "  Container: %s\n" "$(_c LIGHT_GREEN "$container")"
+
 
     # Get IP addresses
     local ip_addr=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}' "$container" 2>/dev/null | awk '{print $1}')
