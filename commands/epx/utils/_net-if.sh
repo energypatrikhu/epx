@@ -81,6 +81,8 @@ __epx_net_if() {
       echo "      Errors: RX=$rx_errors TX=$tx_errors"
       echo "      Dropped: RX=$rx_dropped TX=$tx_dropped"
     fi
+
+    echo "    ─────────────────────────────────────────────────────────────────────────"
   done
 
   _print_section "ROUTING TABLE"
