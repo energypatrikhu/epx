@@ -10,7 +10,7 @@ source "${EPX_HOME}/commands/epx/utils/_mk-cert.sh"
 EPX_UTILS["update-bees"]="Update bees to the latest version"
 source "${EPX_HOME}/commands/epx/utils/_update-bees.sh"
 
-EPX_UTILS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories,files separated with (,)]"
+EPX_UTILS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories, files separated with spaces]"
 source "${EPX_HOME}/commands/epx/utils/_backup.sh"
 
 EPX_UTILS["net-conn"]="Display detailed network connections information"
