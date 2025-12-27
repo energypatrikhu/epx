@@ -66,6 +66,7 @@ _list_raids() {
     _print_section "MD RAID Status"
     local in_device=false
     local device_name=""
+    local details_line=""
     while IFS= read -r line; do
       if [[ "$line" =~ ^md ]]; then
         in_device=true
@@ -73,28 +74,63 @@ _list_raids() {
         local status=$(echo "$line" | awk '{print $3}')
         local raid_type=$(echo "$line" | awk '{print $4}')
         local members=$(echo "$line" | cut -d' ' -f5-)
+        details_line=""
 
         echo ""
         if [[ "$status" == "active" ]]; then
           echo -n "  ✓ "
           _c "LIGHT_GREEN" "[$raid_type]"
-          echo -n " $device_name "
+          echo -n " "
+          _c "WHITE" "$device_name"
+          echo -n " "
           _c "LIGHT_GRAY" "($members)"
         else
           echo -n "  ✗ "
           _c "LIGHT_RED" "[$raid_type]"
-          echo -n " $device_name "
+          echo -n " "
+          _c "WHITE" "$device_name"
+          echo -n " "
           _c "LIGHT_GRAY" "($members)"
         fi
-        echo ""
       elif [[ "$in_device" == true ]]; then
         if [[ "$line" =~ ^Personalities || "$line" =~ ^unused ]]; then
           in_device=false
+          echo ""
         elif [[ -n "$line" ]]; then
-          _c "WHITE" "      $line"
+          # Parse the blocks line for better formatting
+          if [[ "$line" =~ blocks ]]; then
+            local blocks=$(echo "$line" | awk '{print $1}')
+            local super=$(echo "$line" | grep -oP 'super \K[0-9.]+' || echo "")
+            local status_array=$(echo "$line" | grep -oP '\[[0-9]+/[0-9]+\]' | head -1)
+            local health=$(echo "$line" | grep -oP '\[U+\]|\[_U\]|\[U_\]' | head -1)
+
+            echo -n " - "
+            _c "LIGHT_CYAN" "$status_array"
+            echo -n " "
+            if [[ "$health" == "[UU]" ]]; then
+              _c "LIGHT_GREEN" "$health"
+            elif [[ "$health" =~ _U|U_ ]]; then
+              _c "LIGHT_RED" "$health"
+            fi
+
+            local size_gb=$(echo "scale=1; $blocks / 1024 / 1024" | bc 2>/dev/null)
+            if [[ -n "$size_gb" ]]; then
+              echo -n " "
+              _c "LIGHT_GRAY" "${size_gb}GB"
+            fi
+          elif [[ "$line" =~ bitmap ]]; then
+            echo ""
+            _c "LIGHT_GRAY" "      $(echo "$line" | xargs)"
+          else
+            echo ""
+            _c "WHITE" "      $(echo "$line" | xargs)"
+          fi
         fi
       fi
     done < /proc/mdstat
+    if [[ "$in_device" == true ]]; then
+      echo ""
+    fi
   fi
 
   # Check for btrfs filesystems with RAID
