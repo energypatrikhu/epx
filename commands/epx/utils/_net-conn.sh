@@ -4,8 +4,8 @@ __epx_net_conn() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear
-  echo "🔌 NETWORK CONNECTIONS"
-  echo "════════════════════════════════════════════════════════════════════════════════"
+  echo -e "$(_c LIGHT_CYAN "🔌 NETWORK CONNECTIONS")"
+  echo -e "$(_c LIGHT_CYAN "════════════════════════════════════════════════════════════════════════════════")"
 
   # Connection summary
   _print_section "CONNECTION SUMMARY"
@@ -19,14 +19,14 @@ __epx_net_conn() {
   local time_wait=$(ss -tan | grep TIME-WAIT | wc -l)
   local close_wait=$(ss -tan | grep CLOSE-WAIT | wc -l)
 
-  echo "  Total connections : $total"
-  echo "  ESTABLISHED       : $established"
-  echo "  LISTEN            : $listen"
-  echo "  SYN-SENT          : $syn_sent"
-  echo "  SYN-RECV          : $syn_recv"
-  echo "  FIN-WAIT          : $fin_wait"
-  echo "  TIME-WAIT         : $time_wait"
-  echo "  CLOSE-WAIT        : $close_wait"
+  echo "  Total connections : $(_c LIGHT_GREEN "$total")"
+  echo "  ESTABLISHED       : $(_c LIGHT_GREEN "$established")"
+  echo "  LISTEN            : $(_c LIGHT_CYAN "$listen")"
+  echo "  SYN-SENT          : $(_c LIGHT_YELLOW "$syn_sent")"
+  echo "  SYN-RECV          : $(_c LIGHT_YELLOW "$syn_recv")"
+  echo "  FIN-WAIT          : $(_c LIGHT_YELLOW "$fin_wait")"
+  echo "  TIME-WAIT         : $(_c LIGHT_YELLOW "$time_wait")"
+  echo "  CLOSE-WAIT        : $(_c LIGHT_RED "$close_wait")"
 
   _print_section "TOP REMOTE IPs (by connection count)"
 

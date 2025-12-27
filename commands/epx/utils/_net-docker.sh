@@ -4,18 +4,18 @@ __epx_net_docker() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   if ! command -v docker &>/dev/null; then
-    echo "Error: Docker is not installed"
+    echo -e "$(_c LIGHT_RED "Error: Docker is not installed")"
     return 1
   fi
 
   if ! docker ps &>/dev/null; then
-    echo "Error: Docker is not running or you don't have permission"
+    echo -e "$(_c LIGHT_RED "Error: Docker is not running or you don't have permission")"
     return 1
   fi
 
   clear
-  echo "🐳 DOCKER NETWORKING"
-  echo "══════════════════════════════════════════════════════════════════════════════"
+  echo -e "$(_c LIGHT_CYAN "🐳 DOCKER NETWORKING")"
+  echo -e "$(_c LIGHT_CYAN "══════════════════════════════════════════════════════════════════════════════")"
 
   # Docker daemon info
   _print_section "DOCKER STATUS"
@@ -25,10 +25,10 @@ __epx_net_docker() {
   local image_count=$(docker images -q | wc -l)
   local network_count=$(docker network ls -q | wc -l)
 
-  echo "  Running containers  : $container_count"
-  echo "  Total containers    : $container_total"
-  echo "  Images              : $image_count"
-  echo "  Networks            : $network_count"
+  echo "  Running containers  : $(_c LIGHT_GREEN "$container_count")"
+  echo "  Total containers    : $(_c LIGHT_CYAN "$container_total")"
+  echo "  Images              : $(_c LIGHT_CYAN "$image_count")"
+  echo "  Networks            : $(_c LIGHT_CYAN "$network_count")"
 
   _print_section "DOCKER NETWORKS"
 

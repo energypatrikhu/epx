@@ -22,8 +22,8 @@ __epx_net_traffic__monitor() {
   declare -a rx_history
   declare -a tx_history
 
-  echo "🚀 REAL-TIME TRAFFIC MONITOR — $iface"
-  echo "══════════════════════════════════════════════════════════════════════════════"
+  echo -e "$(_c LIGHT_CYAN "🚀 REAL-TIME TRAFFIC MONITOR — $iface")"
+  echo -e "$(_c LIGHT_CYAN "══════════════════════════════════════════════════════════════════════════════")"
   echo "Press Ctrl+C to exit"
   echo ""
 
@@ -101,21 +101,21 @@ __epx_net_traffic__monitor() {
     local total_rx_gb=$(awk "BEGIN {printf \"%.2f\", $curr_rx/1024/1024/1024}")
     local total_tx_gb=$(awk "BEGIN {printf \"%.2f\", $curr_tx/1024/1024/1024}")
 
-    echo "🚀 REAL-TIME TRAFFIC MONITOR — $iface"
-    echo "══════════════════════════════════════════════════════════════════════════════"
+    echo -e "$(_c LIGHT_CYAN "🚀 REAL-TIME TRAFFIC MONITOR — $iface")"
+    echo -e "$(_c LIGHT_CYAN "══════════════════════════════════════════════════════════════════════════════")"
     echo "Time: $timestamp"
     echo ""
-    echo "▼ DOWNLOAD: $rx_display $rx_unit"
+    echo -e "$(_c LIGHT_GREEN "▼ DOWNLOAD: $rx_display $rx_unit")"
     echo "$rx_graph"
     echo ""
-    echo "▲ UPLOAD:   $tx_display $tx_unit"
+    echo -e "$(_c LIGHT_GREEN "▲ UPLOAD:   $tx_display $tx_unit")"
     echo "$tx_graph"
     echo ""
-    echo "▶ CUMULATIVE TOTALS"
-    echo "Total RX: $total_rx_gb GB"
-    echo "Total TX: $total_tx_gb GB"
+    echo -e "$(_c LIGHT_CYAN "▶ CUMULATIVE TOTALS")"
+    echo "Total RX: $(_c LIGHT_GREEN "$total_rx_gb GB")"
+    echo "Total TX: $(_c LIGHT_GREEN "$total_tx_gb GB")"
     echo ""
-    echo "▶ PACKET STATISTICS"
+    echo -e "$(_c LIGHT_CYAN "▶ PACKET STATISTICS")"
 
     local rx_packets=$(cat /sys/class/net/$iface/statistics/rx_packets 2>/dev/null || echo 0)
     local tx_packets=$(cat /sys/class/net/$iface/statistics/tx_packets 2>/dev/null || echo 0)

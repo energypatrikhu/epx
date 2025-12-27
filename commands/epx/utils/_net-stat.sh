@@ -19,11 +19,11 @@ __epx_net_stat__dashboard() {
   clear
 
   # Header
-  echo "🌐 NETWORK STATUS — $os_info"
-  echo "══════════════════════════════════════════════════════════════════════════════"
-  echo "  Hostname     : $hostname"
-  echo "  Uptime       : $uptime"
-  echo "  Network Mode : $network_mode"
+  echo -e "$(_c LIGHT_CYAN "🌐 NETWORK STATUS — $os_info")"
+  echo -e "$(_c LIGHT_CYAN "══════════════════════════════════════════════════════════════════════════════")"
+  echo "  Hostname     : $(_c LIGHT_GREEN "$hostname")"
+  echo "  Uptime       : $(_c LIGHT_CYAN "$uptime")"
+  echo "  Network Mode : $(_c LIGHT_YELLOW "$network_mode")"
   echo "  Default IF   : ${default_if:-N/A}"
   echo "  Gateway      : ${gateway:-N/A}"
   echo "  DNS          : ${dns_servers:-N/A}"
@@ -48,10 +48,10 @@ __epx_net_stat__dashboard() {
       local drops=$(($(cat /sys/class/net/$iface/statistics/rx_dropped 2>/dev/null || echo 0) + $(cat /sys/class/net/$iface/statistics/tx_dropped 2>/dev/null || echo 0)))
 
       echo "  $iface UP   $speed ${ip_addr:-No IP}"
-      echo "    RX:  $rx_gb GB   TX:  $tx_gb GB"
-      echo "    Errors: $total_errors   Drops: $drops"
+      echo "    RX:  $(_c LIGHT_BLUE "$rx_gb GB")   TX:  $(_c LIGHT_BLUE "$tx_gb GB")"
+      echo "    Errors: $(_c LIGHT_RED "$total_errors")   Drops: $(_c LIGHT_YELLOW "$drops")"
     else
-      echo "  $iface DOWN"
+      echo "  $(_c LIGHT_RED "$iface DOWN")"
     fi
   done
 

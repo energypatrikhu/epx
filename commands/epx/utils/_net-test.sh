@@ -4,8 +4,8 @@ __epx_net_test() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear
-  echo "🧪 NETWORK CONNECTIVITY TESTS"
-  echo "══════════════════════════════════════════════════════════════════════════════"
+  echo -e "$(_c LIGHT_CYAN "🧪 NETWORK CONNECTIVITY TESTS")"
+  echo -e "$(_c LIGHT_CYAN "══════════════════════════════════════════════════════════════════════════════")"
   echo "Testing network connectivity..."
 
   # Get network info
@@ -28,14 +28,14 @@ __epx_net_test() {
     if [[ $gw_success -eq 1 ]]; then
       local gw_ping=$(echo "$gw_result" | grep 'avg' | awk -F'/' '{print $5}')
       echo "  Gateway ($gateway)"
-      echo "    Status    : ✅ REACHABLE"
+      echo "    Status    : $(_c LIGHT_GREEN "✅ REACHABLE")"
       printf "    Latency   : %.1f ms (avg)\n" "$gw_ping"
 
       local packet_loss=$(echo "$gw_result" | grep 'packet loss' | awk '{print $(NF-6), $(NF-5), $(NF-4)}')
       echo "    Loss      : $packet_loss"
     else
       echo "  Gateway ($gateway)"
-      echo "    Status    : ❌ UNREACHABLE"
+      echo "    Status    : $(_c LIGHT_RED "❌ UNREACHABLE")"
     fi
   else
     echo "  No default gateway configured"
