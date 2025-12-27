@@ -82,19 +82,6 @@ __epx_net_docker() {
     echo ""
   done
 
-  _print_section "PORT MAPPINGS SUMMARY"
-
-  # List all port mappings
-  docker ps --format '{{.Names}}\t{{.Ports}}' | while IFS=$'\t' read name ports; do
-    if [[ -n "$ports" ]]; then
-      # Extract host ports
-      echo "$ports" | grep -o '[0-9]*->' | while read port_map; do
-        local host_port=$(echo "$port_map" | tr -d '-' | tr -d '>')
-        printf "  Host:%-5s → %-47s\n" "$host_port" "$name"
-      done
-    fi
-  done
-
   _print_section "CONTAINER CONNECTIVITY"
 
   # Test connectivity between containers
