@@ -161,12 +161,12 @@ __epx_net_stat__dashboard() {
     echo "  Internet DNS  : FAILED ❌"
   fi
 
-  # HA reachable (if port 8123 is listening)
-  if ss -tln | grep -q ':8123 '; then
-    echo "  HA reachable  : YES    ✅"
-  else
-    echo "  HA reachable  : NO     ❌"
-  fi
+  # # HA reachable (if port 8123 is listening)
+  # if ss -tln | grep -q ':8123 '; then
+  #   echo "  HA reachable  : YES    ✅"
+  # else
+  #   echo "  HA reachable  : NO     ❌"
+  # fi
 
   # Firewall Section
   _print_section "🔐 FIREWALL (UFW)"
@@ -185,7 +185,7 @@ __epx_net_stat__dashboard() {
   # Footer
   echo ""
   echo "⏱️  Last update: $timestamp"
-  echo "Press [r] refresh | [q] quit | [d] docker | [h] HA"
+  echo "Press [r] refresh | [q] quit | [d] docker"
 }
 
 # Interactive loop
@@ -207,11 +207,11 @@ __epx_net_stat__interactive() {
         docker ps
         read -p "Press any key to return..." -n1
         ;;
-      h|H)
-        clear
-        curl -s http://localhost:8123 &>/dev/null && echo "Home Assistant is reachable" || echo "Home Assistant not reachable"
-        read -p "Press any key to return..." -n1
-        ;;
+      # h|H)
+      #   clear
+      #   curl -s http://localhost:8123 &>/dev/null && echo "Home Assistant is reachable" || echo "Home Assistant not reachable"
+      #   read -p "Press any key to return..." -n1
+      #   ;;
     esac
   done
 }
