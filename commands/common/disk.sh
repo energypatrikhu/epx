@@ -17,7 +17,7 @@ _print_section() {
 _list_disks() {
   if command -v lsblk &> /dev/null; then
     _print_section "Block Devices"
-    lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT -e 7,11,14 --tree
+    lsblk -o NAME,SIZE,TYPE,FSTYPE,UUID,MOUNTPOINT -e 7,11,14 --tree
   else
     _c "LIGHT_RED" "lsblk not found"
   fi
@@ -38,7 +38,14 @@ _list_partitions() {
         has_partitions=true
         _c "WHITE" "  Disk /dev/$disk:"
         fdisk -l "/dev/$disk" 2>/dev/null | grep -E "^/dev/" | while read -r line; do
-          _c "WHITE" "    $line"
+          local partition=$(echo "$line" | awk '{print $1}')
+          local uuid=$(blkid -s UUID -o value "$partition" 2>/dev/null)
+          if [[ -n "$uuid" ]]; then
+            _c "WHITE" "    $line"
+            _c "LIGHT_GRAY" "      UUID: $uuid"
+          else
+            _c "WHITE" "    $line"
+          fi
         done
       fi
     done
