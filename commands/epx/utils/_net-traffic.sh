@@ -103,7 +103,7 @@ __epx_net_traffic__monitor() {
 
     echo -e "$(_c LIGHT_CYAN "🚀 REAL-TIME TRAFFIC MONITOR — $iface")"
     echo -e "$(_c LIGHT_CYAN "══════════════════════════════════════════════════════════════════════════════")"
-    echo "Time: $timestamp"
+    echo "Time: $(_c LIGHT_YELLOW "$timestamp")"
     echo ""
     echo -e "$(_c LIGHT_GREEN "▼ DOWNLOAD: $rx_display $rx_unit")"
     echo "$rx_graph"
@@ -124,8 +124,8 @@ __epx_net_traffic__monitor() {
     local rx_dropped=$(cat /sys/class/net/$iface/statistics/rx_dropped 2>/dev/null || echo 0)
     local tx_dropped=$(cat /sys/class/net/$iface/statistics/tx_dropped 2>/dev/null || echo 0)
 
-    echo "RX Packets: $rx_packets  Errors: $rx_errors  Dropped: $rx_dropped"
-    echo "TX Packets: $tx_packets  Errors: $tx_errors  Dropped: $tx_dropped"
+    echo "RX Packets: $(_c LIGHT_GREEN "$rx_packets")  Errors: $(_c LIGHT_RED "$rx_errors")  Dropped: $(_c LIGHT_YELLOW "$rx_dropped")"
+    echo "TX Packets: $(_c LIGHT_GREEN "$tx_packets")  Errors: $(_c LIGHT_RED "$tx_errors")  Dropped: $(_c LIGHT_YELLOW "$tx_dropped")"
     echo ""
     echo "Press Ctrl+C to exit"
 

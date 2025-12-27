@@ -26,30 +26,30 @@ __epx_net_docker() {
   local network_count=$(docker network ls -q | wc -l)
 
   echo "  Running containers  : $(_c LIGHT_GREEN "$container_count")"
-  echo "  Total containers    : $(_c LIGHT_CYAN "$container_total")"
-  echo "  Images              : $(_c LIGHT_CYAN "$image_count")"
-  echo "  Networks            : $(_c LIGHT_CYAN "$network_count")"
+  echo "  Total containers    : $(_c LIGHT_GREEN "$container_total")"
+  echo "  Images              : $(_c LIGHT_GREEN "$image_count")"
+  echo "  Networks            : $(_c LIGHT_GREEN "$network_count")"
 
   _print_section "DOCKER NETWORKS"
 
   # List all docker networks
   docker network ls --format '{{.Name}}\t{{.Driver}}\t{{.Scope}}' | while IFS=$'\t' read name driver scope; do
-    printf "  %-20s  Driver: %-10s  Scope: %-8s\n" "$name" "$driver" "$scope"
+    printf "  %-20s  Driver: %-10s  Scope: %-8s\n" "$(_c LIGHT_CYAN "$name")" "$driver" "$scope"
 
     # Get network details
     local subnet=$(docker network inspect "$name" 2>/dev/null | grep -A1 '"Subnet"' | grep -o '[0-9.]*\/[0-9]*' | head -1)
     local gateway=$(docker network inspect "$name" 2>/dev/null | grep '"Gateway"' | head -1 | grep -o '[0-9.]*' | head -1)
 
     if [[ -n "$subnet" ]]; then
-      printf "    Subnet: %-50s\n" "$subnet"
+      printf "    Subnet: $(_c LIGHT_BLUE "%-50s")\n" "$subnet"
     fi
     if [[ -n "$gateway" ]]; then
-      printf "    Gateway: %-49s\n" "$gateway"
+      printf "    Gateway: $(_c LIGHT_BLUE "%-49s")\n" "$gateway"
     fi
 
     # Count containers on this network
     local container_count=$(docker network inspect "$name" 2>/dev/null | grep -c '"Name":' | tail -1)
-    printf "    Containers: %-46d\n" "$((container_count - 1))"
+    printf "    Containers: $(_c LIGHT_GREEN "%-46d")\n" "$((container_count - 1))"
     echo ""
   done
 
@@ -65,8 +65,8 @@ __epx_net_docker() {
     local mac=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.MacAddress}} {{end}}' "$container" 2>/dev/null | awk '{print $1}')
 
     echo "    Network    : ${network:-N/A}"
-    echo "    IP Address : ${ip_addr:-N/A}"
-    echo "    MAC Address: ${mac:-N/A}"
+    echo "    IP Address : $(_c LIGHT_BLUE "${ip_addr:-N/A}")"
+    echo "    MAC Address: $(_c LIGHT_CYAN "${mac:-N/A}")"
 
     # Get port mappings
     local ports=$(docker port "$container" 2>/dev/null)
@@ -124,10 +124,10 @@ __epx_net_docker() {
 
   # Check if docker has iptables rules
   local docker_chain_count=$(iptables -t nat -L -n 2>/dev/null | grep -c DOCKER || echo 0)
-  echo "  Docker NAT rules    : $docker_chain_count"
+  echo "  Docker NAT rules    : $(_c LIGHT_GREEN "$docker_chain_count")"
 
   local forward_count=$(iptables -L DOCKER -n 2>/dev/null | grep -c ACCEPT || echo 0)
-  echo "  Docker FORWARD rules: $forward_count"
+  echo "  Docker FORWARD rules: $(_c LIGHT_GREEN "$forward_count")"
 
   echo ""
   echo "⏱️  Last update: $timestamp"

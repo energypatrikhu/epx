@@ -79,8 +79,8 @@ __epx_net_stat__dashboard() {
     local rx_graph=$(printf '█%.0s' $(seq 1 $rx_bars))$(printf '░%.0s' $(seq 1 $((20-rx_bars))))
     local tx_graph=$(printf '█%.0s' $(seq 1 $tx_bars))$(printf '░%.0s' $(seq 1 $((20-tx_bars))))
 
-    echo "  RX: $rx_graph  $rx_rate MB/s"
-    echo "  TX: $tx_graph  $tx_rate MB/s"
+    echo "  RX: $rx_graph  $(_c LIGHT_CYAN "$rx_rate MB/s")"
+    echo "  TX: $tx_graph  $(_c LIGHT_CYAN "$tx_rate MB/s")"
   else
     echo "  Traffic data unavailable"
   fi
@@ -92,9 +92,9 @@ __epx_net_stat__dashboard() {
   local listen=$(ss -tln | grep LISTEN | wc -l)
   local time_wait=$(ss -tan | grep TIME-WAIT | wc -l)
 
-  echo "  ESTABLISHED : $established"
-  echo "  LISTEN      : $listen"
-  echo "  TIME_WAIT   : $time_wait"
+  echo "  ESTABLISHED : $(_c LIGHT_GREEN "$established")"
+  echo "  LISTEN      : $(_c LIGHT_GREEN "$listen")"
+  echo "  TIME_WAIT   : $(_c LIGHT_YELLOW "$time_wait")"
   echo ""
   echo "  Top Remote IPs:"
 

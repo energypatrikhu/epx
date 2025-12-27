@@ -23,10 +23,10 @@ __epx_net_if() {
     echo -e "  $(_c LIGHT_GREEN "$iface")"
     echo -e "  $(_c LIGHT_CYAN "────────────────────────────────────────────────────────────────────────────")"
     echo "    State      : $(_c LIGHT_YELLOW "$state")"
-    echo "    MTU        : ${mtu:-N/A}"
+    echo "    MTU        : $(_c LIGHT_GREEN "${mtu:-N/A}")"
 
     if [[ -n "$mac" ]]; then
-      echo "    MAC        : $mac"
+      echo "    MAC        : $(_c LIGHT_BLUE "$mac")"
     fi
 
     # Speed and duplex (only for physical interfaces)
@@ -35,11 +35,11 @@ __epx_net_if() {
       local duplex=$(ethtool "$iface" 2>/dev/null | grep Duplex | awk '{print $2}')
 
       if [[ -n "$speed" ]]; then
-        echo "    Speed      : $speed"
+        echo "    Speed      : $(_c LIGHT_CYAN "$speed")"
       fi
 
       if [[ -n "$duplex" ]]; then
-        echo "    Duplex     : $duplex"
+        echo "    Duplex     : $(_c LIGHT_CYAN "$duplex")"
       fi
     fi
 
@@ -48,7 +48,7 @@ __epx_net_if() {
       echo ""
       echo "    IPv4 Addresses:"
       while IFS= read -r addr; do
-        echo "      • $addr"
+        echo "      • $(_c LIGHT_BLUE "$addr")"
       done <<< "$ipv4_addrs"
     fi
 
@@ -57,7 +57,7 @@ __epx_net_if() {
       echo ""
       echo "    IPv6 Addresses:"
       while IFS= read -r addr; do
-        echo "      • $addr"
+        echo "      • $(_c LIGHT_BLUE "$addr")"
       done <<< "$ipv6_addrs"
     fi
 
@@ -77,10 +77,10 @@ __epx_net_if() {
 
       echo ""
       echo "    Statistics:"
-      echo "      RX: $rx_gb GB ($rx_packets packets)"
-      echo "      TX: $tx_gb GB ($tx_packets packets)"
-      echo "      Errors: RX=$rx_errors TX=$tx_errors"
-      echo "      Dropped: RX=$rx_dropped TX=$tx_dropped"
+      echo "      RX: $(_c LIGHT_GREEN "$rx_gb GB") ($(_c LIGHT_YELLOW "$rx_packets") packets)"
+      echo "      TX: $(_c LIGHT_GREEN "$tx_gb GB") ($(_c LIGHT_YELLOW "$tx_packets") packets)"
+      echo "      Errors: RX=$(_c LIGHT_RED "$rx_errors") TX=$(_c LIGHT_RED "$tx_errors")"
+      echo "      Dropped: RX=$(_c LIGHT_YELLOW "$rx_dropped") TX=$(_c LIGHT_YELLOW "$tx_dropped")"
     fi
 
   done

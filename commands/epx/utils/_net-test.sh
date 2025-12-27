@@ -14,9 +14,9 @@ __epx_net_test() {
   local public_ip=$(curl -s -m 5 ifconfig.me 2>/dev/null || echo "Unknown")
 
   _print_section "NETWORK CONFIGURATION"
-  echo "  Default Interface : ${default_if:-N/A}"
-  echo "  Default Gateway   : ${gateway:-N/A}"
-  echo "  Public IP         : ${public_ip:0:40}"
+  echo "  Default Interface : $(_c LIGHT_CYAN "${default_if:-N/A}")"
+  echo "  Default Gateway   : $(_c LIGHT_BLUE "${gateway:-N/A}")"
+  echo "  Public IP         : $(_c LIGHT_BLUE "${public_ip:0:40}")"
 
   _print_section "GATEWAY CONNECTIVITY"
 
@@ -27,14 +27,14 @@ __epx_net_test() {
 
     if [[ $gw_success -eq 1 ]]; then
       local gw_ping=$(echo "$gw_result" | grep 'avg' | awk -F'/' '{print $5}')
-      echo "  Gateway ($gateway)"
+      echo "  Gateway ($(_c LIGHT_BLUE "$gateway"))"
       echo "    Status    : $(_c LIGHT_GREEN "✅ REACHABLE")"
-      printf "    Latency   : %.1f ms (avg)\n" "$gw_ping"
+      printf "    Latency   : $(_c LIGHT_YELLOW "%.1f ms") (avg)\n" "$gw_ping"
 
       local packet_loss=$(echo "$gw_result" | grep 'packet loss' | awk '{print $(NF-6), $(NF-5), $(NF-4)}')
       echo "    Loss      : $packet_loss"
     else
-      echo "  Gateway ($gateway)"
+      echo "  Gateway ($(_c LIGHT_BLUE "$gateway"))"
       echo "    Status    : $(_c LIGHT_RED "❌ UNREACHABLE")"
     fi
   else
@@ -79,7 +79,7 @@ __epx_net_test() {
     local dns_result=$(nslookup "$domain" 2>/dev/null | grep -A1 'Name:' | tail -1 | awk '{print $2}')
 
     if [[ -n "$dns_result" ]]; then
-      echo "  $domain → ✅ $dns_result"
+      echo "  $domain → $(_c LIGHT_GREEN "✅") $(_c LIGHT_BLUE "$dns_result")"
     else
       echo "  $domain → $(_c LIGHT_RED "❌ FAILED")"
     fi
@@ -99,7 +99,7 @@ __epx_net_test() {
     local http_code=$(curl -s -o /dev/null -w "%{http_code}" -m 5 "$url" 2>/dev/null)
 
     if [[ "$http_code" == "200" || "$http_code" == "301" || "$http_code" == "302" ]]; then
-      echo "  $name → $(_c LIGHT_GREEN "✅ OK") (HTTP $http_code)"
+      echo "  $name → $(_c LIGHT_GREEN "✅ OK") (HTTP $(_c LIGHT_YELLOW "$http_code"))"
     else
       echo "  $name → $(_c LIGHT_RED "❌ FAILED")"
     fi
