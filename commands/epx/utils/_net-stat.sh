@@ -124,7 +124,7 @@ __epx_net_stat__dashboard() {
     echo "  Port mappings:"
 
     docker ps --format '{{.Names}}\t{{.Ports}}' | head -5 | while IFS=$'\t' read name ports; do
-      local port=$(echo "$ports" | grep -o '[0-9]*->' | head -1 | tr -d '->')
+      local port=$(echo "$ports" | grep -o '[0-9]*->' | head -1 | tr -d '-'| tr -d '>')
       if [[ -n "$port" ]]; then
         echo "    • $port → $name"
       fi
