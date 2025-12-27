@@ -29,7 +29,7 @@ __epx_net_test() {
       local gw_ping=$(echo "$gw_result" | grep 'avg' | awk -F'/' '{print $5}')
       echo "  Gateway ($(_c LIGHT_BLUE "$gateway"))"
       echo "    Status    : $(_c LIGHT_GREEN "✅ REACHABLE")"
-      printf "    Latency   : $(_c LIGHT_YELLOW "%.1f ms") (avg)\n" "$gw_ping"
+      LC_NUMERIC=C printf "    Latency   : $(_c LIGHT_YELLOW "%.1f ms") (avg)\n" "$gw_ping"
 
       local packet_loss=$(echo "$gw_result" | grep 'packet loss' | awk '{print $(NF-6), $(NF-5), $(NF-4)}')
       echo "    Loss      : $packet_loss"
@@ -59,7 +59,7 @@ __epx_net_test() {
       local avg_ping=$(echo "$result" | grep 'avg' | awk -F'/' '{print $5}')
       echo "  $name ($ip)"
       echo "    Status    : $(_c LIGHT_GREEN "✅ REACHABLE")"
-      printf "    Latency   : %.1f ms (avg)\n" "$avg_ping"
+      LC_NUMERIC=C printf "    Latency   : %.1f ms (avg)\n" "$avg_ping"
     else
       echo "  $name ($ip)"
       echo "    Status    : $(_c LIGHT_RED "❌ UNREACHABLE")"
@@ -150,7 +150,7 @@ __epx_net_test() {
     local duration=$(awk "BEGIN {print $end_time - $start_time}")
     local speed=$(awk "BEGIN {printf \"%.2f\", 8 / $duration}")
 
-    printf "  Download speed: ~%.2f Mbps\n" "$speed"
+    LC_NUMERIC=C printf "  Download speed: ~%.2f Mbps\n" "$speed"
   else
     echo "  curl not available for speed test"
   fi
