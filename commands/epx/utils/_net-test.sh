@@ -3,23 +3,23 @@
 # Network connectivity tests
 # Border width configuration
 BORDER_WIDTH=61
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
 
 # Helper to print top border
 _print_top() {
-  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+  printf "╭%s╮\n" "$(printf "%-${BORDER_WIDTH}s" | tr ' ' '─')"
 }
 
 # Helper to print separator
 _print_separator() {
-  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+  printf "├%s┤\n" "$(printf "%-${BORDER_WIDTH}s" | tr ' ' '─')"
 }
 
 # Helper to print bottom border
 _print_bottom() {
-  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+  printf "╰%s╯\n" "$(printf "%-${BORDER_WIDTH}s" | tr ' ' '─')"
 }
-__epx_net_test() {
+
+__epx_net-test() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear

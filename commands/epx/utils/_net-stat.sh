@@ -4,38 +4,20 @@
 
 # Border width configuration
 BORDER_WIDTH=61
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
-
-# Helper function to calculate visual width (emojis count as 2)
-_visual_length() {
-  local str="$1"
-  local len=${#str}
-  # Count emojis (rough estimation - emojis are typically in Unicode ranges)
-  local emoji_count=$(echo -n "$str" | grep -oP '[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]' | wc -l)
-  echo $((len + emoji_count))
-}
-
-# Helper to print a bordered line
-_print_line() {
-  local text="$1"
-  local visual_len=$(_visual_length "$text")
-  local padding=$((BORDER_CONTENT_WIDTH - visual_len))
-  printf "│ %s%*s │\n" "$text" $padding ""
-}
-
-# Helper to print a separator
-_print_separator() {
-  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
-}
 
 # Helper to print top border
 _print_top() {
-  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+  printf "╭%s╮\n" "$(printf "%-${BORDER_WIDTH}s" | tr ' ' '─')"
+}
+
+# Helper to print separator
+_print_separator() {
+  printf "├%s┤\n" "$(printf "%-${BORDER_WIDTH}s" | tr ' ' '─')"
 }
 
 # Helper to print bottom border
 _print_bottom() {
-  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+  printf "╰%s╯\n" "$(printf "%-${BORDER_WIDTH}s" | tr ' ' '─')"
 }
 
 __net_stat_dashboard() {
