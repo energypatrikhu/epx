@@ -1,7 +1,6 @@
 # Full network status dashboard
 
 __epx_net_stat__dashboard() {
-  local width=$BORDER_WIDTH
   local os_info=$(cat /etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d'"' -f2 || echo "Unknown Linux")
   local hostname=$(hostname)
   local uptime=$(uptime -p 2>/dev/null | sed 's/up //')
