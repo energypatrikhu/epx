@@ -2,8 +2,8 @@
 
 # Docker networking detailed view
 # Border width configuration
-BORDER_WIDTH=60
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH - 2))
+BORDER_WIDTH=61
+BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
 
 # Helper to print top border
 _print_top() {

@@ -3,8 +3,8 @@
 # Full network status dashboard
 
 # Border width configuration
-BORDER_WIDTH=60
-BORDER_CONTENT_WIDTH=$((BORDER_WIDTH - 2))  # Minus 2 for the │ symbols
+BORDER_WIDTH=61
+BORDER_CONTENT_WIDTH=$((BORDER_WIDTH))
 
 # Helper function to calculate visual width (emojis count as 2)
 _visual_length() {
