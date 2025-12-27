@@ -63,9 +63,16 @@ __epx_backup__log_status_to_file() {
   local output_path="${4-}"
   local output_zst_file="${5-}"
   local starting_date="${6-}"
-  local backups_to_keep="${7-}"
+  local ending_date="${7-}"
+  local backups_to_keep="${8-}"
 
-  local current_date=$(date -d "${starting_date}" "+%Y. %m. %d %H:%M:%S")
+  # if ending_date is false, set it to current date
+  if [[ -z "${ending_date}" ]]; then
+    ending_date=$(date +"%Y-%m-%d %H:%M:%S")
+  fi
+
+  local start_date=$(date -d "${starting_date}" "+%Y. %m. %d %H:%M:%S")
+  local end_date=$(date -d "${ending_date}" "+%Y. %m. %d %H:%M:%S")
   local backup_size="N/A"
   local num_of_backups=$(find "${output_path}" -maxdepth 1 -name "*.tar.zst" -printf "%f\n" | wc -l)
 
@@ -76,7 +83,7 @@ __epx_backup__log_status_to_file() {
   # Get the size of the backup directory, exclude log file
   local total_size=$(du -h --exclude="backup-info.log" "${output_path}" | awk '{print $2}')
 
-  echo "${status} (${input_path}) (${backup_size}) (${total_size}) (${num_of_backups}/${backups_to_keep}) (${current_date})" >"${logfile}"
+  echo "${status} (${input_path}) (${backup_size}) (${total_size}) (${num_of_backups}/${backups_to_keep}) (${start_date}) (${end_date})" >"${logfile}"
 
   # Start all beesd processes after creating a backup
   __epx_backup__start_beesd
@@ -153,7 +160,7 @@ __epx_backup() {
   # Compress the input path into a tar.zst file
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
   if ! __epx_backup__compress "${input_path}" "${backup_file}" "${excluded[@]}"; then
-    __epx_backup__log_status_to_file "Backup failed, failed to compress files" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
+    __epx_backup__log_status_to_file "Backup failed, failed to compress files" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" false "${backups_to_keep}"
     return 1
   fi
 
@@ -164,12 +171,13 @@ __epx_backup() {
   for backup in "${backups[@]}"; do
     echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Removing backup: ${output_path}/${backup}")"
     if ! rm -f "${output_path}/${backup}"; then
-      __epx_backup__log_status_to_file "Backup failed, failed to remove old backups" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
+      __epx_backup__log_status_to_file "Backup failed, failed to remove old backups" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" false "${backups_to_keep}"
       return 1
     fi
   done
 
   # Log the status to a file
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Logging status to file...")"
-  __epx_backup__log_status_to_file "Backup created successfully" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${backups_to_keep}"
+  local ending_date=$(date +"%Y-%m-%d %H:%M:%S")
+  __epx_backup__log_status_to_file "Backup created successfully" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${ending_date}" "${backups_to_keep}"
 }
