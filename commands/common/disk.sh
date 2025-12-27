@@ -17,7 +17,7 @@ _print_section() {
 _list_disks() {
   if command -v lsblk &> /dev/null; then
     _print_section "Block Devices"
-    lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT -e 7,11,14 --tree
+    _c "WHITE" "$(lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT -e 7,11,14 --tree)"
   else
     _c "LIGHT_RED" "lsblk not found"
   fi
@@ -36,7 +36,7 @@ _list_partitions() {
       local part_count=$(fdisk -l "/dev/$disk" 2>/dev/null | grep -c "^/dev/")
       if [[ $part_count -gt 0 ]]; then
         has_partitions=true
-        _c "LIGHT_BLUE" "  Disk /dev/$disk:"
+        _c "WHITE" "  Disk /dev/$disk:"
         fdisk -l "/dev/$disk" 2>/dev/null | grep -E "^/dev/" | while read -r line; do
           _c "WHITE" "    $line"
         done
@@ -59,7 +59,7 @@ _list_raids() {
     _print_section "MD RAID Status"
     while IFS= read -r line; do
       if [[ "$line" =~ ^md ]]; then
-        _c "LIGHT_BLUE" "  $line"
+        _c "WHITE" "  $line"
       elif [[ -n "$line" && ! "$line" =~ ^unused ]]; then
         _c "WHITE" "    $line"
       fi
