@@ -94,12 +94,12 @@ _list_raids() {
 
           # Count devices and get mount point
           local devices=()
-          local mount_point=""
+          local first_device=""
           while IFS= read -r dev_line; do
             if [[ "$dev_line" == *"devid"* ]]; then
               devices+=("$dev_line")
-              if [[ -z "$mount_point" ]]; then
-                mount_point=$(echo "$dev_line" | awk '{print $NF}')
+              if [[ -z "$first_device" ]]; then
+                first_device=$(echo "$dev_line" | awk '{print $NF}')
               fi
             elif [[ "$dev_line" == *"Label:"* ]] && [[ "$dev_line" != *"$uuid"* ]]; then
               break
@@ -110,9 +110,15 @@ _list_raids() {
 
           # Only show filesystems with multiple devices
           if [[ $device_count -gt 1 ]]; then
+            # Find actual mount point from the device
+            local mount_point=$(findmnt -n -o TARGET --source "$first_device" 2>/dev/null | head -1)
+            if [[ -z "$mount_point" ]]; then
+              mount_point=$(grep "$first_device" /proc/mounts 2>/dev/null | awk '{print $2}' | head -1)
+            fi
+
             # Detect RAID level
             local raid_level="unknown"
-            if [[ -n "$mount_point" ]] && [[ -e "$mount_point" ]]; then
+            if [[ -n "$mount_point" ]] && [[ -d "$mount_point" ]]; then
               local data_profile=$(btrfs filesystem usage "$mount_point" 2>/dev/null | awk '/^Data,/ {sub(/^Data,/, ""); sub(/:.*/, ""); print; exit}')
               if [[ -n "$data_profile" ]]; then
                 raid_level=$(echo "$data_profile" | tr -d ' ' | tr '[:upper:]' '[:lower:]')
