@@ -98,7 +98,7 @@ __epx_net_stat__dashboard() {
   echo ""
   echo "  Top Remote IPs:"
 
-  ss -tan | grep ESTAB | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -rn | head -3 | while read count ip; do
+  ss -tan | grep ESTAB | awk '{print $5}' | sed 's/\[//g; s/\]//g' | awk -F: '{if (NF > 2) print $(NF-1); else print $(NF-1)}' | sort | uniq -c | sort -rn | head -3 | while read count ip; do
     local hostname=$(getent hosts "$ip" 2>/dev/null | awk '{print $2}' | head -1)
     echo "    • $(_c LIGHT_BLUE "$ip") ($(_c LIGHT_GREEN "$count")) (${hostname:-Unknown})"
   done
