@@ -42,15 +42,23 @@ __epx_net_conn() {
   _print_section "LISTENING SERVICES"
 
   # Listening services
-  ss -tlnp 2>/dev/null | grep LISTEN | awk '{print $4, $6}' | sort -t: -k2 -n | head -15 | while read addr process; do
+  ss -tlnp 2>/dev/null | grep LISTEN | while read -r line; do
+    local addr=$(echo "$line" | awk '{print $4}')
+    local process=$(echo "$line" | awk '{print $6}')
+
     local port=$(echo "$addr" | awk -F: '{print $NF}')
-    local ip=$(echo "$addr" | awk -F: '{print $(NF-1)}')
+    local ip=$(echo "$addr" | sed 's/:[^:]*$//')
+
+    # Handle different IP formats
     [[ "$ip" == "0.0.0.0" || "$ip" == "*" ]] && ip="All"
-    [[ "$ip" == "::" ]] && ip="All(v6)"
+    [[ "$ip" == "[::]" || "$ip" == "::" ]] && ip="All(v6)"
+    [[ "$ip" =~ ^\[.*\]$ ]] && ip=$(echo "$ip" | tr -d '[]')
 
     local proc_name=$(echo "$process" | grep -o 'users:(([^,]*' | cut -d'(' -f3 | tr -d '"')
     [[ -z "$proc_name" ]] && proc_name="Unknown"
 
+    echo "$port|$ip|$proc_name"
+  done | sort -t'|' -k1 -n | head -15 | while IFS='|' read port ip proc_name; do
     printf "  Port %-5s on %-10s → %-30s\n" "$port" "$ip" "${proc_name:0:28}"
   done
 
