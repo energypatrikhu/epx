@@ -94,7 +94,7 @@ __epx_backup__compress() {
     exclude_args+=(--exclude="${exclude}")
   done
 
-  if ! tar "${exclude_args[@]}" -I "zstd -T0 -19 --long" -cvf "${backup_file}" -C "${input_dir}" .; then
+  if ! tar --warning=no-file-changed "${exclude_args[@]}" -I "zstd -T0 -19 --long" -cvf "${backup_file}" -C "${input_dir}" .; then
     return 1
   fi
 }
