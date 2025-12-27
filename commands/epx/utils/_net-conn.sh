@@ -23,9 +23,9 @@ __epx_net_conn() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear
-  echo "╭────────────────────────────────────────────────────────────╮"
+  _print_top
   echo "│ 🔌 NETWORK CONNECTIONS                                       │"
-  echo "├────────────────────────────────────────────────────────────┤"
+  _print_separator
 
   # Connection summary
   echo "│ CONNECTION SUMMARY                                          │"
@@ -50,7 +50,7 @@ __epx_net_conn() {
   printf "│ CLOSE-WAIT        : %-40d │\n" "$close_wait"
 
   echo "│                                                             │"
-  echo "├────────────────────────────────────────────────────────────┤"
+  _print_separator
   echo "│ TOP REMOTE IPs (by connection count)                       │"
   echo "│                                                             │"
 
@@ -64,7 +64,7 @@ __epx_net_conn() {
   done
 
   echo "│                                                             │"
-  echo "├────────────────────────────────────────────────────────────┤"
+  _print_separator
   echo "│ LISTENING SERVICES                                          │"
   echo "│                                                             │"
 
@@ -82,7 +82,7 @@ __epx_net_conn() {
   done
 
   echo "│                                                             │"
-  echo "├────────────────────────────────────────────────────────────┤"
+  _print_separator
   echo "│ ACTIVE CONNECTIONS (top 15)                                │"
   echo "│                                                             │"
 
@@ -103,7 +103,7 @@ __epx_net_conn() {
   done
 
   echo "│                                                             │"
-  echo "├────────────────────────────────────────────────────────────┤"
+  _print_separator
   echo "│ UDP CONNECTIONS                                             │"
   echo "│                                                             │"
 
@@ -123,8 +123,8 @@ __epx_net_conn() {
   done
 
   echo "│                                                             │"
-  echo "├────────────────────────────────────────────────────────────┤"
+  _print_separator
   printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
   echo "│ Tip: Use 'watch -n1 ss -tan' for live monitoring            │"
-  echo "╰────────────────────────────────────────────────────────────╯"
+  _print_bottom
 }
