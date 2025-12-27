@@ -73,10 +73,10 @@ __epx_net_docker() {
     if [[ -n "$ports" ]]; then
       echo "    Port Mappings:"
       echo "$ports" | while read port_map; do
-        echo "      • $port_map"
+      echo "      • $(_c LIGHT_GREEN "$port_map")"
       done
     else
-      echo "    Port Mappings: None"
+      echo "    Port Mappings: $(_c LIGHT_YELLOW "None")"
     fi
 
     echo ""
