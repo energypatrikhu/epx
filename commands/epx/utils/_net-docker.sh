@@ -115,7 +115,7 @@ __epx_net_docker() {
   # Test connectivity between containers
   local first_container=$(docker ps --format '{{.Names}}' | head -1)
   if [[ -n "$first_container" ]]; then
-    echo "│ Testing from: $first_container                              │"
+    printf "│ Testing from: %-46s │\n" "${first_container:0:46}"
     echo "│                                                             │"
 
     docker ps --format '{{.Names}}' | grep -v "^$first_container$" | head -5 | while read target; do
@@ -124,9 +124,9 @@ __epx_net_docker() {
       if [[ -n "$target_ip" ]]; then
         local ping_result=$(docker exec "$first_container" ping -c 1 -W 1 "$target_ip" 2>/dev/null)
         if echo "$ping_result" | grep -q "1 received"; then
-          printf "│ ✅ %-20s → %-33s │\n" "$target" "$target_ip"
+          printf "│ ✅ %-20s → %-32s │\n" "${target:0:20}" "$target_ip"
         else
-          printf "│ ❌ %-20s → %-33s │\n" "$target" "$target_ip"
+          printf "│ ❌ %-20s → %-32s │\n" "${target:0:20}" "$target_ip"
         fi
       fi
     done
@@ -148,7 +148,7 @@ __epx_net_docker() {
 
   echo "│                                                             │"
   echo "├────────────────────────────────────────────────────────────┤"
-  printf "│ ⏱️  Last update: %-44s │\n" "$timestamp"
+  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
   echo "│ Tip: Use 'docker network inspect <network>' for details     │"
   echo "╰────────────────────────────────────────────────────────────╯"
 }

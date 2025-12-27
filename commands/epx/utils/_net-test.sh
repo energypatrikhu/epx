@@ -22,7 +22,7 @@ __epx_net_test() {
   echo "│                                                             │"
   printf "│ Default Interface : %-40s │\n" "${default_if:-N/A}"
   printf "│ Default Gateway   : %-40s │\n" "${gateway:-N/A}"
-  printf "│ Public IP         : %-40s │\n" "$public_ip"
+  printf "│ Public IP         : %-40s │\n" "${public_ip:0:40}"
 
   echo "│                                                             │"
   echo "├────────────────────────────────────────────────────────────┤"
@@ -36,15 +36,15 @@ __epx_net_test() {
 
     if [[ $gw_success -eq 1 ]]; then
       local gw_ping=$(echo "$gw_result" | grep 'avg' | awk -F'/' '{print $5}')
-      printf "│ Gateway ($gateway)                                    │\n"
-      printf "│   Status    : ✅ REACHABLE                                │\n"
-      printf "│   Latency   : %.1f ms (avg)                                │\n" "$gw_ping"
+      printf "│ Gateway (%-15s                                     │\n" "$gateway)"
+      printf "│   Status    : ✅ REACHABLE                               │\n"
+      printf "│   Latency   : %.1f ms (avg)                             │\n" "$gw_ping"
 
       local packet_loss=$(echo "$gw_result" | grep 'packet loss' | awk '{print $(NF-5)}')
-      printf "│   Loss      : %s                                          │\n" "$packet_loss"
+      printf "│   Loss      : %-46s │\n" "$packet_loss"
     else
-      printf "│ Gateway ($gateway)                                    │\n"
-      printf "│   Status    : ❌ UNREACHABLE                              │\n"
+      printf "│ Gateway (%-15s                                     │\n" "$gateway)"
+      printf "│   Status    : ❌ UNREACHABLE                             │\n"
     fi
   else
     printf "│ No default gateway configured                           │\n"
@@ -69,12 +69,12 @@ __epx_net_test() {
 
     if [[ $success -eq 1 ]]; then
       local avg_ping=$(echo "$result" | grep 'avg' | awk -F'/' '{print $5}')
-      printf "│ %-15s ($ip)                                  │\n" "$name"
-      printf "│   Status    : ✅ REACHABLE                                │\n"
-      printf "│   Latency   : %.1f ms (avg)                                │\n" "$avg_ping"
+      printf "│ %-15s (%-9s                                │\n" "$name" "$ip)"
+      printf "│   Status    : ✅ REACHABLE                               │\n"
+      printf "│   Latency   : %.1f ms (avg)                             │\n" "$avg_ping"
     else
-      printf "│ %-15s ($ip)                                  │\n" "$name"
-      printf "│   Status    : ❌ UNREACHABLE                              │\n"
+      printf "│ %-15s (%-9s                                │\n" "$name" "$ip)"
+      printf "│   Status    : ❌ UNREACHABLE                             │\n"
     fi
     echo "│                                                             │"
   done
@@ -94,9 +94,9 @@ __epx_net_test() {
     local dns_result=$(nslookup "$domain" 2>/dev/null | grep -A1 'Name:' | tail -1 | awk '{print $2}')
 
     if [[ -n "$dns_result" ]]; then
-      printf "│ %-20s → %-35s │\n" "$domain" "✅ $dns_result"
+      printf "│ %-20s → ✅ %-34s │\n" "$domain" "$dns_result"
     else
-      printf "│ %-20s → %-35s │\n" "$domain" "❌ FAILED"
+      printf "│ %-20s → ❌ %-34s │\n" "$domain" "FAILED"
     fi
   done
 
@@ -117,9 +117,9 @@ __epx_net_test() {
     local http_code=$(curl -s -o /dev/null -w "%{http_code}" -m 5 "$url" 2>/dev/null)
 
     if [[ "$http_code" == "200" || "$http_code" == "301" || "$http_code" == "302" ]]; then
-      printf "│ %-25s → ✅ OK (HTTP %s)                  │\n" "$name" "$http_code"
+      printf "│ %-25s → ✅ OK (HTTP %-3s              │\n" "$name" "$http_code)"
     else
-      printf "│ %-25s → ❌ FAILED                        │\n" "$name"
+      printf "│ %-25s → ❌ FAILED                       │\n" "$name"
     fi
   done
 
@@ -141,9 +141,9 @@ __epx_net_test() {
     local port="${local_services[$service]}"
 
     if ss -tln | grep -q ":$port "; then
-      printf "│ %-25s (Port %-5s → ✅ LISTENING       │\n" "$service" "$port"
+      printf "│ %-25s (Port %-5s → ✅ LISTENING      │\n" "$service" "$port)"
     else
-      printf "│ %-25s (Port %-5s → ❌ NOT LISTENING   │\n" "$service" "$port"
+      printf "│ %-25s (Port %-5s → ❌ NOT LISTENING  │\n" "$service" "$port)"
     fi
   done
 
@@ -177,14 +177,14 @@ __epx_net_test() {
     local duration=$(awk "BEGIN {print $end_time - $start_time}")
     local speed=$(awk "BEGIN {printf \"%.2f\", 8 / $duration}")
 
-    printf "│ Download speed: ~%.2f Mbps                                  │\n" "$speed"
+    printf "│ Download speed: ~%.2f Mbps                               │\n" "$speed"
   else
     echo "│ curl not available for speed test                          │"
   fi
 
   echo "│                                                             │"
   echo "├────────────────────────────────────────────────────────────┤"
-  printf "│ ⏱️  Last update: %-44s │\n" "$timestamp"
+  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
   echo "│ Tip: Run 'epx net:test' regularly to monitor connectivity   │"
   echo "╰────────────────────────────────────────────────────────────╯"
 }

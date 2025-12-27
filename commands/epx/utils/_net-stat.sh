@@ -27,7 +27,7 @@ __net_stat_dashboard() {
   echo "├────────────────────────────────────────────────────────────┤"
   printf "│ Hostname     : %-44s │\n" "$hostname"
   printf "│ Uptime       : %-44s │\n" "$uptime"
-  printf "│ Network Mode : %-44s │\n" "$network_mode"
+  printf "│ Network Mode : %-42s │\n" "$network_mode"
   printf "│ Default IF   : %-44s │\n" "${default_if:-N/A}"
   printf "│ Gateway      : %-44s │\n" "${gateway:-N/A}"
   printf "│ DNS          : %-44s │\n" "${dns_servers:-N/A}"
@@ -67,7 +67,7 @@ __net_stat_dashboard() {
 
   # Real-time Traffic Section
   echo "├────────────────────────────────────────────────────────────┤"
-  printf "│ 🚀 REAL-TIME TRAFFIC (%-36s │\n" "$default_if)"
+  printf "│ 🚀 REAL-TIME TRAFFIC (%-35s │\n" "$default_if)"
   echo "│                                                             │"
 
   if [[ -n "$default_if" && -e "/sys/class/net/$default_if/statistics/rx_bytes" ]]; then
@@ -88,8 +88,8 @@ __net_stat_dashboard() {
     local rx_graph=$(printf '█%.0s' $(seq 1 $rx_bars))$(printf '░%.0s' $(seq 1 $((20-rx_bars))))
     local tx_graph=$(printf '█%.0s' $(seq 1 $tx_bars))$(printf '░%.0s' $(seq 1 $((20-tx_bars))))
 
-    printf "│ RX: %s  %-6s MB/s                           │\n" "$rx_graph" "$rx_rate"
-    printf "│ TX: %s  %-6s MB/s                           │\n" "$tx_graph" "$tx_rate"
+    printf "│ RX: %s  %-6s MB/s                          │\n" "$rx_graph" "$rx_rate"
+    printf "│ TX: %s  %-6s MB/s                          │\n" "$tx_graph" "$tx_rate"
   else
     echo "│ Traffic data unavailable                                    │"
   fi
@@ -111,7 +111,7 @@ __net_stat_dashboard() {
 
   ss -tan | grep ESTAB | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -rn | head -3 | while read count ip; do
     local hostname=$(getent hosts "$ip" 2>/dev/null | awk '{print $2}' | head -1)
-    printf "│  • %-15s (%-35s │\n" "$ip" "${hostname:-Unknown})"
+    printf "│  • %-15s (%-34s │\n" "$ip" "${hostname:-Unknown})"
   done
 
   # Docker Section
@@ -155,32 +155,32 @@ __net_stat_dashboard() {
   if [[ -n "$gateway" ]]; then
     local gw_ping=$(ping -c 1 -W 2 "$gateway" 2>/dev/null | grep time= | awk -F'time=' '{print $2}' | awk '{print $1}')
     if [[ -n "$gw_ping" ]]; then
-      printf "│ Ping gateway  : %-3s ms  ✅                                  │\n" "${gw_ping%.*}"
+      printf "│ Ping gateway  : %-3s ms  ✅                                 │\n" "${gw_ping%.*}"
     else
-      printf "│ Ping gateway  : FAILED  ❌                                  │\n"
+      printf "│ Ping gateway  : FAILED  ❌                                 │\n"
     fi
   fi
 
   # Ping Cloudflare DNS
   local cf_ping=$(ping -c 1 -W 2 1.1.1.1 2>/dev/null | grep time= | awk -F'time=' '{print $2}' | awk '{print $1}')
   if [[ -n "$cf_ping" ]]; then
-    printf "│ Ping 1.1.1.1  : %-3s ms ✅                                  │\n" "${cf_ping%.*}"
+    printf "│ Ping 1.1.1.1  : %-3s ms ✅                                 │\n" "${cf_ping%.*}"
   else
-    printf "│ Ping 1.1.1.1  : FAILED ❌                                   │\n"
+    printf "│ Ping 1.1.1.1  : FAILED ❌                                  │\n"
   fi
 
   # DNS test
   if nslookup google.com &>/dev/null; then
-    printf "│ Internet DNS  : OK     ✅                                   │\n"
+    printf "│ Internet DNS  : OK     ✅                                  │\n"
   else
-    printf "│ Internet DNS  : FAILED ❌                                   │\n"
+    printf "│ Internet DNS  : FAILED ❌                                  │\n"
   fi
 
   # HA reachable (if port 8123 is listening)
   if ss -tln | grep -q ':8123 '; then
-    printf "│ HA reachable  : YES    ✅                                   │\n"
+    printf "│ HA reachable  : YES    ✅                                  │\n"
   else
-    printf "│ HA reachable  : NO     ❌                                   │\n"
+    printf "│ HA reachable  : NO     ❌                                  │\n"
   fi
 
   # Firewall Section
@@ -201,7 +201,7 @@ __net_stat_dashboard() {
 
   # Footer
   echo "├────────────────────────────────────────────────────────────┤"
-  printf "│ ⏱️  Last update: %-44s │\n" "$timestamp"
+  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
   echo "│ Press [r] refresh | [q] quit | [d] docker | [h] HA          │"
   echo "╰────────────────────────────────────────────────────────────╯"
 }

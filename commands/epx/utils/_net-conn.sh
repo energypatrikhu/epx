@@ -81,7 +81,7 @@ __epx_net_conn() {
     local remote_ip=$(echo "$remote_addr" | cut -d: -f1)
     local remote_port=$(echo "$remote_addr" | awk -F: '{print $NF}')
 
-    printf "│ %-12s :%5s ↔ %-15s:%-5s          │\n" \
+    printf "│ %-12s :%-5s ↔ %-15s:%-5s         │\n" \
       "${process:0:12}" "$local_port" "${remote_ip:0:15}" "$remote_port"
   done
 
@@ -107,7 +107,7 @@ __epx_net_conn() {
 
   echo "│                                                             │"
   echo "├────────────────────────────────────────────────────────────┤"
-  printf "│ ⏱️  Last update: %-44s │\n" "$timestamp"
+  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
   echo "│ Tip: Use 'watch -n1 ss -tan' for live monitoring            │"
   echo "╰────────────────────────────────────────────────────────────╯"
 }

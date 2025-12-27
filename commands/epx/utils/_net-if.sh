@@ -79,10 +79,10 @@ __epx_net_if() {
 
       echo "│ │                                                           │"
       echo "│ │  Statistics:                                              │"
-      printf "│ │    RX: %s GB (%s packets)                  │\n" "$rx_gb" "$rx_packets"
-      printf "│ │    TX: %s GB (%s packets)                  │\n" "$tx_gb" "$tx_packets"
-      printf "│ │    Errors: RX=%s TX=%s                          │\n" "$rx_errors" "$tx_errors"
-      printf "│ │    Dropped: RX=%s TX=%s                         │\n" "$rx_dropped" "$tx_dropped"
+      printf "│ │    RX: %-5s GB (%-10s packets)                  │\n" "$rx_gb" "$rx_packets"
+      printf "│ │    TX: %-5s GB (%-10s packets)                  │\n" "$tx_gb" "$tx_packets"
+      printf "│ │    Errors: RX=%-5s TX=%-5s                         │\n" "$rx_errors" "$tx_errors"
+      printf "│ │    Dropped: RX=%-5s TX=%-5s                        │\n" "$rx_dropped" "$tx_dropped"
     fi
 
     echo "│ └─────────────────────────────────────────────────────────  │"
@@ -99,6 +99,6 @@ __epx_net_if() {
   done
 
   echo "├────────────────────────────────────────────────────────────┤"
-  printf "│ ⏱️  Last update: %-44s │\n" "$timestamp"
+  printf "│ ⏱️  Last update: %-43s │\n" "$timestamp"
   echo "╰────────────────────────────────────────────────────────────╯"
 }
