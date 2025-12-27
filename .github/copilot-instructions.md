@@ -1,0 +1,16 @@
+- every script file auto-imports almost every script in the helper directory on build/install, so you can use any helper function in your scripts without needing to source them individually
+- when adding new helper scripts, ensure they have unique function names to avoid conflicts
+- helpers functions can be used across all commands and utilities, using the name `_helpers.sh`
+- when creating autocomplete scripts, create both bash and fish versions for compatibility, example:
+  - `commands/.../_autocomplete.sh`
+  - `commands/.../_autocomplete.fish`
+- for autocomplete scripts, follow the existing structure in other autocomplete scripts in the project
+- the shebang line for all shell scripts is automatically set during build/install, do not include it in your scripts
+- you can only test scripts after committing them, then running `epx self-update` to rebuild/install the updated version
+- if you think a helper function would be generally useful, consider moving it to the helper directory, then add it `GLOBAL_INCLUDES` in the `link.sh` file
+- follow the existing code style and structure in the project for consistency
+- in the `epx` directory, use underscores (_) for file names instead of hyphens (-) to ensure compatibility across different systems, after build/install the commands will be accessible with hyphens
+- for any network-related scripts, ensure to handle both IPv4 and IPv6 scenarios where applicable
+- after creating scripts in `epx/utils`, remember to update the main command scripts to utilize these utilities as needed
+  - add it to `EPX_UTILS` array in `epx.sh`, with appropriate comments
+  - source the utility script
