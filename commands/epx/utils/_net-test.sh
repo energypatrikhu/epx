@@ -2,7 +2,7 @@
 
 # Network connectivity tests
 
-__epx_net-test() {
+__epx_net_test() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear

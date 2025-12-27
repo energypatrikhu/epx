@@ -2,7 +2,7 @@
 
 # Network connections detailed view
 
-__epx_net-conn() {
+__epx_net_conn() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear

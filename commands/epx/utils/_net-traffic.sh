@@ -143,7 +143,7 @@ __net_traffic_monitor() {
   done
 }
 
-__epx_net-traffic() {
+__epx_net_traffic() {
   local iface="${1:-}"
 
   if [[ -z "$iface" ]]; then

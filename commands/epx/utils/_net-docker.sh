@@ -2,7 +2,7 @@
 
 # Docker networking detailed view
 
-__epx_net-docker() {
+__epx_net_docker() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   if ! command -v docker &>/dev/null; then

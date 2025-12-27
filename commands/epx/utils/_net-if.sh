@@ -2,7 +2,7 @@
 
 # Network interfaces detailed view
 
-__epx_net-if() {
+__epx_net_if() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 
   clear

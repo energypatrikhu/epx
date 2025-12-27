@@ -234,6 +234,6 @@ __net_stat_interactive() {
   done
 }
 
-__epx_net-stat() {
+__epx_net_stat() {
   __net_stat_interactive
 }
