@@ -57,11 +57,18 @@ _list_raids() {
   if [[ -f /proc/mdstat ]] && grep -q md /proc/mdstat 2>/dev/null; then
     raid_found=true
     _print_section "MD RAID Status"
+    local in_device=false
     while IFS= read -r line; do
       if [[ "$line" =~ ^md ]]; then
-        _c "WHITE" "  $line"
-      elif [[ -n "$line" && ! "$line" =~ ^unused ]]; then
-        _c "WHITE" "    $line"
+        in_device=true
+        echo ""
+        echo "  $line"
+      elif [[ "$in_device" == true ]]; then
+        if [[ "$line" =~ ^Personalities || "$line" =~ ^unused ]]; then
+          in_device=false
+        elif [[ -n "$line" ]]; then
+          echo "      $line"
+        fi
       fi
     done < /proc/mdstat
   fi
@@ -198,7 +205,7 @@ _list_raids() {
 
 # List disk usage by mount points
 _list_usage() {
-  _print_section "Disk Usage (Top Mounts)"
+  _print_section "Disk Usage"
 
   if command -v df &> /dev/null; then
     df -h 2>/dev/null | tail -n +2 | grep '^/dev/' | sort -k5 -rn 2>/dev/null | head -10 | while read -r line; do
@@ -208,12 +215,13 @@ _list_usage() {
 
       # Color code by usage percentage
       if [[ "$usage" =~ ^[0-9]+$ ]]; then
+        local formatted_line=$(printf "  %-30s %5s%%   %s" "$device" "$usage" "$mount")
         if (( usage >= 90 )); then
-          _c "LIGHT_RED" "  $device $(printf '%3d%%' $usage) - $mount"
+          _c "LIGHT_RED" "$formatted_line"
         elif (( usage >= 75 )); then
-          _c "LIGHT_YELLOW" "  $device $(printf '%3d%%' $usage) - $mount"
+          _c "LIGHT_YELLOW" "$formatted_line"
         else
-          echo "  $device $(printf '%3d%%' $usage) - $mount"
+          echo "$formatted_line"
         fi
       fi
     done
