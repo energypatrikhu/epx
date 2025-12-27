@@ -17,7 +17,7 @@ _print_section() {
 _list_disks() {
   if command -v lsblk &> /dev/null; then
     _print_section "Block Devices"
-    _c "WHITE" "$(lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT -e 7,11,14 --tree)"
+    lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT -e 7,11,14 --tree
   else
     _c "LIGHT_RED" "lsblk not found"
   fi
@@ -213,7 +213,7 @@ _list_usage() {
         elif (( usage >= 75 )); then
           _c "LIGHT_YELLOW" "  $device $(printf '%3d%%' $usage) - $mount"
         else
-          _c "LIGHT_GREEN" "  $device $(printf '%3d%%' $usage) - $mount"
+          echo "  $device $(printf '%3d%%' $usage) - $mount"
         fi
       fi
     done
