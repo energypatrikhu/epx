@@ -94,7 +94,8 @@ __epx_backup__compress() {
     exclude_args+=(--exclude="${exclude}")
   done
 
-  if ! tar --warning=no-file-changed "${exclude_args[@]}" -I "zstd -T0 -19 --long" -cvf "${backup_file}" -C "${input_dir}" .; then
+  if ! tar --warning=no-file-changed "${exclude_args[@]}" -I "zstd -T0 -19 --long" -cvf "${backup_file}" -C "${input_dir}" . 2> echo; then
+    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: Failed to compress backup.")"
     return 1
   fi
 }
