@@ -21,7 +21,7 @@ __epx_net_conn() {
 
   echo "  Total connections : $(_c LIGHT_GREEN "$total")"
   echo "  ESTABLISHED       : $(_c LIGHT_GREEN "$established")"
-  echo "  LISTEN            : $(_c LIGHT_CYAN "$listen")"
+  echo "  LISTEN            : $(_c LIGHT_GREEN "$listen")"
   echo "  SYN-SENT          : $(_c LIGHT_YELLOW "$syn_sent")"
   echo "  SYN-RECV          : $(_c LIGHT_YELLOW "$syn_recv")"
   echo "  FIN-WAIT          : $(_c LIGHT_YELLOW "$fin_wait")"
@@ -36,7 +36,7 @@ __epx_net_conn() {
     if [[ -z "$hostname" ]]; then
       hostname="Unknown"
     fi
-    printf "  %3d × %-15s  %-32s\n" "$count" "$ip" "(${hostname:0:30})"
+    printf "  %3s × $(_c LIGHT_BLUE "%-15s")  %-32s\n" "$(_c LIGHT_GREEN "$count")" "$ip" "(${hostname:0:30})"
   done
 
   _print_section "LISTENING SERVICES"
@@ -59,7 +59,7 @@ __epx_net_conn() {
 
     echo "$port|$ip|$proc_name"
   done | sort -t'|' -k1 -n | head -15 | while IFS='|' read port ip proc_name; do
-    printf "  Port %-5s on %-10s → %-30s\n" "$port" "$ip" "${proc_name:0:28}"
+    printf "  Port $(_c LIGHT_YELLOW "%-5s") on %-10s → %-30s\n" "$port" "$(_c LIGHT_BLUE "$ip")" "${proc_name:0:28}"
   done
 
   _print_section "ACTIVE CONNECTIONS (top 15)"
@@ -76,7 +76,7 @@ __epx_net_conn() {
     local remote_ip=$(echo "$remote_addr" | cut -d: -f1)
     local remote_port=$(echo "$remote_addr" | awk -F: '{print $NF}')
 
-    printf "  %-12s :%-5s ↔ %-15s:%-5s\n" \
+    printf "  %-12s :$(_c LIGHT_YELLOW "%-5s") ↔ $(_c LIGHT_BLUE "%-15s"):$(_c LIGHT_YELLOW "%-5s")\n" \
       "${process:0:12}" "$local_port" "${remote_ip:0:15}" "$remote_port"
   done
 
@@ -84,7 +84,7 @@ __epx_net_conn() {
 
   # UDP connections
   local udp_count=$(ss -uan | tail -n +2 | wc -l)
-  echo "  Total UDP sockets : $udp_count"
+  echo "  Total UDP sockets : $(_c LIGHT_GREEN "$udp_count")"
 
   ss -ulnp 2>/dev/null | grep -v 'State' | head -10 | while read -r line; do
     local addr=$(echo "$line" | awk '{print $4}')
@@ -93,7 +93,7 @@ __epx_net_conn() {
 
     [[ -z "$process" ]] && process="Unknown"
 
-    printf "  Port %-5s → %-46s\n" "$port" "${process:0:44}"
+    printf "  Port $(_c LIGHT_YELLOW "%-5s") → %-46s\n" "$port" "${process:0:44}"
   done
 
   echo ""
