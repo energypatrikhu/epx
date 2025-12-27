@@ -103,9 +103,9 @@ __epx_net_test() {
     else
       echo "  $name → $(_c LIGHT_RED "❌ FAILED")"
     fi
-    echo ""
   done
 
+  echo ""
   _print_section "LOCAL SERVICES"
 
   # Test common local services
