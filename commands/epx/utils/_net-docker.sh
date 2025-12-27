@@ -89,7 +89,7 @@ __epx_net_docker() {
     if [[ -n "$ports" ]]; then
       # Extract host ports
       echo "$ports" | grep -o '[0-9]*->' | while read port_map; do
-        local host_port=$(echo "$port_map" | tr -d '->')
+        local host_port=$(echo "$port_map" | tr -d '-' | tr -d '>')
         printf "  Host:%-5s → %-47s\n" "$host_port" "$name"
       done
     fi
