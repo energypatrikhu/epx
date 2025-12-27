@@ -12,14 +12,12 @@ echo "Building and Linking EPX commands to /usr/local/bin..."
 mkdir -p "${EPX_HOME}/scripts" 2>/dev/null
 rm -rf "${EPX_HOME}/scripts/"* 2>/dev/null
 
-GLOBAL_INCLUDES=(
-  "${EPX_HOME}/helpers/header.sh"
-  "${EPX_HOME}/helpers/shared.sh"
-  "${EPX_HOME}/helpers/colors.sh"
-  "${EPX_HOME}/helpers/colorize.sh"
-  "${EPX_HOME}/helpers/check-sudo.sh"
-  "${EPX_HOME}/helpers/check-command-installed.sh"
-)
+GLOBAL_INCLUDES=()
+if [[ -d "${EPX_HOME}/helpers/global" ]]; then
+  while IFS= read -r -d '' file; do
+    GLOBAL_INCLUDES+=("${file}")
+  done < <(find "${EPX_HOME}/helpers/global" -type f -name "*.sh" -print0 | sort -z)
+fi
 INCLUDE_GLOBAL_HEADERS="false"
 
 # Inject global includes at the top of each script
