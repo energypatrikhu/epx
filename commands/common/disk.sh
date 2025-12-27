@@ -89,7 +89,21 @@ _list_raids() {
       local uuids=($(echo "$btrfs_show" | grep -oP 'uuid: \K[a-f0-9-]+'))
 
       for uuid in "${uuids[@]}"; do
-        local dev_count=$(echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | grep -c "devid")
+        # Count devices accurately by stopping at next Label
+        local dev_count=0
+        local in_section=false
+        while IFS= read -r line; do
+          if [[ "$line" == *"uuid: $uuid"* ]]; then
+            in_section=true
+          elif [[ "$in_section" == true ]]; then
+            if [[ "$line" == *"Label:"* ]] && [[ "$line" != *"$uuid"* ]]; then
+              break
+            elif [[ "$line" == *"devid"* ]]; then
+              ((dev_count++))
+            fi
+          fi
+        done <<< "$btrfs_show"
+
         if [[ $dev_count -gt 1 ]]; then
           has_raid=true
           break
