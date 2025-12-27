@@ -58,11 +58,11 @@ __epx_net_test() {
     if [[ $success -eq 1 ]]; then
       local avg_ping=$(echo "$result" | grep 'avg' | awk -F'/' '{print $5}')
       echo "  $name ($ip)"
-      echo "    Status    : ✅ REACHABLE"
+      echo "    Status    : $(_c LIGHT_GREEN "✅ REACHABLE")"
       printf "    Latency   : %.1f ms (avg)\n" "$avg_ping"
     else
       echo "  $name ($ip)"
-      echo "    Status    : ❌ UNREACHABLE"
+      echo "    Status    : $(_c LIGHT_RED "❌ UNREACHABLE")"
     fi
   done
 
@@ -81,7 +81,7 @@ __epx_net_test() {
     if [[ -n "$dns_result" ]]; then
       echo "  $domain → ✅ $dns_result"
     else
-      echo "  $domain → ❌ FAILED"
+      echo "  $domain → $(_c LIGHT_RED "❌ FAILED")"
     fi
   done
 
@@ -119,9 +119,10 @@ __epx_net_test() {
     local port="${local_services[$service]}"
 
     if ss -tln | grep -q ":$port "; then
-      echo "  $service (Port $port → ✅ LISTENING"
+      echo "  $service (Port $port) → $(_c LIGHT_GREEN "✅ LISTENING")"
+
     else
-      echo "  $service (Port $port → ❌ NOT LISTENING"
+      echo "  $service (Port $port) → $(_c LIGHT_RED "❌ NOT LISTENING")"
     fi
   done
 
