@@ -99,9 +99,9 @@ __epx_net_test() {
     local http_code=$(curl -s -o /dev/null -w "%{http_code}" -m 5 "$url" 2>/dev/null)
 
     if [[ "$http_code" == "200" || "$http_code" == "301" || "$http_code" == "302" ]]; then
-      echo "  $name → ✅ OK (HTTP $http_code)"
+      echo "  $name → $(_c LIGHT_GREEN "✅ OK") (HTTP $http_code)"
     else
-      echo "  $name → ❌ FAILED"
+      echo "  $name → $(_c LIGHT_RED "❌ FAILED")"
     fi
     echo ""
   done
