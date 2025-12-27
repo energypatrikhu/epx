@@ -1,3 +1,4 @@
+source "${EPX_HOME}/commands/epx/utils/_helpers.sh"
 
 declare -A EPX_UTILS
 EPX_UTILS["self-update"]="Update the EPX CLI to the latest version"
