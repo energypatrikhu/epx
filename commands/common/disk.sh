@@ -130,7 +130,6 @@ _list_raids() {
         done
 
         # Show device details only for multi-device filesystems
-        echo ""
         for uuid in "${uuids[@]}"; do
           # Count devices for this UUID
           local device_lines=()
