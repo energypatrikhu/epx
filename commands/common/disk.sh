@@ -82,7 +82,7 @@ _list_raids() {
       local uuids=($(echo "$btrfs_show" | grep -oP 'uuid: \K[a-f0-9-]+'))
 
       for uuid in "${uuids[@]}"; do
-        local dev_count=$(echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | grep -c "devid" | head -1)
+        local dev_count=$(echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | grep -c "devid")
         if [[ $dev_count -gt 1 ]]; then
           has_raid=true
           break
