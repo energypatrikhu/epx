@@ -6,7 +6,7 @@ __epx_net_stat__dashboard() {
   local uptime=$(uptime -p 2>/dev/null | sed 's/up //')
   local default_if=$(ip route | grep default | awk '{print $5}' | head -1)
   local gateway=$(ip route | grep default | awk '{print $3}' | head -1)
-  local dns_servers=$(grep nameserver /etc/resolv.conf 2>/dev/null | awk '{print $2}' | tr '\n' ', ' | sed 's/,$//' | sed 's/,/, /')
+  local dns_servers=$(grep nameserver /etc/resolv.conf 2>/dev/null | grep -v '^#' | awk '{print $2}' | tr '\n' ', ' | sed 's/,$//' | sed 's/,/, /')
   local network_mode="ONLINE ✅"
 
   # Check network connectivity
