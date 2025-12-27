@@ -1,4 +1,4 @@
-# colors.sh - Terminal color definitions for EPX scripts
+# Terminal color definitions for EPX scripts
 #
 # This file defines an associative array of ANSI color codes that can be used
 # to colorize terminal output in bash scripts.
