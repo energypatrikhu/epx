@@ -47,8 +47,8 @@ __epx_net_stat__dashboard() {
       local total_errors=$((rx_errors + tx_errors))
       local drops=$(($(cat /sys/class/net/$iface/statistics/rx_dropped 2>/dev/null || echo 0) + $(cat /sys/class/net/$iface/statistics/tx_dropped 2>/dev/null || echo 0)))
 
-      echo "  $iface UP   $speed ${ip_addr:-No IP}"
-      echo "    RX:  $(_c LIGHT_BLUE "$rx_gb GB")   TX:  $(_c LIGHT_BLUE "$tx_gb GB")"
+      echo "  $iface $(_c LIGHT_GREEN "UP")   $speed $(_c LIGHT_BLUE "${ip_addr:-No IP}")"
+      echo "    RX:  $(_c LIGHT_GREEN "$rx_gb GB")   TX:  $(_c LIGHT_GREEN "$tx_gb GB")"
       echo "    Errors: $(_c LIGHT_RED "$total_errors")   Drops: $(_c LIGHT_YELLOW "$drops")"
     else
       echo "  $(_c LIGHT_RED "$iface DOWN")"
@@ -56,7 +56,7 @@ __epx_net_stat__dashboard() {
   done
 
   # Loopback
-  echo "  lo     UP   127.0.0.1"
+  echo "  lo     $(_c LIGHT_GREEN "UP")   $(_c LIGHT_BLUE "127.0.0.1")"
 
   # Real-time Traffic Section
   _print_section "🚀 REAL-TIME TRAFFIC ($default_if)"
@@ -100,7 +100,7 @@ __epx_net_stat__dashboard() {
 
   ss -tan | grep ESTAB | awk '{print $5}' | cut -d: -f1 | sort | uniq -c | sort -rn | head -3 | while read count ip; do
     local hostname=$(getent hosts "$ip" 2>/dev/null | awk '{print $2}' | head -1)
-    echo "    • $ip (${hostname:-Unknown})"
+    echo "    • $(_c LIGHT_BLUE "$ip") ($(_c LIGHT_GREEN "$count")) (${hostname:-Unknown})"
   done
 
   # Docker Section
@@ -110,8 +110,8 @@ __epx_net_stat__dashboard() {
     local container_count=$(docker ps --format '{{.Names}}' | wc -l)
     local docker_bridge=$(docker network inspect bridge 2>/dev/null | grep -A1 '"Subnet"' | grep -o '[0-9.]*\/[0-9]*' | head -1)
 
-    echo "  Containers online : $container_count"
-    echo "  Docker bridge     : ${docker_bridge:-N/A}"
+    echo "  Containers online : $(_c LIGHT_GREEN "$container_count")"
+    echo "  Docker bridge     : $(_c LIGHT_BLUE "${docker_bridge:-N/A}")"
 
     # # Get first container IP as example
     # local first_container=$(docker ps --format '{{.Names}}' | head -1)
