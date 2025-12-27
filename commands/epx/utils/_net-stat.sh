@@ -120,15 +120,15 @@ __epx_net_stat__dashboard() {
       echo "  $first_container : ${container_ip:-N/A}"
     fi
 
-    echo ""
-    echo "  Port mappings:"
+    # echo ""
+    # echo "  Port mappings:"
 
-    docker ps --format '{{.Names}}\t{{.Ports}}' | head -5 | while IFS=$'\t' read name ports; do
-      local port=$(echo "$ports" | grep -o '[0-9]*->' | head -1 | tr -d '-'| tr -d '>')
-      if [[ -n "$port" ]]; then
-        echo "    • $port → $name"
-      fi
-    done
+    # docker ps --format '{{.Names}}\t{{.Ports}}' | head -5 | while IFS=$'\t' read name ports; do
+    #   local port=$(echo "$ports" | grep -o '[0-9]*->' | head -1 | tr -d '-'| tr -d '>')
+    #   if [[ -n "$port" ]]; then
+    #     echo "    • $port → $name"
+    #   fi
+    # done
   else
     echo "  Docker not available or not running"
   fi
