@@ -90,7 +90,7 @@ _list_raids() {
         for uuid in "${uuids[@]}"; do
           # Get filesystem info
           local fs_info=$(echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | grep -B 1 "uuid: $uuid")
-          local label=$(echo "$fs_info" | grep "Label:" | sed 's/.*Label: //;s/ uuid.*//' | tr -d "'")
+          local label=$(echo "$fs_info" | grep "Label:" | sed 's/.*Label: //;s/ uuid.*//' | tr -d "'" | xargs)
 
           # Count devices and get mount point
           local devices=()
