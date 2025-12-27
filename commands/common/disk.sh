@@ -61,7 +61,7 @@ _list_raids() {
   local raid_found=false
 
   # Check for mdraid
-  if [[ -f /proc/mdstat ]] && grep -q md /proc/mdstat 2>/dev/null; then
+  if [[ -f /mnt/storage/mdstat ]] && grep -q md /mnt/storage/mdstat 2>/dev/null; then
     raid_found=true
     _print_section "MD RAID Status"
     local in_device=false
@@ -108,7 +108,7 @@ _list_raids() {
           fi
         fi
       fi
-    done < /proc/mdstat
+    done < /mnt/storage/mdstat
     if [[ "$in_device" == true ]]; then
       echo ""
     fi
