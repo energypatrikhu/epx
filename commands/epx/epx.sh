@@ -12,23 +12,23 @@ source "${EPX_HOME}/commands/epx/utils/_update-bees.sh"
 EPX_UTILS["backup"]="Backup files or directories | <input path> <output path> <backups to keep> [excluded directories,files separated with (,)]"
 source "${EPX_HOME}/commands/epx/utils/_backup.sh"
 
-# EPX_UTILS["net-conn"]="Display detailed network connections information"
-# source "${EPX_HOME}/commands/epx/utils/_net-conn.sh"
+EPX_UTILS["net-conn"]="Display detailed network connections information"
+source "${EPX_HOME}/commands/epx/utils/_net-conn.sh"
 
-# EPX_UTILS["net-docker"]="Display Docker container network information"
-# source "${EPX_HOME}/commands/epx/utils/_net-docker.sh"
+EPX_UTILS["net-docker"]="Display Docker container network information"
+source "${EPX_HOME}/commands/epx/utils/_net-docker.sh"
 
-# EPX_UTILS["net-if"]="Display detailed information about network interfaces"
-# source "${EPX_HOME}/commands/epx/utils/_net-if.sh"
+EPX_UTILS["net-if"]="Display detailed information about network interfaces"
+source "${EPX_HOME}/commands/epx/utils/_net-if.sh"
 
-# EPX_UTILS["net-stat"]="Display network statistics summary"
-# source "${EPX_HOME}/commands/epx/utils/_net-stat.sh"
+EPX_UTILS["net-stat"]="Display network statistics summary"
+source "${EPX_HOME}/commands/epx/utils/_net-stat.sh"
 
-# EPX_UTILS["net-test"]="Perform network connectivity tests and display results"
-# source "${EPX_HOME}/commands/epx/utils/_net-test.sh"
+EPX_UTILS["net-test"]="Perform network connectivity tests and display results"
+source "${EPX_HOME}/commands/epx/utils/_net-test.sh"
 
-# EPX_UTILS["net-traffic"]="Monitor real-time network traffic on a specified interface | [interface]"
-# source "${EPX_HOME}/commands/epx/utils/_net-traffic.sh"
+EPX_UTILS["net-traffic"]="Monitor real-time network traffic on a specified interface | [interface]"
+source "${EPX_HOME}/commands/epx/utils/_net-traffic.sh"
 
 EPX_UTILS["help"]="Display help information for EPX commands"
 source "${EPX_HOME}/commands/epx/utils/_help.sh"
