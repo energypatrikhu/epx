@@ -132,17 +132,28 @@ _list_raids() {
         # Show device details only for multi-device filesystems
         echo ""
         for uuid in "${uuids[@]}"; do
-          local dev_count=$(echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | grep -c "devid" | head -1)
-          if [[ $dev_count -gt 1 ]]; then
-            echo "$btrfs_show" | grep -A 100 "uuid: $uuid" | while IFS= read -r line; do
-              if [[ "$line" == *"devid"* ]]; then
-                if [[ "$line" == *"missing"* ]]; then
-                  _c "LIGHT_RED" "    $line"
-                else
-                  _c "WHITE" "    $line"
-                fi
-              elif [[ "$line" == *"Label:"* ]] && [[ "$line" != *"$uuid"* ]]; then
+          # Count devices for this UUID
+          local device_lines=()
+          local in_section=false
+          while IFS= read -r line; do
+            if [[ "$line" == *"uuid: $uuid"* ]]; then
+              in_section=true
+            elif [[ "$in_section" == true ]]; then
+              if [[ "$line" == *"Label:"* ]]; then
                 break
+              elif [[ "$line" == *"devid"* ]]; then
+                device_lines+=("$line")
+              fi
+            fi
+          done <<< "$btrfs_show"
+
+          # Only display if more than 1 device
+          if [[ ${#device_lines[@]} -gt 1 ]]; then
+            for dev_line in "${device_lines[@]}"; do
+              if [[ "$dev_line" == *"missing"* ]]; then
+                _c "LIGHT_RED" "    $dev_line"
+              else
+                _c "WHITE" "    $dev_line"
               fi
             done
           fi
