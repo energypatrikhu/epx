@@ -96,29 +96,29 @@ __epx_net_docker() {
   #   fi
   # done
 
-  _print_section "CONTAINER CONNECTIVITY"
+  # _print_section "CONTAINER CONNECTIVITY"
 
-  # Test connectivity between containers
-  local first_container=$(docker ps --format '{{.Names}}' | head -1)
-  if [[ -n "$first_container" ]]; then
-    echo "  Testing from: $first_container"
-    echo ""
+  # # Test connectivity between containers
+  # local first_container=$(docker ps --format '{{.Names}}' | head -1)
+  # if [[ -n "$first_container" ]]; then
+  #   echo "  Testing from: $first_container"
+  #   echo ""
 
-    docker ps --format '{{.Names}}' | grep -v "^$first_container$" | head -5 | while read target; do
-      local target_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$target" 2>/dev/null)
+  #   docker ps --format '{{.Names}}' | grep -v "^$first_container$" | head -5 | while read target; do
+  #     local target_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$target" 2>/dev/null)
 
-      if [[ -n "$target_ip" ]]; then
-        local ping_result=$(docker exec "$first_container" ping -c 1 -W 1 "$target_ip" 2>/dev/null)
-        if echo "$ping_result" | grep -q "1 received"; then
-          printf "  ✅ %-20s → %-32s\n" "${target:0:20}" "$target_ip"
-        else
-          printf "  ❌ %-20s → %-32s\n" "${target:0:20}" "$target_ip"
-        fi
-      fi
-    done
-  else
-    echo "  No running containers to test"
-  fi
+  #     if [[ -n "$target_ip" ]]; then
+  #       local ping_result=$(docker exec "$first_container" ping -c 1 -W 1 "$target_ip" 2>/dev/null)
+  #       if echo "$ping_result" | grep -q "1 received"; then
+  #         printf "  ✅ %-20s → %-32s\n" "${target:0:20}" "$target_ip"
+  #       else
+  #         printf "  ❌ %-20s → %-32s\n" "${target:0:20}" "$target_ip"
+  #       fi
+  #     fi
+  #   done
+  # else
+  #   echo "  No running containers to test"
+  # fi
 
   _print_section "DOCKER IPTABLES RULES"
 
