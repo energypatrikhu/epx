@@ -201,7 +201,7 @@ _list_usage() {
   _print_section "Disk Usage (Top Mounts)"
 
   if command -v df &> /dev/null; then
-    df -h 2>/dev/null | tail -n +2 | sort -k5 -rn 2>/dev/null | head -10 | while read -r line; do
+    df -h 2>/dev/null | tail -n +2 | grep '^/dev/' | sort -k5 -rn 2>/dev/null | head -10 | while read -r line; do
       local usage=$(echo "$line" | awk '{print $5}' | sed 's/%//' 2>/dev/null || echo "0")
       local device=$(echo "$line" | awk '{print $1}')
       local mount=$(echo "$line" | awk '{print $NF}')
