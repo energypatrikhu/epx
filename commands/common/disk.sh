@@ -230,13 +230,15 @@ _list_smart() {
       for disk in $disks; do
         local health=$(smartctl -H "$disk" 2>/dev/null | grep -i "overall-health" | awk '{print $NF}')
         if [[ "$health" == "PASSED" ]]; then
-          _c "LIGHT_GREEN" "  ✓ $disk - $health"
+          echo -n "  ✓ $disk - "
+          _c "LIGHT_GREEN" "$health"
         elif [[ "$health" == "FAILED" ]]; then
-          _c "LIGHT_RED" "  ✗ $disk - $health"
+          echo -n "  ✗ $disk - "
+          _c "LIGHT_RED" "$health"
         elif [[ -n "$health" ]]; then
-          _c "WHITE" "  $disk - $health"
+          echo "  $disk - $health"
         else
-          _c "WHITE" "  $disk"
+          echo "  $disk"
         fi
       done
     else
