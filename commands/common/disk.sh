@@ -61,7 +61,7 @@ _list_raids() {
   local raid_found=false
 
   # Check for mdraid
-  if [[ -f /mnt/storage/mdstat ]] && grep -q md /mnt/storage/mdstat 2>/dev/null; then
+  if [[ -f /proc/mdstat ]] && grep -q md /proc/mdstat 2>/dev/null; then
     raid_found=true
     _print_section "MD RAID Status"
     local in_device=false
@@ -74,7 +74,6 @@ _list_raids() {
         local raid_type=$(echo "$line" | awk '{print $4}')
         local members=$(echo "$line" | cut -d' ' -f5-)
 
-        echo ""
         if [[ "$status" == "active" ]]; then
           echo "  ✓ $(_c "LIGHT_GREEN" "[$raid_type]") $device_name $(_c "LIGHT_GRAY" "($members)")"
         else
@@ -108,7 +107,7 @@ _list_raids() {
           fi
         fi
       fi
-    done < /mnt/storage/mdstat
+    done < /proc/mdstat
     if [[ "$in_device" == true ]]; then
       echo ""
     fi
