@@ -76,48 +76,35 @@ _list_raids() {
 
         echo ""
         if [[ "$status" == "active" ]]; then
-          printf "  ✓ "
-          _c "LIGHT_GREEN" "[$raid_type] "
-          printf "%s " "$device_name"
-          _c "LIGHT_GRAY" "($members)"
+          echo "  ✓ $(_c "LIGHT_GREEN" "[$raid_type]") $device_name $(_c "LIGHT_GRAY" "($members)")"
         else
-          printf "  ✗ "
-          _c "LIGHT_RED" "[$raid_type] "
-          printf "%s " "$device_name"
-          _c "LIGHT_GRAY" "($members)"
+          echo "  ✗ $(_c "LIGHT_RED" "[$raid_type]") $device_name $(_c "LIGHT_GRAY" "($members)")"
         fi
       elif [[ "$in_device" == true ]]; then
         if [[ "$line" =~ ^Personalities || "$line" =~ ^unused ]]; then
           in_device=false
-          echo ""
         elif [[ -n "$line" ]]; then
           # Parse the blocks line for better formatting
           if [[ "$line" =~ blocks ]]; then
             local blocks=$(echo "$line" | awk '{print $1}')
             local status_array=$(echo "$line" | grep -oP '\[[0-9]+/[0-9]+\]' | head -1)
             local health=$(echo "$line" | grep -oP '\[U+\]|\[_U\]|\[U_\]' | head -1)
-
-            printf " "
-            _c "LIGHT_CYAN" "$status_array "
-            if [[ "$health" == "[UU]" ]]; then
-              _c "LIGHT_GREEN" "$health "
-            elif [[ "$health" =~ _U|U_ ]]; then
-              _c "LIGHT_RED" "$health "
-            else
-              printf "%s " "$health"
-            fi
-
             local size_gb=$(echo "scale=1; $blocks / 1024 / 1024" | bc 2>/dev/null)
-            if [[ -n "$size_gb" ]]; then
-              _c "WHITE" "${size_gb}GB"
+
+            local health_colored=""
+            if [[ "$health" == "[UU]" ]]; then
+              health_colored="$(_c "LIGHT_GREEN" "$health")"
+            elif [[ "$health" =~ _U|U_ ]]; then
+              health_colored="$(_c "LIGHT_RED" "$health")"
+            else
+              health_colored="$health"
             fi
-            echo ""
+
+            echo "      $(_c "LIGHT_CYAN" "$status_array") $health_colored ${size_gb}GB"
           elif [[ "$line" =~ bitmap ]]; then
             _c "LIGHT_GRAY" "      $(echo "$line" | xargs)"
-            echo ""
           else
-            _c "WHITE" "      $(echo "$line" | xargs)"
-            echo ""
+            echo "      $(echo "$line" | xargs)"
           fi
         fi
       fi
