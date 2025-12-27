@@ -145,7 +145,7 @@ __epx_net_traffic() {
     echo "Available interfaces:"
     ip -o link show | awk -F': ' '{print "  •", $2}'
     echo ""
-    echo "Usage: epx net:traffic [interface]"
+    echo "Usage: epx net-traffic [interface]"
     echo "Default interface: ${default_if:-none}"
     echo ""
 

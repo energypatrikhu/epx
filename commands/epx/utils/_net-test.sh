@@ -156,5 +156,5 @@ __epx_net_test() {
 
   echo ""
   echo "⏱️  Last update: $timestamp"
-  echo "Tip: Run 'epx net:test' regularly to monitor connectivity"
+  echo "Tip: Run 'epx net-test' regularly to monitor connectivity"
 }
