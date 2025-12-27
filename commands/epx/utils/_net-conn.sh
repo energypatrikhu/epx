@@ -5,7 +5,7 @@ __epx_net_conn() {
 
   clear
   echo "🔌 NETWORK CONNECTIONS"
-  echo "═══════════════════════════════════════════════════════════════════════════════"
+  echo "════════════════════════════════════════════════════════════════════════════════"
 
   # Connection summary
   _print_section "CONNECTION SUMMARY"
