@@ -192,7 +192,7 @@ __epx_net_stat__dashboard() {
 # Interactive loop
 __epx_net_stat__interactive() {
   while true; do
-    __epx_net_stat__stat_dashboard
+    __epx_net_stat__dashboard
 
     read -t 10 -n 1 key
     case $key in
