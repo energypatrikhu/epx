@@ -2,6 +2,25 @@
 
 # Real-time network traffic monitoring
 
+# Border width configuration
+BORDER_WIDTH=60
+BORDER_CONTENT_WIDTH=$((BORDER_WIDTH - 2))
+
+# Helper to print top border
+_print_top() {
+  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
+# Helper to print separator
+_print_separator() {
+  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
+# Helper to print bottom border
+_print_bottom() {
+  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
 __net_traffic_monitor() {
   local iface="${1:-$(ip route | grep default | awk '{print $5}' | head -1)}"
 

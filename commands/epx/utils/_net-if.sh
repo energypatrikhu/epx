@@ -1,7 +1,24 @@
 #!/bin/bash
 
 # Network interfaces detailed view
+# Border width configuration
+BORDER_WIDTH=60
+BORDER_CONTENT_WIDTH=$((BORDER_WIDTH - 2))
 
+# Helper to print top border
+_print_top() {
+  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
+# Helper to print separator
+_print_separator() {
+  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
+# Helper to print bottom border
+_print_bottom() {
+  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
 __epx_net_if() {
   local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
 

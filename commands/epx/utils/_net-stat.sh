@@ -2,8 +2,44 @@
 
 # Full network status dashboard
 
+# Border width configuration
+BORDER_WIDTH=60
+BORDER_CONTENT_WIDTH=$((BORDER_WIDTH - 2))  # Minus 2 for the │ symbols
+
+# Helper function to calculate visual width (emojis count as 2)
+_visual_length() {
+  local str="$1"
+  local len=${#str}
+  # Count emojis (rough estimation - emojis are typically in Unicode ranges)
+  local emoji_count=$(echo -n "$str" | grep -oP '[\x{1F300}-\x{1F9FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]' | wc -l)
+  echo $((len + emoji_count))
+}
+
+# Helper to print a bordered line
+_print_line() {
+  local text="$1"
+  local visual_len=$(_visual_length "$text")
+  local padding=$((BORDER_CONTENT_WIDTH - visual_len))
+  printf "│ %s%*s │\n" "$text" $padding ""
+}
+
+# Helper to print a separator
+_print_separator() {
+  printf "├%s┤\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
+# Helper to print top border
+_print_top() {
+  printf "╭%s╮\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
+# Helper to print bottom border
+_print_bottom() {
+  printf "╰%s╯\n" "$(printf '─%.0s' $(seq 1 $BORDER_CONTENT_WIDTH))"
+}
+
 __net_stat_dashboard() {
-  local width=62
+  local width=$BORDER_WIDTH
   local os_info=$(cat /etc/os-release 2>/dev/null | grep PRETTY_NAME | cut -d'"' -f2 || echo "Unknown Linux")
   local hostname=$(hostname)
   local uptime=$(uptime -p 2>/dev/null | sed 's/up //')
