@@ -126,10 +126,6 @@ _list_raids() {
       echo ""
     fi
   fi
-    if [[ "$in_device" == true ]]; then
-      echo ""
-    fi
-  fi
 
   # Check for btrfs filesystems with RAID
   if command -v btrfs &> /dev/null; then
