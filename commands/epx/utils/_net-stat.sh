@@ -113,12 +113,12 @@ __epx_net_stat__dashboard() {
     echo "  Containers online : $container_count"
     echo "  Docker bridge     : ${docker_bridge:-N/A}"
 
-    # Get first container IP as example
-    local first_container=$(docker ps --format '{{.Names}}' | head -1)
-    if [[ -n "$first_container" ]]; then
-      local container_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$first_container" 2>/dev/null)
-      echo "  $first_container : ${container_ip:-N/A}"
-    fi
+    # # Get first container IP as example
+    # local first_container=$(docker ps --format '{{.Names}}' | head -1)
+    # if [[ -n "$first_container" ]]; then
+    #   local container_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$first_container" 2>/dev/null)
+    #   echo "  $first_container : ${container_ip:-N/A}"
+    # fi
 
     # echo ""
     # echo "  Port mappings:"
