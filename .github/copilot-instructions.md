@@ -1,6 +1,6 @@
-- Every script file auto-imports almost every script in the `helpers` directory on build/install, so you MUST check for existing functions and variables before adding new ones
+- Every script file auto-imports almost every script in the `helpers` directory on build/install, so you MUST check for existing functions and variables before adding new ones, read the existing `helpers/*.sh` scripts first
 - When adding new helper scripts, ensure they have unique function names to avoid conflicts
-- Helpers functions can be used across all commands and utilities, using the name `_helpers.sh`
+- Helpers functions can be used across all commands and utilities, using the name `_helpers.sh`, you MUST check for existing functions before adding new ones, read the existing `_helpers.sh` script first
 - When creating autocomplete scripts, create both bash and fish versions for compatibility, example:
   - `commands/.../_autocomplete.sh`
   - `commands/.../_autocomplete.fish`
