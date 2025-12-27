@@ -113,8 +113,6 @@ __epx_net_test() {
     ["SSH"]="22"
     ["HTTP"]="80"
     ["HTTPS"]="443"
-    ["Home Assistant"]="8123"
-    ["MQTT"]="1883"
   )
 
   for service in "${!local_services[@]}"; do
