@@ -31,7 +31,7 @@ __epx_net_test() {
       echo "    Status    : ✅ REACHABLE"
       printf "    Latency   : %.1f ms (avg)\n" "$gw_ping"
 
-      local packet_loss=$(echo "$gw_result" | grep 'packet loss' | awk '{print $(NF-5)}')
+      local packet_loss=$(echo "$gw_result" | grep 'packet loss' | awk '{print $(NF-6), $(NF-5), $(NF-4)}')
       echo "    Loss      : $packet_loss"
     else
       echo "  Gateway ($gateway)"
