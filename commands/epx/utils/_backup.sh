@@ -28,6 +28,7 @@ __epx_backup__start_beesd() {
     echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Starting back previously running beesd processes...")"
     for instance in ${previously_running_instances}; do
       sudo systemctl start "${instance}"
+      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Started") ${instance}"
     done
   fi
 }
@@ -150,7 +151,7 @@ __epx_backup() {
   if [[ -n "${running_beesd_instances}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Running beesd instances detected:")"
     for instance in ${running_beesd_instances}; do
-      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW " - ${instance}")"
+      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW " -") ${instance}"
     done
   fi
 
