@@ -44,7 +44,7 @@ __epx_backup__check_and_install_utils() {
 
   for util in "${required_utils[@]}"; do
     if ! command -v "${util}" &>/dev/null; then
-      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: ${util} is not installed. Installing ${util}...")"
+      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error:") ${util} $(_c LIGHT_RED "is not installed. Installing") ${util} $(_c LIGHT_RED "...")"
 
       local distro=$(__epx_backup__get_distro)
       case "${distro}" in
@@ -58,7 +58,7 @@ __epx_backup__check_and_install_utils() {
         sudo pacman -Syu --noconfirm "${util}"
         ;;
       *)
-        echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: Unsupported distribution. Please install ${util} manually.")"
+        echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: Unsupported distribution. Please install") ${util} $(_c LIGHT_RED "manually.")"
         return 1
         ;;
       esac
@@ -160,15 +160,15 @@ __epx_backup() {
 
   # Check if the input path exists and is a directory
   if [[ ! -d "${input_path}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: Input path does not exist or is not a directory: ${input_path}")"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: Input path does not exist or is not a directory") ${input_path}"
     return 1
   fi
 
   # Check if the output path exists, if not, create it
   if [[ ! -d "${output_path}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Creating output directory: ${output_path}")"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Creating output directory") ${output_path}"
     if ! mkdir -p "${output_path}"; then
-      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: Failed to create output directory: ${output_path}")"
+      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_RED "Error: Failed to create output directory") ${output_path}"
       return 1
     fi
   fi
@@ -187,7 +187,7 @@ __epx_backup() {
   mapfile -t backups < <(find "${output_path}" -maxdepth 1 -name "*.tar.zst" -printf "%f\n" | sort -r | tail -n +$((backups_to_keep + 1)))
 
   for backup in "${backups[@]}"; do
-    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Removing backup: ${output_path}/${backup}")"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Removing backup") ${output_path}/${backup}"
     if ! rm -f "${output_path}/${backup}"; then
       __epx_backup__log_status_to_file "Backup failed, failed to remove old backups" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" false "${backups_to_keep}"
       # Start all beesd processes after creating a backup
