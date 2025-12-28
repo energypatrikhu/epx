@@ -23,9 +23,18 @@ __epx_backup__stop_beesd() {
 }
 
 __epx_backup__start_beesd() {
+  local previously_running_instances="${1-}"
   if __epx_backup__get_beesd_installed; then
-    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Starting all beesd processes...")"
-    sudo systemctl start beesd@* --all
+    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Starting back previously running beesd processes...")"
+    for instance in ${previously_running_instances}; do
+      sudo systemctl start "${instance}"
+    done
+  fi
+}
+
+__epx_backup__get_running_beesd_instances() {
+  if __epx_backup__get_beesd_installed; then
+    sudo systemctl list-units --type=service | grep 'beesd@' | grep 'running' | awk '{print $1}' | tr '\n' ' '
   fi
 }
 
@@ -84,9 +93,6 @@ __epx_backup__log_status_to_file() {
   local total_size=$(du -h --exclude="backup-info.log" "${output_path}" | awk '{print $2}')
 
   echo "${status} (${input_path}) (${backup_size}) (${total_size}) (${num_of_backups}/${backups_to_keep}) (${start_date}) (${end_date})" >"${logfile}"
-
-  # Start all beesd processes after creating a backup
-  __epx_backup__start_beesd
 }
 
 __epx_backup__compress() {
@@ -139,6 +145,15 @@ __epx_backup() {
 
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Starting backup...")"
 
+  # Get running beesd instances before stopping them
+  local running_beesd_instances=$(__epx_backup__get_running_beesd_instances)
+  if [[ -n "${running_beesd_instances}" ]]; then
+    echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Running beesd instances detected:")"
+    for instance in ${running_beesd_instances}; do
+      echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW " - ${instance}")"
+    done
+  fi
+
   # Stop all beesd processes before creating a backup
   __epx_backup__stop_beesd
 
@@ -161,6 +176,8 @@ __epx_backup() {
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Compressing files...")"
   if ! __epx_backup__compress "${input_path}" "${backup_file}" "${excluded[@]}"; then
     __epx_backup__log_status_to_file "Backup failed, failed to compress files" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" false "${backups_to_keep}"
+    # Start all beesd processes after creating a backup
+    __epx_backup__start_beesd "${running_beesd_instances}"
     return 1
   fi
 
@@ -172,6 +189,8 @@ __epx_backup() {
     echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Removing backup: ${output_path}/${backup}")"
     if ! rm -f "${output_path}/${backup}"; then
       __epx_backup__log_status_to_file "Backup failed, failed to remove old backups" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" false "${backups_to_keep}"
+      # Start all beesd processes after creating a backup
+      __epx_backup__start_beesd "${running_beesd_instances}"
       return 1
     fi
   done
@@ -180,4 +199,6 @@ __epx_backup() {
   echo -e "[$(_c LIGHT_BLUE "EPX - Backup")] $(_c LIGHT_YELLOW "Logging status to file...")"
   local ending_date=$(date +"%Y-%m-%d %H:%M:%S")
   __epx_backup__log_status_to_file "Backup created successfully" "${backup_info}" "${input_path}" "${output_path}" "${backup_file}" "${starting_date}" "${ending_date}" "${backups_to_keep}"
+  # Start all beesd processes after creating a backup
+  __epx_backup__start_beesd "${running_beesd_instances}"
 }
