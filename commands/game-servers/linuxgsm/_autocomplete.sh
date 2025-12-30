@@ -5,6 +5,7 @@ __epx_bash_gsm_containers() {
   _autocomplete "${containers}"
 }
 complete -F __epx_bash_gsm_containers gsm
+complete -F __epx_bash_gsm_containers gsm.restart
 complete -F __epx_bash_gsm_containers gsm.start
 complete -F __epx_bash_gsm_containers gsm.stop
 complete -F __epx_bash_gsm_containers gsm.rm
