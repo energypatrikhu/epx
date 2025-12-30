@@ -5,6 +5,7 @@ function __epx_fish_gsm_containers
 end
 
 complete -c gsm -f -a '(__epx_fish_gsm_containers)'
+complete -c gsm.restart -f -a '(__epx_fish_gsm_containers)'
 complete -c gsm.start -f -a '(__epx_fish_gsm_containers)'
 complete -c gsm.stop -f -a '(__epx_fish_gsm_containers)'
 complete -c gsm.rm -f -a '(__epx_fish_gsm_containers)'
