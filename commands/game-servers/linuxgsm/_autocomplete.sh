@@ -18,24 +18,25 @@ __epx_bash_gsm_serverlist() {
 }
 complete -F __epx_bash_gsm_serverlist gsm.add
 
-__epx_bash_gsm_compose_directories() {
-  . "${EPX_HOME}/.config/docker.config"
+if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
+  __epx_bash_gsm_compose_directories() {
+    . "${EPX_HOME}/.config/docker.config"
 
-  local container_dirs=()
-  local d
-  for d in "${CONTAINERS_DIR}"/*; do
-    if [[ -d "${d}" ]]; then
-      if [[ -f "${d}/docker-compose.yml" ]]; then
-        local dirname="$(basename -- "${d}")"
-        if [[ "${dirname}" == linuxgsm-* ]]; then
-          container_dirs+=("${dirname#linuxgsm-}")
+    local container_dirs=()
+    local d
+    for d in "${CONTAINERS_DIR}"/*; do
+      if [[ -d "${d}" ]]; then
+        if [[ -f "${d}/docker-compose.yml" ]]; then
+          local dirname="$(basename -- "${d}")"
+          if [[ "${dirname}" == linuxgsm-* ]]; then
+            container_dirs+=("${dirname#linuxgsm-}")
+          fi
         fi
       fi
-    fi
-  done
+    done
 
-  _autocomplete "${container_dirs[@]}"
-}
-if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
+    _autocomplete "${container_dirs[@]}"
+  }
+
   complete -F __epx_bash_gsm_compose_directories gsm.up
 fi
