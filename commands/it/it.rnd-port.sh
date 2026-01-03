@@ -1,5 +1,7 @@
 _cci netstat
 
+source "${EPX_HOME}/helpers/random-number.sh"
+
 _is_port_in_use() {
   local port="${1-}"
 
@@ -43,9 +45,10 @@ _is_firewall_port_open() {
 _find_available_port() {
   local max_attempts=100
   local attempt=0
+  local port_range=$((65535 - 1024 + 1))
 
   while [[ $attempt -lt $max_attempts ]]; do
-    local port=$((RANDOM % 49152 + 1024))
+    local port=$(($(_rnd_number) % port_range + 1024))
 
     if ! _is_port_in_use "$port" && ! _is_docker_port_used "$port" && ! _is_firewall_port_open "$port"; then
       echo "$port"
