@@ -19,7 +19,8 @@ if [[ $start -gt $end ]]; then
 fi
 
 range=$((end - start + 1))
-random_number=$(($(_rnd_number) % range + start))
+rnd_val=$(_rnd_number)
+random_number=$((rnd_val % range + start))
 
 echo -e "[$(_c LIGHT_BLUE "IT - Random Number")] Generating random number between $(_c LIGHT_YELLOW "$start") and $(_c LIGHT_YELLOW "$end")..." >&2
 
