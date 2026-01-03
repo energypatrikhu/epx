@@ -1,6 +1,6 @@
 _cci date
 
-timezone="${1:-}"
+timezone="${1-}"
 
 if [[ -z "$timezone" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - Timezone")] Usage: $(_c LIGHT_YELLOW "it.timezone [timezone]")"

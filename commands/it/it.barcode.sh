@@ -1,7 +1,7 @@
 _cci barcode
 
-input="$1"
-output="${2:-}"
+input="${1-}"
+output="${2-}"
 
 if [[ -z "$input" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Usage: $(_c LIGHT_YELLOW "it.barcode <input> [output-file]")"

@@ -1,7 +1,7 @@
 _cci grep
 
-string="$1"
-pattern="$2"
+string="${1-}"
+pattern="${2-}"
 
 if [[ -z "$string" ]] || [[ -z "$pattern" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - Regex Extract")] Usage: $(_c LIGHT_YELLOW "it.regex-extract <string> <regex-pattern>")"

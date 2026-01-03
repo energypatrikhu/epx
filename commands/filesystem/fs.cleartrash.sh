@@ -5,17 +5,17 @@ force=false
 specific_trash=""
 
 while [[ $# -gt 0 ]]; do
-  case "$1" in
+  case "${1-}" in
     -f|--force)
       force=true
       shift
       ;;
     -*)
-      echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): Unknown option '$1'"
+      echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): Unknown option '${1-}'"
       exit 1
       ;;
     *)
-      specific_trash="$1"
+      specific_trash="${1-}"
       shift
       ;;
   esac
@@ -41,12 +41,12 @@ _read_trash_dirs() {
 }
 
 _get_trash_name() {
-  local path="$1"
+  local path="${1-}"
   basename "$path"
 }
 
 _is_valid_trash_dir() {
-  local search_path="$1"
+  local search_path="${1-}"
   IFS=':' read -ra dirs <<< "$TRASH_DIRS"
   for dir in "${dirs[@]}"; do
     if [[ "$dir" == "$search_path" ]]; then
@@ -57,7 +57,7 @@ _is_valid_trash_dir() {
 }
 
 _find_trash_by_name() {
-  local search_name="$1"
+  local search_name="${1-}"
   IFS=':' read -ra dirs <<< "$TRASH_DIRS"
   for dir in "${dirs[@]}"; do
     if [[ -n "$dir" ]]; then
@@ -72,8 +72,8 @@ _find_trash_by_name() {
 }
 
 _clear_trash_dir() {
-  local trash_name="$1"
-  local trash_path="$2"
+  local trash_name="${1-}"
+  local trash_path="${2-}"
 
   if [[ ! -d "$trash_path" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_YELLOW "Warning"): Trash directory '$trash_name' not found at $trash_path"

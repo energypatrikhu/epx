@@ -1,6 +1,6 @@
 _cci curl
 
-ip="${1:-}"
+ip="${1-}"
 
 if [[ -z "$ip" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Usage: $(_c LIGHT_YELLOW "it.ipinfo <ip-address>")"

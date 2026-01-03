@@ -1,5 +1,5 @@
 _print_header() {
-  local title="$1"
+  local title="${1-}"
   echo ""
   _c "LIGHT_CYAN" "╔════════════════════════════════════════════════════════╗"
   _c "LIGHT_CYAN" "║  $(_c "LIGHT_YELLOW" "$title")"
@@ -7,7 +7,7 @@ _print_header() {
 }
 
 _print_section() {
-  local title="$1"
+  local title="${1-}"
   echo ""
   _c "LIGHT_GREEN" "▶ $title"
   _c "LIGHT_GREEN" "────────────────────────────────────────────────────────"

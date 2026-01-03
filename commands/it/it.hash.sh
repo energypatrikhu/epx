@@ -1,6 +1,6 @@
 _cci openssl
 
-input="$1"
+input="${1-}"
 hash_type="${2:-sha256}"
 
 _get_available_digests() {
@@ -8,7 +8,7 @@ _get_available_digests() {
 }
 
 _normalize_hash_type() {
-  local type="$1"
+  local type="${1-}"
   case "$type" in
     sha256|256) echo "sha256" ;;
     sha512|512) echo "sha512" ;;

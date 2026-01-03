@@ -1,11 +1,11 @@
 _cci openssl
 
-input="$1"
-key="$2"
+input="${1-}"
+key="${2-}"
 hash_type="${3:-sha256}"
 
 _normalize_hash_type() {
-  local type="$1"
+  local type="${1-}"
   case "$type" in
     sha256|256) echo "sha256" ;;
     sha512|512) echo "sha512" ;;

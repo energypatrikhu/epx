@@ -5,7 +5,7 @@
 # If neither file exists, it returns an empty string.
 #
 # Arguments:
-#   $1 - The directory path to search (optional, defaults to current directory ".")
+#   ${1-} - The directory path to search (optional, defaults to current directory ".")
 #
 # Returns:
 #   The full path to the compose file if found, empty string otherwise

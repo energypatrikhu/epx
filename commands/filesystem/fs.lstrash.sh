@@ -1,7 +1,7 @@
 _cci ls
 
 trash_config="${EPX_HOME}/.config/trash.config"
-specific_trash="${1:-}"
+specific_trash="${1-}"
 
 if [[ ! -f "$trash_config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "List Trash")] $(_c LIGHT_RED "Error"): Trash config not found at $trash_config" >&2
@@ -23,12 +23,12 @@ _read_trash_dirs() {
 }
 
 _get_trash_name() {
-  local path="$1"
+  local path="${1-}"
   basename "$path"
 }
 
 _is_valid_trash_dir() {
-  local search_path="$1"
+  local search_path="${1-}"
   IFS=':' read -ra dirs <<< "$TRASH_DIRS"
   for dir in "${dirs[@]}"; do
     if [[ "$dir" == "$search_path" ]]; then
@@ -39,7 +39,7 @@ _is_valid_trash_dir() {
 }
 
 _find_trash_by_name() {
-  local search_name="$1"
+  local search_name="${1-}"
   IFS=':' read -ra dirs <<< "$TRASH_DIRS"
   for dir in "${dirs[@]}"; do
     if [[ -n "$dir" ]]; then
@@ -54,8 +54,8 @@ _find_trash_by_name() {
 }
 
 _list_trash_contents() {
-  local trash_path="$1"
-  local trash_name="$2"
+  local trash_path="${1-}"
+  local trash_name="${2-}"
 
   if [[ ! -d "$trash_path" ]]; then
     echo -e "[$(_c LIGHT_BLUE "List Trash")] $(_c LIGHT_YELLOW "Warning"): Trash directory '$trash_name' does not exist at $trash_path" >&2

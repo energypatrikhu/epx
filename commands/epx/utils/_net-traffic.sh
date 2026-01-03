@@ -137,7 +137,7 @@ __epx_net_traffic__monitor() {
 }
 
 __epx_net_traffic() {
-  local iface="${1:-}"
+  local iface="${1-}"
 
   if [[ -z "$iface" ]]; then
     # Show available interfaces

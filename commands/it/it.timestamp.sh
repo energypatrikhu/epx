@@ -1,7 +1,7 @@
 _cci date
 
-input="$1"
-format="${2:-}"
+input="${1-}"
+format="${2-}"
 
 if [[ -z "$input" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Usage: $(_c LIGHT_YELLOW "it.timestamp <unix-timestamp|date-string>")"

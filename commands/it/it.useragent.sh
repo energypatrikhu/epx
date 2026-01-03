@@ -1,6 +1,6 @@
 _cci sed
 
-useragent="$1"
+useragent="${1-}"
 
 if [[ -z "$useragent" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Usage: $(_c LIGHT_YELLOW "it.useragent <user-agent-string>")"

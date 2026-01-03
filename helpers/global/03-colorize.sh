@@ -5,8 +5,8 @@
 # formatted with that color and reset with the NC (No Color) code.
 #
 # Arguments:
-#   $1 - color: The color key to look up in EPX_COLORS array (optional)
-#   $2 - text: The text string to be colorized (optional)
+#   ${1-} - color: The color key to look up in EPX_COLORS array (optional)
+#   ${2-} - text: The text string to be colorized (optional)
 #
 # Globals:
 #   EPX_COLORS - Associative array containing color code mappings

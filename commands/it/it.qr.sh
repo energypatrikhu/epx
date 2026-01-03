@@ -1,7 +1,7 @@
 _cci qrencode
 
-input="$1"
-output="${2:-}"
+input="${1-}"
+output="${2-}"
 
 if [[ -z "$input" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] Usage: $(_c LIGHT_YELLOW "it.qr <input> [output-file]")"

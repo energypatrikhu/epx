@@ -1,7 +1,7 @@
 _cci netstat
 
 _is_port_in_use() {
-  local port="$1"
+  local port="${1-}"
 
   if netstat -tuln 2>/dev/null | grep -q ":$port "; then
     return 0
@@ -15,7 +15,7 @@ _is_port_in_use() {
 }
 
 _is_docker_port_used() {
-  local port="$1"
+  local port="${1-}"
 
   if ! command -v docker &>/dev/null; then
     return 1
@@ -29,7 +29,7 @@ _is_docker_port_used() {
 }
 
 _is_firewall_port_open() {
-  local port="$1"
+  local port="${1-}"
 
   if command -v ufw &>/dev/null && sudo ufw status 2>/dev/null | grep -q "Status: active"; then
     if sudo ufw status numbered 2>/dev/null | grep -q "$port"; then

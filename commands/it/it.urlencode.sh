@@ -1,6 +1,6 @@
 _cci python3
 
-input="$1"
+input="${1-}"
 mode="${2:-encode}"
 
 if [[ -z "$input" ]]; then

@@ -11,12 +11,12 @@ __epx_self_update_logging() {
   fi
 
   if [[ "${2-}" == true ]]; then
-    echo -e "$1" > "${filename}"
+    echo -e "${1-}" > "${filename}"
   else
-    echo -e "$1" >> "${filename}"
+    echo -e "${1-}" >> "${filename}"
   fi
 
-  echo -e "$1"
+  echo -e "${1-}"
 }
 
 __epx_self_update() {
