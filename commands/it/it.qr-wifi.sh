@@ -184,8 +184,6 @@ if [[ "$security" == "wpa2-eap" ]]; then
   fi
 fi
 
-wifi_string="${wifi_string};;"
-
 if [[ -n "$debug" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_YELLOW "WiFi String"): $wifi_string" >&2
 fi
