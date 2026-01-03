@@ -27,7 +27,7 @@ print_usage() {
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] Options:"
   echo -e "  $(_c LIGHT_YELLOW "-s, --ssid <name>")         Network SSID (required)"
   echo -e "  $(_c LIGHT_YELLOW "-p, --password <pass>")     Password (required for secured networks)"
-  echo -e "  $(_c LIGHT_YELLOW "-t, --type <type>")         Security type: wep, wpa (default), wpa3-only, wpa2-eap, nopass"
+  echo -e "  $(_c LIGHT_YELLOW "-t, --type <type>")         Security type: wep, wpa (default), wpa2-wpa3, wpa3-only, wpa2-eap, nopass"
   echo -e "  $(_c LIGHT_YELLOW "-o, --output <file>")       Output file (if not specified, display in terminal)"
   echo -e "  $(_c LIGHT_YELLOW "-H, --hidden")              Network SSID is hidden"
   echo -e "  $(_c LIGHT_YELLOW "-e, --eap <method>")        (WPA2-EAP only) EAP method (TTLS, PWD, etc.)"
@@ -37,6 +37,7 @@ print_usage() {
   echo -e ""
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] Security Type Details:"
   echo -e "  $(_c LIGHT_YELLOW "wpa")          WPA/WPA2/WPA3 mixed mode (most compatible)"
+  echo -e "  $(_c LIGHT_YELLOW "wpa2-wpa3")    WPA2/WPA3 mixed mode"
   echo -e "  $(_c LIGHT_YELLOW "wpa3-only")    WPA3 only (requires WPA3-capable devices)"
   echo -e "  $(_c LIGHT_YELLOW "wep")          WEP encryption (legacy, not recommended)"
   echo -e "  $(_c LIGHT_YELLOW "wpa2-eap")     WPA2 with EAP authentication (enterprise)"
@@ -110,17 +111,20 @@ ssid_escaped=$(escape_wifi_field "$ssid")
 password_escaped=$(escape_wifi_field "$password")
 
 if [[ "$security" == "wpa3-only" ]]; then
-  wifi_string="WIFI:T:WPA;R:1;S:$ssid_escaped;P:$password_escaped"
+  wifi_string="WIFI:S:$ssid_escaped;T:WPA3;P:$password_escaped;R:1;;"
+elif [[ "$security" == "wpa2-wpa3" ]]; then
+  wifi_string="WIFI:S:$ssid_escaped;T:WPA3;P:$password_escaped;;"
 elif [[ "$security" == "nopass" ]]; then
-  wifi_string="WIFI:T:nopass;S:$ssid_escaped"
+  wifi_string="WIFI:S:$ssid_escaped;T:nopass;;"
+elif [[ "$security" == "wpa" ]]; then
+  wifi_string="WIFI:S:$ssid_escaped;T:WPA;P:$password_escaped;;"
 else
-  # Convert security type to uppercase for T field
   security_upper=$(echo "$security" | tr '[:lower:]' '[:upper:]')
-  wifi_string="WIFI:T:$security_upper;S:$ssid_escaped;P:$password_escaped"
+  wifi_string="WIFI:S:$ssid_escaped;T:$security_upper;P:$password_escaped;;"
 fi
 
 if [[ -n "$hidden" ]]; then
-  wifi_string="${wifi_string};H:true"
+  wifi_string="${wifi_string%;;};H:true;;"
 fi
 
 if [[ "$security" == "wpa2-eap" ]]; then
