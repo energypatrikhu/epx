@@ -39,7 +39,7 @@ EOF
 else
   if [[ -n "$output" ]]; then
     echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Generating barcode: $(_c LIGHT_YELLOW "$output")" >&2
-    barcode "$input" > "$output"
+    barcode -i "$input" -o "$output"
 
     if [[ $? -eq 0 ]]; then
       echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] $(_c LIGHT_GREEN "Barcode saved to $output")" >&2
@@ -49,6 +49,6 @@ else
     fi
   else
     echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Generating barcode..." >&2
-    barcode "$input"
+    barcode -b "$input"
   fi
 fi
