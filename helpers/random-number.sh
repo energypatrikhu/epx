@@ -1,3 +1,5 @@
 _rnd_number() {
-  echo $(tr -cd 0-9 < /dev/urandom | head -c 5)
+  local num=$(tr -cd 0-9 < /dev/urandom | head -c 100 | sed 's/^0*//')
+  [[ -z "$num" ]] && num=0
+  echo "$num"
 }
