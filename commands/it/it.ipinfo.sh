@@ -26,7 +26,7 @@ if [[ -z "$result" ]]; then
 fi
 
 extract_field() {
-  echo "$result" | grep -o "\"$1\":[^,}]*" | cut -d':' -f2- | sed 's/^"//;s/"$//'
+  echo "$result" | grep -o "\"$1\":[^,}]*" | cut -d':' -f2- | sed 's/^[[:space:]]*"//;s/"[[:space:]]*$//'
 }
 
 echo
