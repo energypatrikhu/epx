@@ -1,9 +1,9 @@
 _cci qrencode
 
-ssid="${1-}"
-password="${2-}"
-security="${3:-wpa}"
-output="${4-}"
+ssid=""
+password=""
+security="wpa"
+output=""
 hidden=""
 eap_method=""
 anonymous_identity=""
@@ -54,18 +54,34 @@ print_usage() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -s|--ssid)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --ssid requires an argument" >&2
+        exit 1
+      fi
       ssid="$2"
       shift 2
       ;;
     -p|--password)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --password requires an argument" >&2
+        exit 1
+      fi
       password="$2"
       shift 2
       ;;
     -t|--type)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --type requires an argument" >&2
+        exit 1
+      fi
       security="$2"
       shift 2
       ;;
     -o|--output)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --output requires an argument" >&2
+        exit 1
+      fi
       output="$2"
       shift 2
       ;;
@@ -74,18 +90,34 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -e|--eap)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --eap requires an argument" >&2
+        exit 1
+      fi
       eap_method="$2"
       shift 2
       ;;
     -a|--anonymous)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --anonymous requires an argument" >&2
+        exit 1
+      fi
       anonymous_identity="$2"
       shift 2
       ;;
     -i|--identity)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --identity requires an argument" >&2
+        exit 1
+      fi
       identity="$2"
       shift 2
       ;;
     --phase2)
+      if [[ -z "$2" ]]; then
+        echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): --phase2 requires an argument" >&2
+        exit 1
+      fi
       phase2_method="$2"
       shift 2
       ;;
