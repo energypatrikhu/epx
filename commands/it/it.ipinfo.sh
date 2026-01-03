@@ -11,8 +11,8 @@ if [[ -z "$ip" ]]; then
   exit 1
 fi
 
-if ! [[ "$ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] $(_c LIGHT_RED "Error"): Invalid IP address format" >&2
+if ! [[ "$ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] && ! [[ "$ip" =~ ^([0-9a-fA-F]{0,4}:){2,7}[0-9a-fA-F]{0,4}$ ]]; then
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] $(_c LIGHT_RED "Error"): Invalid IP address format (IPv4 or IPv6)" >&2
   exit 1
 fi
 
