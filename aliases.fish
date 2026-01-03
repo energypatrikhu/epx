@@ -5,8 +5,8 @@ function __epx_load_aliases
       continue
     end
 
-    if test -f "$element"; and string match -q '*.sh' "$element"
-      if string match -q '*_alias.sh' "$element"
+    if test -f "$element"; and string match -q '*.fish' "$element"
+      if string match -q '*_alias.fish' "$element"
         # echo "Loading alias from $element"
         source "$element"
       end
