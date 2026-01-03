@@ -1,7 +1,7 @@
 _cci openssl
 
-input="${1-}"
-hash_type="${2:-sha256}"
+hash_type="${1-}"
+input="${2-}"
 
 _get_available_digests() {
   openssl list -digest-algorithms 2>/dev/null | grep -oP '^\s*\K[a-zA-Z0-9_-]+' | sort -u
@@ -25,14 +25,13 @@ _normalize_hash_type() {
   esac
 }
 
-if [[ -z "$input" ]]; then
+if [[ -z "$input" ]] || [[ -z "$hash_type" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - Hash")] Usage: $(_c LIGHT_YELLOW "it.hash <string|file> [hash-type]")"
   echo -e "[$(_c LIGHT_BLUE "IT - Hash")] Default type: $(_c LIGHT_YELLOW "sha256")"
   echo -e "[$(_c LIGHT_BLUE "IT - Hash")] Common types: $(_c LIGHT_YELLOW "sha256, sha512, sha1, sha3, md5, blake2b, blake2s, rmd160")"
   echo -e "[$(_c LIGHT_BLUE "IT - Hash")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - Hash")]   it.hash 'hello world'"
-  echo -e "[$(_c LIGHT_BLUE "IT - Hash")]   it.hash 'hello world' sha512"
-  echo -e "[$(_c LIGHT_BLUE "IT - Hash")]   it.hash /path/to/file md5"
+  echo -e "[$(_c LIGHT_BLUE "IT - Hash")]   it.hash sha512 'hello world'"
+  echo -e "[$(_c LIGHT_BLUE "IT - Hash")]   it.hash md5 /path/to/file"
   exit 1
 fi
 

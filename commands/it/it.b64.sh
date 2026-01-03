@@ -3,13 +3,12 @@ _cci base64
 input="${1-}"
 mode="${2-}"
 
-if [[ -z "$input" ]]; then
+if [[ -z "$input" ]] || [[ -z "$mode" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Usage: $(_c LIGHT_YELLOW "it.b64 <string|file> [encode|decode]")"
   echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Default mode: $(_c LIGHT_YELLOW "encode")"
   echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 'hello world'"
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 'aGVsbG8gd29ybGQ=' decode"
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 /path/to/file encode"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 decode 'aGVsbG8gd29ybGQ='"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 encode /path/to/file"
   exit 1
 fi
 

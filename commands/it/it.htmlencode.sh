@@ -1,14 +1,14 @@
 _cci python3
 
-input="${1-}"
-mode="${2:-encode}"
+mode="${1-}"
+input="${2-}"
 
-if [[ -z "$input" ]]; then
+if [[ -z "$input" || -z "$mode" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - HTML Encode")] Usage: $(_c LIGHT_YELLOW "it.htmlencode <string> [encode|decode]")"
   echo -e "[$(_c LIGHT_BLUE "IT - HTML Encode")] Default mode: $(_c LIGHT_YELLOW "encode")"
   echo -e "[$(_c LIGHT_BLUE "IT - HTML Encode")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - HTML Encode")]   it.htmlencode '<hello>world</hello>'"
-  echo -e "[$(_c LIGHT_BLUE "IT - HTML Encode")]   it.htmlencode '&lt;hello&gt;' decode"
+  echo -e "[$(_c LIGHT_BLUE "IT - HTML Encode")]   it.htmlencode encode '<hello>world</hello>'"
+  echo -e "[$(_c LIGHT_BLUE "IT - HTML Encode")]   it.htmlencode decode '&lt;hello&gt;'"
   exit 1
 fi
 

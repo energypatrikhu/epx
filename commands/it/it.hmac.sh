@@ -1,8 +1,8 @@
 _cci openssl
 
-input="${1-}"
-key="${2-}"
-hash_type="${3:-sha256}"
+hash_type="${1-}"
+input="${2-}"
+key="${3-}"
 
 _normalize_hash_type() {
   local type="${1-}"
@@ -22,14 +22,13 @@ _normalize_hash_type() {
   esac
 }
 
-if [[ -z "$input" ]] || [[ -z "$key" ]]; then
+if [[ -z "$hash_type" ]] || [[ -z "$input" ]] || [[ -z "$key" ]]; then
   echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Usage: $(_c LIGHT_YELLOW "it.hmac <string|file> <key> [hash-type]")"
   echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Default hash type: $(_c LIGHT_YELLOW "sha256")"
   echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Common types: $(_c LIGHT_YELLOW "sha256, sha512, sha1, sha3, md5")"
   echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac 'hello world' 'my-secret'"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac 'hello world' 'my-secret' sha512"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac /path/to/file 'my-secret' md5"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac sha512 'hello world' 'my-secret'"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac md5 /path/to/file 'my-secret'"
   exit 1
 fi
 
