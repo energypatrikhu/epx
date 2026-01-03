@@ -168,19 +168,19 @@ fi
 if [[ "$security" == "wpa2-eap" ]]; then
   if [[ -n "$eap_method" ]]; then
     eap_escaped=$(escape_wifi_field "$eap_method")
-    wifi_string="${wifi_string};E:$eap_escaped"
+    wifi_string="${wifi_string%;;};E:$eap_escaped;;"
   fi
   if [[ -n "$anonymous_identity" ]]; then
     anon_escaped=$(escape_wifi_field "$anonymous_identity")
-    wifi_string="${wifi_string};A:$anon_escaped"
+    wifi_string="${wifi_string%;;};A:$anon_escaped;;"
   fi
   if [[ -n "$identity" ]]; then
     identity_escaped=$(escape_wifi_field "$identity")
-    wifi_string="${wifi_string};I:$identity_escaped"
+    wifi_string="${wifi_string%;;};I:$identity_escaped;;"
   fi
   if [[ -n "$phase2_method" ]]; then
     phase2_escaped=$(escape_wifi_field "$phase2_method")
-    wifi_string="${wifi_string};PH2:$phase2_escaped"
+    wifi_string="${wifi_string%;;};PH2:$phase2_escaped;;"
   fi
 fi
 
