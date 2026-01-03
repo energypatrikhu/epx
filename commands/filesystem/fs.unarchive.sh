@@ -27,7 +27,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci tar
+_cci_pkg tar:tar
 
 if [[ $# -eq 0 ]]; then
   _help

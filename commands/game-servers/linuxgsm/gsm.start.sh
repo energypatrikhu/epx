@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 game_server_name="${1-}"
 if [[ -z "${game_server_name}" ]]; then

@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci python3
+_cci_pkg python3:python3-minimal
 
 # if no arguments are provided, install from requirements.txt
 if [[ -z $* ]]; then

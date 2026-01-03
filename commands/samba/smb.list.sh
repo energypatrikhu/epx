@@ -32,13 +32,13 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci net
+_cci_pkg net:samba-common-bin
 
 echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Listing available Samba shares...")"
 echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_CYAN "Note: Use smb.list <short/--short/-s> to show only share names")"
 
 __fallback(){
-  _cci grep sed
+  _cci_pkg grep:grep sed:sed
 
   echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Falling back to parsing configuration file...")"
   if [[ ! -f /etc/samba/smb.conf ]]; then

@@ -27,7 +27,8 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci netstat
+_cci_pkg netstat:net-tools ss:iproute2
+
 source "${EPX_HOME}/helpers/random-number.sh"
 
 _is_port_in_use() {

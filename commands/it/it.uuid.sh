@@ -33,7 +33,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci uuidgen
+_cci_pkg uuidgen:util-linux python3:python3-minimal
 
 version="${1:-4}"
 

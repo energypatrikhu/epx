@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci openssl
+_cci_pkg openssl:openssl
 
 hash_type="${1-}"
 input="${2-}"

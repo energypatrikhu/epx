@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci qrencode
+_cci_pkg qrencode:qrencode
 
 input="${1-}"
 output="${2-}"

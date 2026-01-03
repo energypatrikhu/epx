@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci barcode
+_cci_pkg barcode:barcode
 
 input="${1-}"
 output="${2-}"

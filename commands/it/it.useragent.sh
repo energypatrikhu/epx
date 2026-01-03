@@ -27,7 +27,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci sed
+_cci_pkg sed:sed
 
 useragent="${1-}"
 

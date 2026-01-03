@@ -38,7 +38,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 if [[ -z $* ]]; then
   data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")

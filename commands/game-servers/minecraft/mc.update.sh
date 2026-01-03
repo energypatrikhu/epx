@@ -31,7 +31,7 @@ if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   exit 1
 fi
 
-_cci git
+_cci_pkg git:git
 
 . "${EPX_HOME}/.config/minecraft.config"
 

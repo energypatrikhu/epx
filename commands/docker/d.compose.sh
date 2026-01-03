@@ -27,7 +27,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 if [[ ! -f "${EPX_HOME}/.templates/docker/docker-compose.template" ]]; then
   echo -e "[$(_c LIGHT_RED "Docker - Compose")] $(_c LIGHT_YELLOW "Template for docker compose not found.")"

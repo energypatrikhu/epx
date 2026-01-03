@@ -32,7 +32,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 if [[ -z $* ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_YELLOW "Usage: d.rm <all / container>")"

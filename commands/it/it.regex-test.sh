@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci grep
+_cci_pkg grep:grep
 
 string="${1-}"
 pattern="${2-}"

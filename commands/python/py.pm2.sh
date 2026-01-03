@@ -28,7 +28,8 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci python3 pm2
+_cci pm2
+_cci_pkg python3:python3-minimal
 
 if [[ -n "${1-}" ]]; then
   filename="${1-}"

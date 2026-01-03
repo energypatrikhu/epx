@@ -30,7 +30,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci rm
+_cci_pkg rm:coreutils
 
 trash_config="${EPX_HOME}/.config/trash.config"
 force=false

@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci curl
+_cci_pkg curl:curl
 
 ip="${1-}"
 

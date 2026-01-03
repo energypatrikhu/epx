@@ -27,6 +27,6 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 docker compose up --detach --pull always

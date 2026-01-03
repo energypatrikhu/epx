@@ -48,7 +48,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci qrencode
+_cci_pkg qrencode:qrencode
 
 ssid=""
 password=""

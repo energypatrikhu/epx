@@ -35,7 +35,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci date
+_cci_pkg date:coreutils
 
 timezone="${1-}"
 

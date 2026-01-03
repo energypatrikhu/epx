@@ -23,7 +23,7 @@ __epx_self_update() {
   echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_YELLOW "Starting EPX self-update process...")"
   __epx_self_update_logging "Self Update - $(date +'%Y-%m-%d %H:%M:%S')" true
 
-  _cci git
+  _cci_pkg git:git
 
   if [[ ! -d "${EPX_HOME}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "The '${EPX_HOME}' directory does not exist")"

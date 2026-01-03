@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci ufw
+_cci_pkg ufw:ufw
 
 if [[ -z "${1-}" ]]; then
   ufw status

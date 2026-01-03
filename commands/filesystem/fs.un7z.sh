@@ -27,7 +27,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci 7z
+_cci_pkg 7z:7zip
 
 archive="${1-}"
 

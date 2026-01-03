@@ -29,7 +29,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 source "${EPX_HOME}/helpers/get-compose-filename.sh"
 

@@ -31,7 +31,7 @@ if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   exit 1
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 . "${EPX_HOME}/.config/minecraft.config"
 

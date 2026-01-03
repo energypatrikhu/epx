@@ -1,3 +1,3 @@
-_cci fastfetch
+_cci_pkg fastfetch:fastfetch
 
 fastfetch

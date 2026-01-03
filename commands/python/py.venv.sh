@@ -27,7 +27,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci python3
+_cci_pkg python3:python3-minimal
 
 # check if virtual environment is activated, then deactivate
 if [[ -n "${VIRTUAL_ENV-}" ]]; then

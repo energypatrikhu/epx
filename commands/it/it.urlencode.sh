@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci python3
+_cci_pkg python3:python3-minimal
 
 mode="${1-}"
 input="${2-}"

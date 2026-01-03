@@ -28,7 +28,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci smbpasswd
+_cci_pkg smbpasswd:samba-common-bin
 
 username="${1-}"
 if [[ -z "${username}" ]]; then

@@ -29,7 +29,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci dd
+_cci_pkg dd:coreutils fallocate:util-linux truncate:coreutils
 
 filename="${1-}"
 size="${2-}"

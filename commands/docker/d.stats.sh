@@ -31,7 +31,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 _strip_text() {
   printf "%s" "${1-}" | sed 's/\x1b\[[0-9;]*m//g'

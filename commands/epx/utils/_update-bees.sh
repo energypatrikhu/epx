@@ -1,6 +1,6 @@
 __epx_update_bees() {
   _check_sudo
-  _cci wget tar make markdown jq
+  _cci_pkg wget:wget tar:tar make:make markdown:markdown jq:jq
 
   local app_name="bees"
   local repository="Zygo/${app_name}"

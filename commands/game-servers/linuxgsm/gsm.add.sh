@@ -27,7 +27,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci docker
+_cci_pkg docker:docker-ce-cli
 
 if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"

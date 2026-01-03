@@ -1,5 +1,5 @@
 __epx_mk_cert() {
-  _cci openssl
+  _cci_pkg openssl:openssl
 
   local DOMAIN="${1-}"
   if [[ -z "$DOMAIN" ]]; then

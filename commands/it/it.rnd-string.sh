@@ -29,7 +29,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci openssl
+_cci_pkg openssl:openssl
 
 length="${1:-16}"
 

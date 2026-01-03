@@ -26,7 +26,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci samba
+_cci_pkg samba:samba-ad-dc
 
 echo -e "[$(_c LIGHT_BLUE "Samba - Restart")] $(_c LIGHT_YELLOW "Restarting Samba service...")"
 

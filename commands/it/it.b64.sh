@@ -30,7 +30,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci base64
+_cci_pkg base64:coreutils
 
 input="${1-}"
 mode="${2-}"
