@@ -1,3 +1,34 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")] Usage: $(_c LIGHT_YELLOW "it.rnd-string [length]")"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")] Generate a random alphanumeric string of specified length"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")] Default length: $(_c LIGHT_YELLOW "16")"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")]   it.rnd-string 32"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random String")]   it.rnd-string"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci openssl
 
 length="${1:-16}"

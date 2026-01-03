@@ -1,3 +1,33 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")] Usage: $(_c LIGHT_YELLOW "py.install [packages...]")"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")] Install Python packages via pip"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")]   py.install numpy pandas"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")]   py.install requests"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Python - Install")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci python3
 
 # if no arguments are provided, install from requirements.txt

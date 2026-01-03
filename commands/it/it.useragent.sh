@@ -1,12 +1,38 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Usage: $(_c LIGHT_YELLOW "it.useragent <user-agent-string>")"
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Parse and display information from a user-agent string"
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")]   it.useragent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci sed
 
 useragent="${1-}"
 
 if [[ -z "$useragent" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Usage: $(_c LIGHT_YELLOW "it.useragent <user-agent-string>")"
-  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Parse and display information from a user-agent string"
-  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - User Agent")]   it.useragent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'"
+  _help
   exit 1
 fi
 

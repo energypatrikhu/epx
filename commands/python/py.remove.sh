@@ -1,12 +1,38 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] Usage: $(_c LIGHT_YELLOW "py.remove <package>")"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] Remove Python packages via pip"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]   py.remove numpy"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]   py.remove requests"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci pip
 
 # check if no arguments are provided
 if [[ -z $* ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Usage: py.remove <package>")"
-
-  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "Alias:")"
-  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "  py.rm <package>")"
-  echo -e "[$(_c LIGHT_BLUE "Python - Remove")] $(_c LIGHT_YELLOW "  py.uninstall <package>")"
+  _help
   exit 1
 fi
 

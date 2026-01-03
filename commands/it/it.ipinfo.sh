@@ -1,13 +1,39 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Usage: $(_c LIGHT_YELLOW "it.ipinfo <ip-address>")"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Retrieve information about an IP address"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")]   it.ipinfo 8.8.8.8"
+  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")]   it.ipinfo 1.1.1.1"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci curl
 
 ip="${1-}"
 
 if [[ -z "$ip" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Usage: $(_c LIGHT_YELLOW "it.ipinfo <ip-address>")"
-  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Retrieve information about an IP address"
-  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")]   it.ipinfo 8.8.8.8"
-  echo -e "[$(_c LIGHT_BLUE "IT - IP Info")]   it.ipinfo 1.1.1.1"
+  _help
   exit 1
 fi
 

@@ -1,15 +1,42 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] Usage: $(_c LIGHT_YELLOW "gsm <game-server-tag> <command>")"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] If output file is not specified, barcode is displayed in terminal"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   gsm cs2 start"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   gsm tf2 stop"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   gsm gmod restart"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   gsm terraria status"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   gsm valheim console"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   gsm rust details"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci docker
 
 game_server_name="${1-}"
 if [[ -z "${game_server_name}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Usage:") gsm <game-server-tag> <command>"
-  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_YELLOW "Examples:")"
-  echo -e "  $(_c LIGHT_GREEN "gsm") $(_c WHITE "cs2") $(_c LIGHT_GREEN "start")"
-  echo -e "  $(_c LIGHT_RED "gsm") $(_c WHITE "tf2") $(_c LIGHT_RED "stop")"
-  echo -e "  $(_c LIGHT_YELLOW "gsm") $(_c WHITE "gmod") $(_c LIGHT_YELLOW "restart")"
-  echo -e "  $(_c LIGHT_CYAN "gsm") $(_c WHITE "terraria") $(_c LIGHT_CYAN "status")"
-  echo -e "  $(_c LIGHT_PURPLE "gsm") $(_c WHITE "valheim") $(_c LIGHT_PURPLE "console")"
-  echo -e "  $(_c LIGHT_BLUE "gsm") $(_c WHITE "rust") $(_c LIGHT_BLUE "details")"
+  _help
   exit 1
 fi
 

@@ -1,3 +1,31 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] Usage: $(_c LIGHT_YELLOW "mc.update")"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]   mc.update"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] $(_c LIGHT_RED "Error:") Minecraft configuration file not found. Please configure $(_c LIGHT_YELLOW "${EPX_HOME}/.config/minecraft.config") and run $(_c LIGHT_CYAN "mc.install")"
   exit 1

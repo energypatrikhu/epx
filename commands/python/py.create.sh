@@ -1,8 +1,38 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")] Usage: $(_c LIGHT_YELLOW "py.create <directory>")"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")] Create a new Python project directory with virtual environment"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")]   py.create myproject"
+  echo -e "[$(_c LIGHT_BLUE "Python - Create")]   py.create anotherproject"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Python - Create")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci python3
 
 # check if directory is provided
 if [[ -z "${1-}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Python - Create")] $(_c LIGHT_YELLOW "Usage: py.create <directory>")"
+  _help
   exit 1
 fi
 

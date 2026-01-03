@@ -1,3 +1,34 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")] Usage: $(_c LIGHT_YELLOW "it.rnd-number [start] [end]")"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")] Generate a random number between the specified start and end values (inclusive)."
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")] If no values are provided, defaults to 1 and 100."
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")]   it.rnd-number 10 50"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Number")]   it.rnd-number"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Random Number")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 source "${EPX_HOME}/helpers/random-number.sh"
 
 start="${1:-1}"

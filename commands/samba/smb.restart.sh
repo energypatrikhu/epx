@@ -1,3 +1,31 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Samba - Restart")] Usage: $(_c LIGHT_YELLOW "smb.restart")"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Restart")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Restart")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Restart")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Restart")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Restart")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Restart")]   smb.restart"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Samba - Restart")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci samba
 
 echo -e "[$(_c LIGHT_BLUE "Samba - Restart")] $(_c LIGHT_YELLOW "Restarting Samba service...")"

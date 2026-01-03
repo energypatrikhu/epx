@@ -1,8 +1,44 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Usage: $(_c LIGHT_YELLOW "it.hmac <string|file> <key> [hash-type]")"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Default hash type: $(_c LIGHT_YELLOW "sha256")"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Common types: $(_c LIGHT_YELLOW "sha256, sha512, sha1, sha3, md5")"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac sha512 'hello world' 'my-secret'"
+  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac md5 /path/to/file 'my-secret'"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci openssl
 
 hash_type="${1-}"
 input="${2-}"
 key="${3-}"
+
+if [[ -z "$hash_type" ]] || [[ -z "$input" ]] || [[ -z "$key" ]]; then
+  _help
+  exit 1
+fi
 
 _normalize_hash_type() {
   local type="${1-}"
@@ -21,16 +57,6 @@ _normalize_hash_type() {
     *) echo "$type" ;;
   esac
 }
-
-if [[ -z "$hash_type" ]] || [[ -z "$input" ]] || [[ -z "$key" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Usage: $(_c LIGHT_YELLOW "it.hmac <string|file> <key> [hash-type]")"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Default hash type: $(_c LIGHT_YELLOW "sha256")"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Common types: $(_c LIGHT_YELLOW "sha256, sha512, sha1, sha3, md5")"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac sha512 'hello world' 'my-secret'"
-  echo -e "[$(_c LIGHT_BLUE "IT - HMAC")]   it.hmac md5 /path/to/file 'my-secret'"
-  exit 1
-fi
 
 normalized_type=$(_normalize_hash_type "$hash_type")
 

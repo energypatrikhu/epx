@@ -1,3 +1,35 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Usage: $(_c LIGHT_YELLOW "fs.cleartrash [trash-name|trash-path] [-f|--force]")"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear files from configured trash directories"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]   -h, --help            Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]   -f, --force           Clear trash without confirmation"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]   fs.cleartrash"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]   fs.cleartrash my_trash_name"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]   fs.cleartrash /path/to/my_trash -f"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci rm
 
 trash_config="${EPX_HOME}/.config/trash.config"
@@ -11,7 +43,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -*)
-      echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): Unknown option '${1-}'"
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Unknown option '${1-}'"
       exit 1
       ;;
     *)
@@ -22,14 +54,14 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ! -f "$trash_config" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): Trash config not found at $trash_config"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Trash config not found at $trash_config"
   exit 1
 fi
 
 source "$trash_config"
 
 if [[ -z "$TRASH_DIRS" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): TRASH_DIRS not defined in config"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): TRASH_DIRS not defined in config"
   exit 1
 fi
 
@@ -76,54 +108,54 @@ _clear_trash_dir() {
   local trash_path="${2-}"
 
   if [[ ! -d "$trash_path" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_YELLOW "Warning"): Trash directory '$trash_name' not found at $trash_path"
+    echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_YELLOW "Warning"): Trash directory '$trash_name' not found at $trash_path"
     return 1
   fi
 
   local item_count=$(find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
 
   if [[ $item_count -eq 0 ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Trash '$(_c LIGHT_YELLOW "$trash_name")' is already empty"
+    echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Trash '$(_c LIGHT_YELLOW "$trash_name")' is already empty"
     return 0
   fi
 
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_CYAN "Trash: $trash_name")"
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Path: $(_c LIGHT_YELLOW "$trash_path")"
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Items: $(_c LIGHT_YELLOW "$item_count")"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_CYAN "Trash: $trash_name")"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Path: $(_c LIGHT_YELLOW "$trash_path")"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Items: $(_c LIGHT_YELLOW "$item_count")"
 
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Contents:"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Contents:"
   find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | while read -r item; do
     local item_name=$(basename "$item")
-    echo -e "[$(_c LIGHT_BLUE "Clear Trash")]   - $item_name"
+    echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")]   - $item_name"
   done
 
   if [[ "$force" == true ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Clearing without confirmation (force mode)..."
+    echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clearing without confirmation (force mode)..."
     rm -rf "${trash_path:?}"/*
 
     if [[ $? -eq 0 ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_GREEN "Trash '$trash_name' cleared successfully")"
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash '$trash_name' cleared successfully")"
       return 0
     else
-      echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): Failed to clear trash '$trash_name'"
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Failed to clear trash '$trash_name'"
       return 1
     fi
   else
-    read -p "$(echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response
+    read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response
     echo ""
 
     if [[ "$response" =~ ^[Yy]$ ]]; then
       rm -rf "${trash_path:?}"/*
 
       if [[ $? -eq 0 ]]; then
-        echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_GREEN "Trash '$trash_name' cleared successfully")"
+        echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash '$trash_name' cleared successfully")"
         return 0
       else
-        echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): Failed to clear trash '$trash_name'"
+        echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Failed to clear trash '$trash_name'"
         return 1
       fi
     else
-      echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Skipped trash '$(_c LIGHT_YELLOW "$trash_name")'"
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Skipped trash '$(_c LIGHT_YELLOW "$trash_name")'"
       return 0
     fi
   fi
@@ -137,7 +169,7 @@ if [[ -n "$specific_trash" ]]; then
     trash_path=$(_find_trash_by_name "$specific_trash")
 
     if [[ -z "$trash_path" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_RED "Error"): Trash directory '$specific_trash' is not a configured trash directory"
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Trash directory '$specific_trash' is not a configured trash directory"
       exit 1
     fi
     trash_name="$specific_trash"
@@ -145,13 +177,13 @@ if [[ -n "$specific_trash" ]]; then
 
   _clear_trash_dir "$trash_name" "$trash_path"
 else
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] Scanning trash directories..."
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Scanning trash directories..."
   echo ""
 
   all_dirs=$(_read_trash_dirs)
 
   if [[ -z "$all_dirs" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_YELLOW "Warning"): No trash directories configured"
+    echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_YELLOW "Warning"): No trash directories configured"
     exit 1
   fi
 
@@ -164,5 +196,5 @@ else
     fi
   done <<< "$all_dirs"
 
-  echo -e "[$(_c LIGHT_BLUE "Clear Trash")] $(_c LIGHT_GREEN "Trash cleanup complete")"
+  echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash cleanup complete")"
 fi

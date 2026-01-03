@@ -1,3 +1,43 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")] Usage: $(_c LIGHT_YELLOW "d.list [status]")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")] List Docker containers with optional status filtering"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")] Status Filters:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   created"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   restarting"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   running"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   removing"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   paused"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   exited"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   dead"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   d.list"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   d.list running"
+  echo -e "[$(_c LIGHT_BLUE "Docker - List")]   d.list exited paused"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci docker
 
 if [[ -z $* ]]; then

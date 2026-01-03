@@ -1,3 +1,33 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Usage: $(_c LIGHT_YELLOW "mc.add <server_type> <server_name>")"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Add a new Minecraft server"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")]   mc.add vanilla myserver"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")]   mc.add spigot myserver"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] $(_c LIGHT_RED "Error:") Minecraft configuration file not found. Please configure $(_c LIGHT_YELLOW "${EPX_HOME}/.config/minecraft.config") and run $(_c LIGHT_CYAN "mc.install")"
   exit 1
@@ -19,7 +49,8 @@ server_type="${1-}"
 server_name="${2-}"
 
 if [[ -z "${server_type}" || -z "${server_name}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] $(_c LIGHT_YELLOW "Usage:") $(_c LIGHT_CYAN "mc.add <server_type> <server_name>")"
+  _help
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")]"
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Available server types:"
   __epx-mc-get-server-templates | sed 's/^/  /'
   exit 1

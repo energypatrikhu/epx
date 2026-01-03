@@ -1,3 +1,31 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] Usage: $(_c LIGHT_YELLOW "mc.start <server_name>")"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")]   mc.start myserver"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_RED "Error:") Minecraft configuration file not found. Please configure $(_c LIGHT_YELLOW "${EPX_HOME}/.config/minecraft.config") and run $(_c LIGHT_CYAN "mc.install")"
   exit 1
@@ -21,7 +49,8 @@ source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 server_dir="${1-}"
 
 if [[ -z "${server_dir}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] $(_c LIGHT_YELLOW "Usage:") $(_c LIGHT_CYAN "mc.start <server>")"
+  _help
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")]"
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Start")] Available servers:"
   __epx-mc-get-servers "${server_dir}" | sed 's/^/  /'
   exit 1

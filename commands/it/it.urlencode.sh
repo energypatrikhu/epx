@@ -1,14 +1,40 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] Usage: $(_c LIGHT_YELLOW "it.urlencode <string> [encode|decode]")"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] Default mode: $(_c LIGHT_YELLOW "encode")"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")]   it.urlencode encode 'hello world'"
+  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")]   it.urlencode decode 'hello%20world'"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci python3
 
 mode="${1-}"
 input="${2-}"
 
 if [[ -z "$input" ]] || [[ -z "$mode" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] Usage: $(_c LIGHT_YELLOW "it.urlencode <string> [encode|decode]")"
-  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] Default mode: $(_c LIGHT_YELLOW "encode")"
-  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")]   it.urlencode encode 'hello world'"
-  echo -e "[$(_c LIGHT_BLUE "IT - URL Encode")]   it.urlencode decode 'hello%20world'"
+  _help
   exit 1
 fi
 

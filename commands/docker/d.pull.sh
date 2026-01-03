@@ -1,8 +1,4 @@
-_cci docker
-
-source "${EPX_HOME}/helpers/get-compose-filename.sh"
-
-help() {
+_help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "Usage:") d.pull $(_c LIGHT_YELLOW "[<options>] [container1, container2, ...]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_YELLOW "  -a | --all") $(_c LIGHT_GREEN "Pull all containers defined in the config file")"
@@ -14,7 +10,6 @@ help() {
 
 opt_help=false
 opt_all=false
-
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
@@ -23,22 +18,26 @@ for arg in "$@"; do
       opt_all=true
     else
       echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Unknown option:") ${arg}"
-      help
+      _help
       exit 1
     fi
   fi
 done
 
 if [[ "${opt_help}" == "true" ]]; then
-  help
+  _help
   exit
 fi
+
+_cci docker
+
+source "${EPX_HOME}/helpers/get-compose-filename.sh"
 
 # if all option is provided, pull all containers defined in the config file
 if [[ "${opt_all}" == "true" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
-    help
+    _help
     exit
   fi
 
@@ -79,7 +78,7 @@ fi
 if [[ -n $* ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
-    help
+    _help
     exit
   fi
 
@@ -122,7 +121,7 @@ c_file="$(get_compose_filename)"
 # if nothing is provided, just start compose file in current directory
 if [[ -z "${c_file}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] docker-compose.yml $(_c LIGHT_RED "not found in current directory")"
-  help
+  _help
   exit
 fi
 

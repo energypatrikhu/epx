@@ -1,5 +1,33 @@
-_cci netstat
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")] Usage: $(_c LIGHT_YELLOW "it.rnd-port")"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")] Find an available random TCP port on the system"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Random Port")]   it.rnd-port"
+}
 
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Random Port")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
+_cci netstat
 source "${EPX_HOME}/helpers/random-number.sh"
 
 _is_port_in_use() {

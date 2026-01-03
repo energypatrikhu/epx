@@ -1,26 +1,34 @@
-_cci python3 pm2
-
-help(){
-  echo -e "Usage: py.pm2 [script] [name]"
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")] Usage: $(_c LIGHT_YELLOW "py.pm2 [script] [name]")"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")] Start a Python script with PM2 process manager"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")]"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")]   py.pm2 script.py myproject"
+  echo -e "[$(_c LIGHT_BLUE "Python - PM2")]   py.pm2 main.py"
 }
 
 opt_help=false
-
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
     else
-      echo -e "[$(_c LIGHT_BLUE "Python - PM2")] $(_c LIGHT_RED "Unknown option: ${arg}")"
+      echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
       exit 1
     fi
   fi
 done
 
 if [[ "${opt_help}" == "true" ]]; then
-  help
+  _help
   exit
 fi
+
+_cci python3 pm2
 
 if [[ -n "${1-}" ]]; then
   filename="${1-}"

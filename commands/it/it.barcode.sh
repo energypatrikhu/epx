@@ -1,14 +1,40 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Usage: $(_c LIGHT_YELLOW "it.barcode <input> [output-file]")"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] If output file is not specified, barcode is displayed in terminal"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")]   it.barcode '123456789'"
+  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")]   it.barcode 'example' barcode.png"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci barcode
 
 input="${1-}"
 output="${2-}"
 
 if [[ -z "$input" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Usage: $(_c LIGHT_YELLOW "it.barcode <input> [output-file]")"
-  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] If output file is not specified, barcode is displayed in terminal"
-  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")]   it.barcode '123456789'"
-  echo -e "[$(_c LIGHT_BLUE "IT - Barcode")]   it.barcode 'example' barcode.png"
+  _help
   exit 1
 fi
 

@@ -1,31 +1,9 @@
-_cci qrencode
-
-ssid=""
-password=""
-security="wpa"
-output=""
-hidden=""
-debug=""
-eap_method=""
-anonymous_identity=""
-identity=""
-phase2_method=""
-
-escape_wifi_field() {
-  local str="$1"
-  str="${str//\\/\\\\}"
-  str="${str//;/\\;}"
-  str="${str//,/\\,}"
-  str="${str//\"/\\\"}"
-  str="${str//:/\\:}"
-  echo "$str"
-}
-
-print_usage() {
+_help() {
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] Usage: $(_c LIGHT_YELLOW "it.qr-wifi [options]")"
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] Generate a WiFi QR code for easy network connection"
   echo -e ""
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] Options:"
+  echo -e "  $(_c LIGHT_YELLOW "-h, --help")                Show this help message"
   echo -e "  $(_c LIGHT_YELLOW "-s, --ssid <name>")         Network SSID (required)"
   echo -e "  $(_c LIGHT_YELLOW "-p, --password <pass>")     Password (required for secured networks)"
   echo -e "  $(_c LIGHT_YELLOW "-t, --type <type>")         Security type: wep, wpa (default), wpa2-wpa3, wpa3-only, wpa2-eap, nopass"
@@ -50,7 +28,47 @@ print_usage() {
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")]   it.qr-wifi -s 'MyNetwork' -p 'mypassword' -t wpa3-only -o wifi.png"
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")]   it.qr-wifi -s 'MyNetwork' -p 'mypass' -H -o hidden.png"
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")]   it.qr-wifi -s 'MyNetwork' -t wpa2-eap -e TTLS -i user@example.com"
+}
 
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
+_cci qrencode
+
+ssid=""
+password=""
+security="wpa"
+output=""
+hidden=""
+debug=""
+eap_method=""
+anonymous_identity=""
+identity=""
+phase2_method=""
+
+escape_wifi_field() {
+  local str="$1"
+  str="${str//\\/\\\\}"
+  str="${str//;/\\;}"
+  str="${str//,/\\,}"
+  str="${str//\"/\\\"}"
+  str="${str//:/\\:}"
+  echo "$str"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -129,14 +147,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     *)
       echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): Unknown option: $1" >&2
-      print_usage
+      _help
       exit 1
       ;;
   esac
 done
 
 if [[ -z "$ssid" ]]; then
-  print_usage
+  _help
   exit 1
 fi
 

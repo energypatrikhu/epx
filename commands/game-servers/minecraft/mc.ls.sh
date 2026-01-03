@@ -1,3 +1,31 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")] Usage: $(_c LIGHT_YELLOW "mc.ls")"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")]"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")]   mc.ls"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Minecraft - List Containers")] $(_c LIGHT_RED "Error:") Minecraft configuration file not found. Please configure $(_c LIGHT_YELLOW "${EPX_HOME}/.config/minecraft.config") and run $(_c LIGHT_CYAN "mc.install")"
   exit 1

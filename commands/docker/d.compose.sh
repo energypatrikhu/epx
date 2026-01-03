@@ -1,26 +1,33 @@
-_cci docker
-
-help() {
-  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_YELLOW "Usage: d.compose [service name]")"
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] Usage: $(_c LIGHT_YELLOW "d.compose [service name]")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] Create a docker-compose.yml file from a template"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Compose")]   d.compose my_service"
 }
 
 opt_help=false
-
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
     else
-      echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_RED "Unknown option: ${arg}")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Compose")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
       exit 1
     fi
   fi
 done
 
 if [[ "${opt_help}" == "true" ]]; then
-  help
+  _help
   exit
 fi
+
+_cci docker
 
 if [[ ! -f "${EPX_HOME}/.templates/docker/docker-compose.template" ]]; then
   echo -e "[$(_c LIGHT_RED "Docker - Compose")] $(_c LIGHT_YELLOW "Template for docker compose not found.")"

@@ -1,9 +1,38 @@
-_cci net
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] Usage: $(_c LIGHT_YELLOW "smb.list <short/--short/-s>")"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] List available Samba shares"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")]   -s, --short    Show only share names"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")]   smb.list"
+  echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")]   smb.list --short"
+}
 
+opt_help=false
 opt_short=false
-if [[ "${1-}" == --short ]] || [[ "${1-}" == -s ]] || [[ "${1-}" == "short" ]]; then
-  opt_short=true
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    elif [[ "${arg}" =~ ^-*(s|short)$ ]]; then
+      opt_short=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
 fi
+
+_cci net
 
 echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_YELLOW "Listing available Samba shares...")"
 echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_CYAN "Note: Use smb.list <short/--short/-s> to show only share names")"
@@ -28,7 +57,7 @@ __fallback(){
 }
 
 conf_arg="list"
-if [[ "${opt_short}" == true ]]; then
+if [[ "${opt_short}" == "true" ]]; then
   conf_arg="listshares"
 fi
 

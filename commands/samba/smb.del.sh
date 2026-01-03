@@ -1,8 +1,38 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")] Usage: $(_c LIGHT_YELLOW "smb.del <username>")"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")] Delete a user from Samba"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")]   smb.del username"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")]   smb.del anotheruser"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci smbpasswd
 
 username="${1-}"
 if [[ -z "${username}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Samba - Delete User")] $(_c LIGHT_YELLOW "Usage: smb.del <username>")"
+  _help
   exit 1
 fi
 

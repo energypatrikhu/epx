@@ -1,19 +1,43 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Usage: $(_c LIGHT_YELLOW "it.b64 <string|file> [encode|decode]")"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Encode or decode a string or file using Base64"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 encode 'hello world'"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 decode 'aGVsbG8gd29ybGQ='"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 encode /path/to/file"
+  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 decode /path/to/encoded_file"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Base64")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci base64
 
 input="${1-}"
 mode="${2-}"
 
 if [[ -z "$input" ]] || [[ -z "$mode" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Usage: $(_c LIGHT_YELLOW "it.b64 <string|file> [encode|decode]")"
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Default mode: $(_c LIGHT_YELLOW "encode")"
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 decode 'aGVsbG8gd29ybGQ='"
-  echo -e "[$(_c LIGHT_BLUE "IT - Base64")]   it.b64 encode /path/to/file"
+  _help
   exit 1
-fi
-
-if [[ -z "$mode" ]]; then
-  mode="encode"
 fi
 
 if [[ "$mode" != "encode" ]] && [[ "$mode" != "decode" ]]; then

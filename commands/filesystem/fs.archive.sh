@@ -1,8 +1,37 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")] Usage: $(_c LIGHT_YELLOW "fs.archive <file|directory> [file|directory ...]")"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")] Create a tar archive from specified files or directories"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")]"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")]"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")]   fs.archive /path/to/file1 /path/to/directory1"
+  echo -e "[$(_c LIGHT_BLUE "FS - Archive")]   fs.archive /path/to/file1 /path/to/file2 /path/to/directory1 /path/to/directory2"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "FS - Archive")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci tar
 
 if [[ $# -eq 0 ]]; then
-  echo -e "[$(_c LIGHT_BLUE "FS - Archive")] $(_c LIGHT_RED "Error"): No input files or directories provided"
-  echo -e "[$(_c LIGHT_BLUE "FS - Archive")] Usage: $(_c LIGHT_YELLOW "fs.archive <file|directory> [file|directory ...]")"
+  _help
   exit 1
 fi
 

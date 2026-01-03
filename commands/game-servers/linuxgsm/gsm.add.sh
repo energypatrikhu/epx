@@ -1,3 +1,32 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] Usage: $(_c LIGHT_YELLOW "gsm.add <game-server-tag>")"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] Add a new LinuxGSM game server container"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "LinuxGSM")]   gsm.add cs2"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "LinuxGSM")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci docker
 
 if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then

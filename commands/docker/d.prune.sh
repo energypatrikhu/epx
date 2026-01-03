@@ -1,7 +1,41 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] Usage: $(_c LIGHT_YELLOW "d.prune <all / images / containers / volumes / networks / build> [options]")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] Prune unused Docker resources"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]   d.prune all --force"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]   d.prune images"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]   d.prune containers"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]   d.prune volumes"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]   d.prune networks"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")]   d.prune build --all"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci docker
 
 if [[ -z "${1-}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Docker - Prune")] $(_c LIGHT_YELLOW "Usage: d.prune <all / images / containers / volumes / networks / build> [options]")"
+  _help
   exit
 fi
 

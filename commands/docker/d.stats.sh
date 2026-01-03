@@ -1,3 +1,36 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")] Usage: $(_c LIGHT_YELLOW "d.stats <container / all>")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")] Display detailed statistics for a specific Docker container or all containers"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")]   -a, --all         Display stats for all containers"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")]"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Stats")]   d.stats my_container"
+}
+
+opt_help=false
+opt_all=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    elif [[ "${arg}" =~ ^-*a(ll)?$ ]]; then
+      opt_all=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "Docker - Stats")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci docker
 
 _strip_text() {
@@ -10,14 +43,14 @@ _visible_length() {
 
 container_name="${1-}"
 
-# If no container name is provided or if the container name is "all", list all containers
-if [[ -z "${container_name}" || "${container_name}" = "all" ]]; then
+# If no container name is provided or opt_all is true, list all containers
+if [[ -z "${container_name}" || "${opt_all}" == "true" ]]; then
   containers=$(docker ps -a --format "{{.Names}}")
   for container in ${containers}; do
     d.stats "${container}"
   done
 
-  exit 1
+  exit 0
 fi
 
 # Get container details using docker inspect

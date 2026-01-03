@@ -1,8 +1,38 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] Usage: $(_c LIGHT_YELLOW "smb.add <username>")"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] Add a user to Samba"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")]"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")]   smb.add username"
+  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")]   smb.add anotheruser"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci smbpasswd
 
 username="${1-}"
 if [[ -z "${username}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Samba - Add User")] $(_c LIGHT_YELLOW "Usage: smb.add <username>")"
+  _help
   exit 1
 fi
 

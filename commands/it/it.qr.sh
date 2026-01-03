@@ -1,14 +1,40 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] Usage: $(_c LIGHT_YELLOW "it.qr <input> [output-file]")"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] If output file is not specified, QR code is displayed in terminal"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")]   it.qr 'https://example.com'"
+  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")]   it.qr 'hello world' qrcode.png"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci qrencode
 
 input="${1-}"
 output="${2-}"
 
 if [[ -z "$input" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] Usage: $(_c LIGHT_YELLOW "it.qr <input> [output-file]")"
-  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] If output file is not specified, QR code is displayed in terminal"
-  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")]   it.qr 'https://example.com'"
-  echo -e "[$(_c LIGHT_BLUE "IT - QR Code")]   it.qr 'hello world' qrcode.png"
+  _help
   exit 1
 fi
 

@@ -1,7 +1,3 @@
-_cci docker
-
-source "${EPX_HOME}/helpers/get-compose-filename.sh"
-
 help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage:") d.up $(_c LIGHT_YELLOW "[<options>] [container1, container2, ...]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
@@ -16,7 +12,6 @@ help() {
 opt_help=false
 opt_all=false
 opt_no_cache=false
-
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
@@ -37,6 +32,10 @@ if [[ "${opt_help}" == "true" ]]; then
   help
   exit
 fi
+
+_cci docker
+
+source "${EPX_HOME}/helpers/get-compose-filename.sh"
 
 docker_args=()
 if [[ "${opt_no_cache}" == "true" ]]; then

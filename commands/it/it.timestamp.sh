@@ -1,15 +1,41 @@
+_help() {
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Usage: $(_c LIGHT_YELLOW "it.timestamp <unix-timestamp|date-string>")"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Convert between Unix timestamp and human-readable date"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Options:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]   it.timestamp 1704239400"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]   it.timestamp '2024-01-03 10:00:00'"
+  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]   it.timestamp 'now'"
+}
+
+opt_help=false
+for arg in "$@"; do
+  if [[ "${arg}" == -* ]]; then
+    if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
+      opt_help=true
+    else
+      echo -e "[$(_c LIGHT_BLUE "IT - Barcode")] $(_c LIGHT_RED "Unknown option:") ${arg}"
+      _help
+      exit 1
+    fi
+  fi
+done
+
+if [[ "${opt_help}" == "true" ]]; then
+  _help
+  exit
+fi
+
 _cci date
 
 input="${1-}"
 format="${2-}"
 
 if [[ -z "$input" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Usage: $(_c LIGHT_YELLOW "it.timestamp <unix-timestamp|date-string>")"
-  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Convert between Unix timestamp and human-readable date"
-  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")] Examples:"
-  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]   it.timestamp 1704239400"
-  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]   it.timestamp '2024-01-03 10:00:00'"
-  echo -e "[$(_c LIGHT_BLUE "IT - Timestamp")]   it.timestamp 'now'"
+  _help
   exit 1
 fi
 
