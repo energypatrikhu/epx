@@ -5,6 +5,7 @@ password=""
 security="wpa"
 output=""
 hidden=""
+debug=""
 eap_method=""
 anonymous_identity=""
 identity=""
@@ -30,6 +31,7 @@ print_usage() {
   echo -e "  $(_c LIGHT_YELLOW "-t, --type <type>")         Security type: wep, wpa (default), wpa2-wpa3, wpa3-only, wpa2-eap, nopass"
   echo -e "  $(_c LIGHT_YELLOW "-o, --output <file>")       Output file (if not specified, display in terminal)"
   echo -e "  $(_c LIGHT_YELLOW "-H, --hidden")              Network SSID is hidden"
+  echo -e "  $(_c LIGHT_YELLOW "-d, --debug")               Print WiFi string for debugging"
   echo -e "  $(_c LIGHT_YELLOW "-e, --eap <method>")        (WPA2-EAP only) EAP method (TTLS, PWD, etc.)"
   echo -e "  $(_c LIGHT_YELLOW "-a, --anonymous <id>")      (WPA2-EAP only) Anonymous identity"
   echo -e "  $(_c LIGHT_YELLOW "-i, --identity <id>")       (WPA2-EAP only) Identity"
@@ -87,6 +89,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     -H|--hidden)
       hidden="true"
+      shift
+      ;;
+    -d|--debug)
+      debug="true"
       shift
       ;;
     -e|--eap)
@@ -179,6 +185,10 @@ if [[ "$security" == "wpa2-eap" ]]; then
 fi
 
 wifi_string="${wifi_string};;"
+
+if [[ -n "$debug" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_YELLOW "WiFi String"): $wifi_string" >&2
+fi
 
 if ! command -v qrencode &>/dev/null; then
   echo -e "[$(_c LIGHT_BLUE "IT - WiFi QR")] $(_c LIGHT_RED "Error"): qrencode not found, attempting to use Python..." >&2
