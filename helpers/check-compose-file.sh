@@ -16,13 +16,14 @@
 #   fi
 check-compose-file() {
   local path="${1:-.}"
-  if [[ -f "${path}/docker-compose.yaml" ]]; then
+
+  if [[ -f "${path}/docker-compose.yml" ]]; then
     return 0
-  elif [[ -f "${path}/docker-compose.yml" ]]; then
-    return 0
-  elif [[ -f "${path}/compose.yaml" ]]; then
+  elif [[ -f "${path}/docker-compose.yaml" ]]; then
     return 0
   elif [[ -f "${path}/compose.yml" ]]; then
+    return 0
+  elif [[ -f "${path}/compose.yaml" ]]; then
     return 0
   fi
 

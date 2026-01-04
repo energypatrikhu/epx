@@ -17,13 +17,13 @@
 #   fi
 get_compose_filename() {
   local path="${1:-.}"
-  if [[ -f "${path}/docker-compose.yaml" ]]; then
-    echo "${path}/docker-compose.yaml"
-  elif [[ -f "${path}/docker-compose.yml" ]]; then
+  if [[ -f "${path}/docker-compose.yml" ]]; then
     echo "${path}/docker-compose.yml"
-  elif [[ -f "${path}/compose.yaml" ]]; then
-    echo "${path}/compose.yaml"
+  elif [[ -f "${path}/docker-compose.yaml" ]]; then
+    echo "${path}/docker-compose.yaml"
   elif [[ -f "${path}/compose.yml" ]]; then
+    echo "${path}/compose.yml"
+  elif [[ -f "${path}/compose.yaml" ]]; then
     echo "${path}/compose.yml"
   else
     echo ""

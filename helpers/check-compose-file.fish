@@ -16,14 +16,16 @@
 #   end
 function check-compose-file
   set -l path (test -n "$argv" && echo "$argv[1]" || echo ".")
-  if test -f "$path/docker-compose.yaml"
+
+  if test -f "$path/docker-compose.yml"
     return 0
-  else if test -f "$path/docker-compose.yml"
-    return 0
-  else if test -f "$path/compose.yaml"
+  else if test -f "$path/docker-compose.yaml"
     return 0
   else if test -f "$path/compose.yml"
     return 0
+  else if test -f "$path/compose.yaml"
+    return 0
   end
+
   return 1
 end
