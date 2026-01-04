@@ -11,11 +11,10 @@
 #   The full path to the compose file if found, empty string otherwise
 #
 # Example:
-#   compose_file=$(get_compose_filename "/path/to/project")
-#   if [[ -n "$compose_file" ]]; then
-#     echo "Found compose file: $compose_file"
+#   if check-compose-file "/path/to/project"; then
+#     echo "Found compose file"
 #   fi
-get_compose_filename() {
+check-compose-file() {
   local path="${1:-.}"
   if [[ -f "${path}/docker-compose.yaml" ]]; then
     return 0

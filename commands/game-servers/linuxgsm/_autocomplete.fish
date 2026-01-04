@@ -24,7 +24,7 @@ if test -f "$EPX_HOME/.config/docker.config"
     set -l containers_dir (grep '^CONTAINERS_DIR=' $config_file | cut -d'=' -f2 | tr -d '"' | tr -d "'")
 
     for d in $containers_dir/*
-    if test -d "$d" && check-compose-file "$d" > /dev/null 2>&1
+    if test -d "$d" && check-compose-file "$d"
         set -l dirname (basename "$d")
         if string match -q 'linuxgsm-*' $dirname
           string replace 'linuxgsm-' '' $dirname
