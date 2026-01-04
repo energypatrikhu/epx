@@ -107,7 +107,7 @@ if [[ -n $* ]]; then
     fi
 
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Pulling compose file in") ${c_dir}$(_c LIGHT_BLUE "...")"
-    docker compose --file "${c_dir}/${c_file}" pull
+    docker compose --file "${c_file}" pull
   done
   exit
 fi
