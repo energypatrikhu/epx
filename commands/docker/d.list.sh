@@ -43,7 +43,7 @@ if [[ -n $* ]]; then
   done
 fi
 
-data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "${filters}")
+data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" ${filters})
 
 if [[ -z "${data}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")"
