@@ -60,7 +60,7 @@ if [[ "${opt_all}" == "true" ]]; then
     c_file="$(get_compose_filename "${c_dir}")"
 
     if [[ -z "${c_file}" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] compose file $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
 
@@ -102,12 +102,12 @@ if [[ -n $* ]]; then
     c_file="$(get_compose_filename "${c_dir}")"
 
     if [[ -z "${c_file}" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] compose file $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
 
     echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] $(_c LIGHT_BLUE "Pulling compose file in") ${c_dir}$(_c LIGHT_BLUE "...")"
-    docker compose --file "${c_dir}/docker-compose.yml" pull
+    docker compose --file "${c_dir}/${c_file}" pull
   done
   exit
 fi
@@ -116,7 +116,7 @@ c_file="$(get_compose_filename)"
 
 # if nothing is provided, just start compose file in current directory
 if [[ -z "${c_file}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] docker-compose.yml $(_c LIGHT_RED "not found in current directory")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Pull")] compose file $(_c LIGHT_RED "not found in current directory")"
   _help
   exit
 fi

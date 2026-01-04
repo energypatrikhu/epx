@@ -35,6 +35,7 @@ fi
 
 _cci_pkg docker:docker-ce-cli
 
+source "${EPX_HOME}/helpers/check-compose-file.sh"
 source "${EPX_HOME}/helpers/get-compose-filename.sh"
 
 docker_args=()
@@ -79,7 +80,7 @@ if [[ "${opt_all}" == "true" ]]; then
 
     c_file="$(get_compose_filename "${c_dir}")"
     if [[ -z "${c_file}" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] compose file $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
 
@@ -126,7 +127,7 @@ if [[ -n $* ]]; then
     c_file="$(get_compose_filename "${c_dir}")"
 
     if [[ -z "${c_file}" ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] docker-compose.yml $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] [$(_c LIGHT_BLUE "${c_count}")/$(_c LIGHT_BLUE "${c_amount}")] compose file $(_c LIGHT_RED "not found in") ${c_dir} $(_c LIGHT_RED "skipping...")"
       continue
     fi
 
@@ -140,7 +141,7 @@ c_file="$(get_compose_filename)"
 
 # if nothing is provided, just start compose file in current directory
 if [[ -z "${c_file}" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] docker-compose.yml $(_c LIGHT_RED "not found in current directory")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] compose file $(_c LIGHT_RED "not found in current directory")"
   help
   exit
 fi
