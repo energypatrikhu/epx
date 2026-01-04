@@ -1,3 +1,5 @@
+source "$EPX_HOME/helpers/check-compose-file.fish"
+
 function __epx_fish_d_containers
   docker ps -a --format '{{.Names}}'
 end
@@ -41,7 +43,7 @@ if test -f "$EPX_HOME/.config/docker.config"
     set -l containers_dir (grep '^CONTAINERS_DIR=' $config_file | cut -d'=' -f2 | tr -d '"' | tr -d "'")
 
     for d in $containers_dir/*
-      if test -d "$d" -a -f "$d/docker-compose.yml"
+    if test -d "$d" && check-compose-file "$d" > /dev/null 2>&1
         basename "$d"
       end
     end

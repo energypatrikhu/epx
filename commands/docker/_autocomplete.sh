@@ -1,3 +1,5 @@
+source "${EPX_HOME}/helpers/check-compose-file.sh"
+
 __epx_bash_d_containers() {
   local containers
   containers="$(docker ps -a --format '{{.Names}}')"
@@ -50,7 +52,7 @@ __epx_bash_d_container_directories() {
   local d
   for d in "${CONTAINERS_DIR}"/*; do
     if [[ -d "${d}" ]]; then
-      if [[ -f "${d}/docker-compose.yml" ]]; then
+      if check_compose_file "${d}"; then
         container_dirs+=("$(basename -- "${d}")")
       fi
     fi

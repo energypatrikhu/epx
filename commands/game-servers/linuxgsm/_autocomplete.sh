@@ -1,3 +1,5 @@
+source "${EPX_HOME}/helpers/check-compose-file.sh"
+
 # Bash completions for LinuxGSM commands
 __epx_bash_gsm_containers() {
   local containers
@@ -26,7 +28,7 @@ if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
     local d
     for d in "${CONTAINERS_DIR}"/*; do
       if [[ -d "${d}" ]]; then
-        if [[ -f "${d}/docker-compose.yml" ]]; then
+        if check_compose_file "${d}"; then
           local dirname="$(basename -- "${d}")"
           if [[ "${dirname}" == linuxgsm-* ]]; then
             container_dirs+=("${dirname#linuxgsm-}")
