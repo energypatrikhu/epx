@@ -36,15 +36,14 @@ fi
 
 _cci_pkg docker:docker-ce-cli
 
-if [[ -z $* ]]; then
-  data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
-else
+if [[ -n $* ]]; then
   filters=""
   for filter in "${@}"; do
     filters="${filters} --filter status=${filter}"
   done
-  data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "${filters}")
 fi
+
+data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "${filters}")
 
 if [[ -z "${data}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - List")] $(_c LIGHT_YELLOW "No containers found")"
