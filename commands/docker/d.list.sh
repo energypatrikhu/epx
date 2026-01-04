@@ -40,7 +40,7 @@ if [[ -z $* ]]; then
   data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}")
 else
   filters=""
-  for filter in ${@}; do
+  for filter in "${@}"; do
     filters="${filters} --filter status=${filter}"
   done
   data=$(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}" "${filters}")
