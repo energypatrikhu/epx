@@ -21,6 +21,10 @@ get_compose_filename() {
     echo "${path}/docker-compose.yaml"
   elif [[ -f "${path}/docker-compose.yml" ]]; then
     echo "${path}/docker-compose.yml"
+  elif [[ -f "${path}/compose.yaml" ]]; then
+    echo "${path}/compose.yaml"
+  elif [[ -f "${path}/compose.yml" ]]; then
+    echo "${path}/compose.yml"
   else
     echo ""
   fi
