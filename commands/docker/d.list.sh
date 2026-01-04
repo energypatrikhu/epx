@@ -36,8 +36,8 @@ fi
 
 _cci_pkg docker:docker-ce-cli
 
+filters=""
 if [[ -n $* ]]; then
-  filters=""
   for filter in "${@}"; do
     filters="${filters} --filter status=${filter}"
   done
