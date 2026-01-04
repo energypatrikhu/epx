@@ -14,10 +14,6 @@ for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
-    else
-      echo -e "[$(_c LIGHT_BLUE "Docker - Exec")] $(_c LIGHT_RED "Unknown option:") ${arg}"
-      _help
-      exit 1
     fi
   fi
 done

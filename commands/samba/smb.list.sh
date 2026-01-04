@@ -19,10 +19,6 @@ for arg in "$@"; do
       opt_help=true
     elif [[ "${arg}" =~ ^-*(s|short)$ ]]; then
       opt_short=true
-    else
-      echo -e "[$(_c LIGHT_BLUE "Samba - List Shares")] $(_c LIGHT_RED "Unknown option:") ${arg}"
-      _help
-      exit 1
     fi
   fi
 done
