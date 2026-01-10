@@ -1,4 +1,4 @@
-alias sctl='systemctl'
-alias sys='systemctl'
+alias sctl="$(which systemctl)"
+alias sys="$(which systemctl)"
 
-alias jctl='journalctl'
+alias jctl="$(which journalctl)"
