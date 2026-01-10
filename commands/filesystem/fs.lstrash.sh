@@ -1,5 +1,5 @@
 _help() {
-  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Usage: $(_c LIGHT_YELLOW "fs.lstrash [trash-name|trash-path]")"
+  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Usage: $(_c LIGHT_YELLOW "fs.lstrash [trash-path]")"
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] List contents of configured trash directories"
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")]"
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Options:"
@@ -7,7 +7,6 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")]"
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Examples:"
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")]   fs.lstrash"
-  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")]   fs.lstrash my_trash_name"
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")]   fs.lstrash /path/to/my_trash"
 }
 
@@ -49,10 +48,6 @@ _read_trash_dirs() {
   done
 }
 
-_get_trash_name() {
-  local path="${1-}"
-  basename "$path"
-}
 
 _is_valid_trash_dir() {
   local search_path="${1-}"
@@ -65,34 +60,19 @@ _is_valid_trash_dir() {
   return 1
 }
 
-_find_trash_by_name() {
-  local search_name="${1-}"
-  IFS=':' read -ra dirs <<< "$TRASH_DIRS"
-  for dir in "${dirs[@]}"; do
-    if [[ -n "$dir" ]]; then
-      local dir_name=$(basename "$dir")
-      if [[ "$dir_name" == "$search_name" ]]; then
-        echo "$dir"
-        return 0
-      fi
-    fi
-  done
-  return 1
-}
+
 
 _list_trash_contents() {
   local trash_path="${1-}"
-  local trash_name="${2-}"
 
   if [[ ! -d "$trash_path" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_YELLOW "Warning"): Trash directory '$trash_name' does not exist at $trash_path" >&2
+    echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_YELLOW "Warning"): Trash directory does not exist at $trash_path" >&2
     return 1
   fi
 
   local item_count=$(find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
 
-  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_CYAN "Trash: $trash_name")"
-  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Path: $(_c LIGHT_YELLOW "$trash_path")"
+  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_CYAN "Trash: $trash_path")"
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Items: $(_c LIGHT_YELLOW "$item_count")"
 
   if [[ $item_count -gt 0 ]]; then
@@ -105,17 +85,10 @@ _list_trash_contents() {
 
 if [[ -n "$specific_trash" ]]; then
   if _is_valid_trash_dir "$specific_trash"; then
-    trash_name=$(_get_trash_name "$specific_trash")
-    _list_trash_contents "$specific_trash" "$trash_name"
+    _list_trash_contents "$specific_trash"
   else
-    trash_path=$(_find_trash_by_name "$specific_trash")
-
-    if [[ -n "$trash_path" ]]; then
-      _list_trash_contents "$trash_path" "$specific_trash"
-    else
-      echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_RED "Error"): Trash directory '$specific_trash' is not a configured trash directory" >&2
-      exit 1
-    fi
+    echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_RED "Error"): Trash directory '$specific_trash' is not a configured trash directory" >&2
+    exit 1
   fi
 else
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Available trash directories:"
@@ -129,16 +102,14 @@ else
   fi
 
   while IFS= read -r trash_path; do
-    trash_name=$(_get_trash_name "$trash_path")
-
     if [[ -d "$trash_path" ]]; then
       item_count=$(find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
-      echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_CYAN "$trash_name") - $(_c LIGHT_YELLOW "$item_count") items"
+      echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_CYAN "$trash_path") - $(_c LIGHT_YELLOW "$item_count") items"
     else
-      echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_YELLOW "$trash_name") - $(_c LIGHT_RED "does not exist")"
+      echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_YELLOW "$trash_path") - $(_c LIGHT_RED "does not exist")"
     fi
   done <<< "$all_dirs"
 
   echo ""
-  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Use $(_c LIGHT_YELLOW "fs.lstrash <trash-name>") to view contents"
+  echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Use $(_c LIGHT_YELLOW "fs.lstrash <trash-path>") to view contents"
 fi
