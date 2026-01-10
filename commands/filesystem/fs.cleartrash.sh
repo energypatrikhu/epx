@@ -91,6 +91,11 @@ _clear_trash_dir() {
     return 1
   fi
 
+  if [[ "$trash_path" == "/" || "$trash_path" == "/bin" || "$trash_path" == "/etc" || "$trash_path" == "/usr" || "$trash_path" == "/var" || "$trash_path" == "/sys" || "$trash_path" == "/proc" || "$trash_path" == "/home" || "$trash_path" == "/root" ]]; then
+    echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Cannot clear critical system directory '$trash_path'"
+    return 1
+  fi
+
   local item_count=$(find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
 
   if [[ $item_count -eq 0 ]]; then
