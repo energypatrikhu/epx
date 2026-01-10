@@ -124,21 +124,27 @@ _clear_trash_dir() {
       return 1
     fi
   else
-    read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response < /dev/tty
-    echo ""
+    if [[ -t 0 ]] || [[ -e /dev/tty ]]; then
+      read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response < /dev/tty 2>/dev/null || read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response
+      echo ""
 
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-      rm -rf "${trash_path:?}"/*
+      if [[ "$response" =~ ^[Yy]$ ]]; then
+        rm -rf "${trash_path:?}"/*
 
-      if [[ $? -eq 0 ]]; then
-        echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash cleared successfully")"
-        return 0
+        if [[ $? -eq 0 ]]; then
+          echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash cleared successfully")"
+          return 0
+        else
+          echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Failed to clear trash"
+          return 1
+        fi
       else
-        echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Failed to clear trash"
-        return 1
+        echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Skipped trash at $(_c LIGHT_YELLOW "$trash_path")"
+        return 0
       fi
     else
-      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Skipped trash at $(_c LIGHT_YELLOW "$trash_path")"
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_YELLOW "Warning"): No interactive terminal available, skipping trash at $trash_path"
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Use $(_c LIGHT_YELLOW "fs.cleartrash $trash_path -f") to clear without confirmation"
       return 0
     fi
   fi
@@ -164,7 +170,7 @@ else
 
   while IFS= read -r trash_path; do
     if [[ -n "$trash_path" ]]; then
-      _clear_trash_dir "$trash_path" < /dev/tty
+      _clear_trash_dir "$trash_path"
       echo ""
     fi
   done <<< "$all_dirs"
