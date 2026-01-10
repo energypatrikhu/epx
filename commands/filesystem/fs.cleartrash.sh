@@ -127,20 +127,22 @@ _clear_trash_dir() {
     if [[ -t 0 ]] || [[ -e /dev/tty ]]; then
       echo -ne "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): " >&2
       read -r response < /dev/tty 2>/dev/null || read -r response
-      echo ""
 
       if [[ "$response" =~ ^[Yy]$ ]]; then
         rm -rf "${trash_path:?}"/*
 
         if [[ $? -eq 0 ]]; then
           echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash cleared successfully")"
+          echo ""
           return 0
         else
           echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): Failed to clear trash"
+          echo ""
           return 1
         fi
       else
         echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Skipped trash at $(_c LIGHT_YELLOW "$trash_path")"
+        echo ""
         return 0
       fi
     else
