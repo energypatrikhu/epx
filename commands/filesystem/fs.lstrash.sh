@@ -76,8 +76,11 @@ _list_trash_contents() {
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] Items: $(_c LIGHT_YELLOW "$item_count")"
 
   if [[ $item_count -gt 0 ]]; then
-    echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_GREEN "Contents:"): "
-    find "$trash_path" -mindepth 1 -maxdepth 1 -printf '[$(_c LIGHT_BLUE "FS - List Trash")]   - %f\n' 2>/dev/null
+    echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_GREEN "Contents"):"
+    find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | while read -r item; do
+      local item_name=$(basename "$item")
+      echo -e "[$(_c LIGHT_BLUE "FS - List Trash")]   - $item_name"
+    done
   else
     echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_YELLOW "Empty")"
   fi
