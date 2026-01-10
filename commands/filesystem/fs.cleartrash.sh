@@ -125,7 +125,8 @@ _clear_trash_dir() {
     fi
   else
     if [[ -t 0 ]] || [[ -e /dev/tty ]]; then
-      read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response < /dev/tty 2>/dev/null || read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response
+      echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): " >&2
+      read -r response < /dev/tty 2>/dev/null || read -r response
       echo ""
 
       if [[ "$response" =~ ^[Yy]$ ]]; then
