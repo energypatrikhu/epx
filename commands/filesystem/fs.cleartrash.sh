@@ -63,7 +63,10 @@ fi
 _read_trash_dirs() {
   IFS=':' read -ra dirs <<< "$TRASH_DIRS"
   for dir in "${dirs[@]}"; do
-    [[ -n "$dir" ]] && echo "$dir"
+    if [[ -n "$dir" ]]; then
+      dir="${dir//\\/}"
+      echo "$dir"
+    fi
   done
 }
 
