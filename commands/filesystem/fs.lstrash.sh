@@ -132,7 +132,7 @@ else
     trash_name=$(_get_trash_name "$trash_path")
 
     if [[ -d "$trash_path" ]]; then
-      local item_count=$(find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
+      item_count=$(find "$trash_path" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l)
       echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_CYAN "$trash_name") - $(_c LIGHT_YELLOW "$item_count") items"
     else
       echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_YELLOW "$trash_name") - $(_c LIGHT_RED "does not exist")"
