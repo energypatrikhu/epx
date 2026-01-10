@@ -34,7 +34,7 @@ if [[ ! -f "$trash_config" ]]; then
   exit 1
 fi
 
-source "$trash_config"
+. "$trash_config"
 
 if [[ -z "$TRASH_DIRS" ]]; then
   echo -e "[$(_c LIGHT_BLUE "FS - List Trash")] $(_c LIGHT_RED "Error"): TRASH_DIRS not defined in config" >&2
