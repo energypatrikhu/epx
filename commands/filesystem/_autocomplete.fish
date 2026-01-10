@@ -7,7 +7,7 @@ function __fish_trash_dirs_complete
     if test -n "$trash_dirs"
       string split ':' $trash_dirs | while read -l dir
         if test -n "$dir"
-          echo "$dir"
+          printf '%s\n' "$dir"
         end
       end
     end
