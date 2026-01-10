@@ -2,7 +2,7 @@ _get_trash_names() {
   local trash_config="${EPX_HOME}/.config/trash.config"
 
   if [[ -f "$trash_config" ]]; then
-    source "$trash_config"
+    . "$trash_config"
 
     if [[ -n "$TRASH_DIRS" ]]; then
       IFS=':' read -ra dirs <<< "$TRASH_DIRS"
