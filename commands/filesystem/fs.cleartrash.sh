@@ -53,7 +53,7 @@ if [[ ! -f "$trash_config" ]]; then
   exit 1
 fi
 
-. "$trash_config"
+TRASH_DIRS=$(grep -o 'TRASH_DIRS="[^"]*"' "$trash_config" | cut -d'"' -f2)
 
 if [[ -z "$TRASH_DIRS" ]]; then
   echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_RED "Error"): TRASH_DIRS not defined in config"
