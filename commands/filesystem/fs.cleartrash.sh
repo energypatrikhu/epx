@@ -124,7 +124,7 @@ _clear_trash_dir() {
       return 1
     fi
   else
-    read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response
+    read -p "$(echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clear this trash? $(_c LIGHT_YELLOW "[y/N]"): ")" -r response < /dev/tty
     echo ""
 
     if [[ "$response" =~ ^[Yy]$ ]]; then
@@ -164,7 +164,7 @@ else
 
   while IFS= read -r trash_path; do
     if [[ -n "$trash_path" ]]; then
-      _clear_trash_dir "$trash_path"
+      _clear_trash_dir "$trash_path" < /dev/tty
       echo ""
     fi
   done <<< "$all_dirs"
