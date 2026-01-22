@@ -13,6 +13,10 @@ for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
+    fi
+  fi
+done
+
 if [[ "${opt_help}" == "true" ]]; then
   _help
   exit
