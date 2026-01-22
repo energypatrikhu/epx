@@ -36,7 +36,9 @@ source "${EPX_HOME}/helpers/get-compose-filename.sh"
 c_up()  {
   local c_file="${1}"
   docker compose --file "${c_file}" pull || true # Pull latest image, ignore errors
-  docker compose --file "${c_file}" build "${opt_args[@]}" || true # Build image, ignore errors
+  if grep -q "build:" "${c_file}"; then
+    docker compose --file "${c_file}" build "${opt_args[@]}" || true # Build image, ignore errors
+  fi
   docker compose --file "${c_file}" up --pull never --detach --no-build --yes # Start container
 }
 
