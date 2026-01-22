@@ -3,7 +3,6 @@ help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -a | --all") $(_c LIGHT_GREEN "Start all containers defined in the config file")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -h | --help") $(_c LIGHT_GREEN "Show this help message")"
-  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -n | --no-cache") $(_c LIGHT_GREEN "Do not use cache when building images")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  [container1, container2, ...]") $(_c LIGHT_GREEN "Start specific containers by name")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If no arguments are provided, it will start the compose file in the current directory")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If the config file is not found, it is necessary to create one at") ${EPX_HOME}/.config/docker.config"
@@ -11,19 +10,15 @@ help() {
 
 opt_help=false
 opt_all=false
-opt_no_cache=false
+opt_args=()
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
     elif [[ "${arg}" =~ ^-*a(ll)?$ ]]; then
       opt_all=true
-    elif [[ "${arg}" =~ ^-*n(o-cache)?$ ]]; then
-      opt_no_cache=true
     else
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Unknown option:") ${arg}"
-      help
-      exit 1
+      opt_args+=("${arg}")
     fi
   fi
 done
@@ -38,15 +33,10 @@ _cci_pkg docker:docker-ce-cli
 source "${EPX_HOME}/helpers/check-compose-file.sh"
 source "${EPX_HOME}/helpers/get-compose-filename.sh"
 
-docker_args=()
-if [[ "${opt_no_cache}" == "true" ]]; then
-  docker_args+=("--no-cache")
-fi
-
 c_up()  {
   local c_file="${1}"
   docker compose --file "${c_file}" pull || true # Pull latest image, ignore errors
-  docker compose --file "${c_file}" build "${docker_args[@]}" || true # Build image, ignore errors
+  docker compose --file "${c_file}" build "${opt_args[@]}" || true # Build image, ignore errors
   docker compose --file "${c_file}" up --pull never --detach --no-build --yes # Start container
 }
 
