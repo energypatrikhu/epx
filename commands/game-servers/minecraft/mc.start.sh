@@ -73,8 +73,8 @@ whitelist_file="${server_dir_full}/whitelist.txt"
 ops_file="${server_dir_full}/ops.txt"
 backup_enabled=$(__epx-mc-get-backup-enabled "${config_env}")
 
-whitelist_file_content="$(grep -v '^[[:space:]]*#' "${whitelist_file}" | grep '[^[:space:]]')"
-ops_file_content="$(grep -v '^[[:space:]]*#' "${ops_file}" | grep '[^[:space:]]')"
+whitelist_file_content="$(grep -v '^[[:space:]]*#' "${whitelist_file}" 2>/dev/null | grep '[^[:space:]]')" || whitelist_file_content=""
+ops_file_content="$(grep -v '^[[:space:]]*#' "${ops_file}" 2>/dev/null | grep '[^[:space:]]')" || ops_file_content=""
 
 # create a tmp env file to hold dynamic variables
 tmp_env_file=$(mktemp)
