@@ -25,7 +25,4 @@ get_compose_filename() {
       return 0
     fi
   done
-
-  echo ""
-  return 1
 }
