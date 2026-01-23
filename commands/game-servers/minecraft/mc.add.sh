@@ -100,6 +100,7 @@ backup_template_file_content=$(cat "${backup_template_file}")
 properties_template_file_content=$(cat "${properties_template_file}")
 mods_curseforge_template_file_content=$(cat "${mods_curseforge_template_file}")
 mods_modrinth_template_file_content=$(cat "${mods_modrinth_template_file}")
+random_rcon_password=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 64)
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Populating configuration files from templates..."
 
@@ -109,6 +110,8 @@ echo "" >> "${server_directory}/config.env"
 echo "${backup_template_file_content}" >> "${server_directory}/config.env"
 echo "" >> "${server_directory}/config.env"
 echo "${properties_template_file_content}" >> "${server_directory}/config.env"
+echo "RCON_PASSWORD = ${random_rcon_password} # Randomly generated password, you may edit this, but DO NOT REMOVE" >> "${server_directory}/config.env"
+
 echo "${mods_curseforge_template_file_content}" >> "${server_directory}/mods.curseforge.txt"
 echo "${mods_modrinth_template_file_content}" >> "${server_directory}/mods.modrinth.txt"
 
