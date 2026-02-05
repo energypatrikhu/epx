@@ -29,9 +29,6 @@ __epx_update_bees() {
   local build_dir="${tmp_dir}/${app_name}"
   echo -e "\n> Created temporary directory: ${tmp_dir}"
 
-  # Setup a trap to clean up temporary files on exit
-  trap 'rm -rf "${tmp_dir}"' EXIT
-
   # Download the latest release
   echo -e "\n> Downloading the latest release: ${latest_version}"
   wget -O "${tmp_dir}/${latest_version}.tar.gz" "https://github.com/${repository}/archive/refs/tags/${latest_version}.tar.gz"
