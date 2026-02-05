@@ -6,7 +6,7 @@ __epx_update_bees() {
   local repository="Zygo/${app_name}"
 
   # Get the installed version of the app
-  local installed_version="0.0.0"
+  local installed_version="none"
   if command -v beesd &> /dev/null; then
     installed_version="$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')"
   fi
@@ -40,9 +40,12 @@ __epx_update_bees() {
   echo -e "\n> Extracting the tarball"
   tar -xzf "${tmp_dir}/${latest_version}.tar.gz" -C "${tmp_dir}"
 
+  # Get the extracted directory name
+  local extracted_dir="${tmp_dir}/${app_name}-${latest_version#v}"
+
   # Change to the app directory
   echo -e "\n> Changing to the ${app_name} directory"
-  cd "${build_dir}"
+  cd "${extracted_dir}"
 
   # Set version
   echo -e "\n> Setting the ${app_name} version"
@@ -58,7 +61,7 @@ __epx_update_bees() {
 
   # Copy service files
   echo -e "\n> Copying service files"
-  cp -rf "${build_dir}"/scripts/*.service /etc/systemd/system/
+  cp -rf "${extracted_dir}"/scripts/*.service /etc/systemd/system/
 
   # Remove the temporary directory
   echo -e "\n> Removing the temporary directory"
