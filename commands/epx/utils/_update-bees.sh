@@ -6,7 +6,7 @@ __epx_update_bees() {
   local repository="Zygo/${app_name}"
 
   # Get the installed version of the app
-  local installed_version
+  local installed_version="0.0.0"
   if command -v beesd &> /dev/null; then
     installed_version="$(beesd --help 2>&1 | grep -oP 'bees version \K[^\s]+')"
   fi
