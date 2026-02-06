@@ -36,22 +36,13 @@ source "${EPX_HOME}/helpers/get-compose-filename.sh"
 c_up()  {
   local c_file="${1}"
 
-  docker compose --file "${c_file}" pull
-  if [[ $? -ne 0 ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Failed to pull images")"
-  fi
+  docker compose --file "${c_file}" pull || true
 
   if grep -q "build:" "${c_file}"; then
-    docker compose --file "${c_file}" build "${opt_args[@]}"
-    if [[ $? -ne 0 ]]; then
-      echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Failed to build images")"
-    fi
+    docker compose --file "${c_file}" build "${opt_args[@]}" || true
   fi
 
-  docker compose --file "${c_file}" up --pull never --detach --no-build --yes
-  if [[ $? -ne 0 ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Failed to start compose file") ${c_file}"
-  fi
+  docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
 }
 
 # if all option is provided, start all containers defined in the config file
