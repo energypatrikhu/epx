@@ -45,14 +45,12 @@ c_up()  {
     docker compose --file "${c_file}" build "${opt_args[@]}"
     if [[ $? -ne 0 ]]; then
       echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Failed to build images")"
-      return 1
     fi
   fi
 
   docker compose --file "${c_file}" up --pull never --detach --no-build --yes
   if [[ $? -ne 0 ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Failed to start compose file") ${c_file}"
-    return 1
   fi
 }
 
