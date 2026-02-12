@@ -34,9 +34,10 @@ _cci_pkg docker:docker-ce-cli
 _check_container_updates() {
   local container="$1"
   local image_name
-  local current_image_id
-  local latest_image_id
+  local current_repo_digest
+  local latest_digest
   local manifest_output
+  local image_inspect_output
 
   image_name=$(docker inspect "${container}" --format='{{.Config.Image}}' 2>/dev/null)
 
@@ -44,9 +45,15 @@ _check_container_updates() {
     return 0
   fi
 
-  current_image_id=$(docker inspect "${container}" --format='{{.Image}}' 2>/dev/null)
+  image_inspect_output=$(docker image inspect "${image_name}" 2>/dev/null || true)
 
-  if [[ -z "${current_image_id}" ]]; then
+  if [[ -z "${image_inspect_output}" ]]; then
+    return 0
+  fi
+
+  current_repo_digest=$(printf "%s" "${image_inspect_output}" | jq -r '.[0].RepoDigests[0] // empty' 2>/dev/null | sed 's/.*@//')
+
+  if [[ -z "${current_repo_digest}" ]]; then
     return 0
   fi
 
@@ -55,22 +62,21 @@ _check_container_updates() {
   manifest_output=$(docker manifest inspect "${image_name}" 2>/dev/null || true)
 
   if [[ -z "${manifest_output}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Unable to fetch manifest for") $(_c LIGHT_CYAN "${image_name}")"
     return 0
   fi
 
-  latest_image_id=$(printf "%s" "${manifest_output}" | jq -r '.manifests[0].digest // .config.digest // empty' 2>/dev/null) || true
+  latest_digest=$(printf "%s" "${manifest_output}" | jq -r '.manifests[0].digest // .config.digest // empty' 2>/dev/null | sed 's/.*@//') || true
 
-  if [[ -z "${latest_image_id}" ]]; then
+  if [[ -z "${latest_digest}" ]]; then
     return 0
   fi
 
-  if [[ "${current_image_id}" == "${latest_image_id}" ]]; then
+  if [[ "${current_repo_digest}" == "${latest_digest}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c GREEN "No updates available")"
   else
     echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Update available for") $(_c LIGHT_CYAN "${image_name}")"
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Current:") $(_c LIGHT_GRAY "${current_image_id:0:19}...")"
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Latest:") $(_c LIGHT_GRAY "${latest_image_id:0:19}...")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Current:") $(_c LIGHT_GRAY "${current_repo_digest:0:19}...")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Latest:") $(_c LIGHT_GRAY "${latest_digest:0:19}...")"
   fi
 
   return 0
