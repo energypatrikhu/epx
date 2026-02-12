@@ -16,4 +16,4 @@ end
 
 __epx_fish_load_autocomplete "$EPX_HOME/commands"
 
-complete -c epx -f -a 'self-update mk-cert update-bees backup net-conn net-docker net-if net-stat net-test net-traffic help'
+complete -c epx -f -a 'self-update mk-cert update-bees backup net-conn net-docker net-if net-stat net-test net-traffic net-scan help'

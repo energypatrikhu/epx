@@ -44,6 +44,7 @@ EPX is a collection of shell scripts and utilities designed to simplify and auto
 - Samba/SMB share management (add, delete, list, restart)
 - IP information lookup
 - Network utilities
+- Network scanning (discover devices on local network with hostname resolution)
 
 **IT Utilities:**
 - Base64 encoding/decoding
