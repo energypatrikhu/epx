@@ -93,7 +93,6 @@ _check_container_updates() {
 if [[ -n "${container_name}" ]]; then
   _check_container_updates "${container_name}"
 else
-  local running_containers
   running_containers=$(docker ps --format '{{.Names}}' 2>/dev/null)
 
   if [[ -z "${running_containers}" ]]; then
@@ -101,7 +100,7 @@ else
     exit
   fi
 
-  local first=true
+  first=true
   while IFS= read -r container; do
     if [[ -n "${container}" ]]; then
       if [[ "${first}" == "true" ]]; then
