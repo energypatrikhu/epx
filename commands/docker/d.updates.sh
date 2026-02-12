@@ -34,7 +34,9 @@ _cci_pkg docker:docker-ce-cli
 _check_container_updates() {
   local container="$1"
   local image_name
-  local image_tag
+  local current_image_id
+  local latest_image_id
+  local manifest_output
 
   image_name=$(docker inspect "${container}" --format='{{.Config.Image}}' 2>/dev/null)
 
@@ -42,76 +44,32 @@ _check_container_updates() {
     return 0
   fi
 
-  local current_digest
+  current_image_id=$(docker inspect "${container}" --format='{{.Image}}' 2>/dev/null)
 
-  current_digest=$(docker inspect "${container}" --format='{{.RepoDigests}}' 2>/dev/null)
-
-  if [[ -z "${current_digest}" ]] || [[ "${current_digest}" == "[]" ]]; then
-    current_digest=$(docker inspect "${container}" --format='{{.Image}}' 2>/dev/null | sed 's/sha256://')
-  else
-    current_digest=$(echo "${current_digest}" | grep -oP 'sha256:\K[a-f0-9]+' | head -1)
-<<<<<<< HEAD
+  if [[ -z "${current_image_id}" ]]; then
+    return 0
   fi
 
-  if [[ -z "${current_digest}" ]]; then
-=======
-  fi
+  manifest_output=$(docker manifest inspect "${image_name}" 2>/dev/null || true)
 
-  if [[ -z "${current_digest}" ]]; then
+  if [[ -z "${manifest_output}" ]]; then
     return 0
   fi
 
   echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] Checking updates for $(_c LIGHT_CYAN "${container}") (Image: $(_c LIGHT_YELLOW "${image_name}"))..."
 
-  local manifest_output
-  manifest_output=$(docker manifest inspect "${image_name}" 2>/dev/null || true)
+  latest_image_id=$(printf "%s" "${manifest_output}" | jq -r '.manifests[0].digest // .config.digest // empty' 2>/dev/null) || true
 
-  if [[ -z "${manifest_output}" ]]; then
->>>>>>> 20d6cd81472adfe65f5134f096873605a66ff893
+  if [[ -z "${latest_image_id}" ]]; then
     return 0
   fi
 
-  local latest_digest
-
-<<<<<<< HEAD
-  local manifest_output
-  manifest_output=$(docker manifest inspect "${image_name}" 2>/dev/null || true)
-
-  if [[ -z "${manifest_output}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Unable to fetch manifest for") $(_c LIGHT_CYAN "${image_name}")"
-    return 0
-  fi
-
-  local latest_digest
-
-  latest_digest=$(printf "%s" "${manifest_output}" | jq -r '.manifests[0].digest // empty' 2>/dev/null | sed 's/sha256://') || true
-
-  if [[ -z "${latest_digest}" ]]; then
-    latest_digest=$(printf "%s" "${manifest_output}" | jq -r '.config.digest // empty' 2>/dev/null | sed 's/sha256://') || true
-  fi
-
-  if [[ -z "${latest_digest}" ]]; then
-    return 0
-  fi
-
-=======
-  latest_digest=$(printf "%s" "${manifest_output}" | jq -r '.manifests[0].digest // empty' 2>/dev/null | sed 's/sha256://') || true
-
-  if [[ -z "${latest_digest}" ]]; then
-    latest_digest=$(printf "%s" "${manifest_output}" | jq -r '.config.digest // empty' 2>/dev/null | sed 's/sha256://') || true
-  fi
-
-  if [[ -z "${latest_digest}" ]]; then
-    return 0
-  fi
-
->>>>>>> 20d6cd81472adfe65f5134f096873605a66ff893
-  if [[ "${current_digest}" == "${latest_digest}" ]]; then
+  if [[ "${current_image_id}" == "${latest_image_id}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c GREEN "No updates available")"
   else
     echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Update available for") $(_c LIGHT_CYAN "${image_name}")"
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Current digest:") $(_c LIGHT_GRAY "${current_digest:0:19}...")"
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Latest digest:") $(_c LIGHT_GRAY "${latest_digest:0:19}...")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Current:") $(_c LIGHT_GRAY "${current_image_id:0:19}...")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Latest:") $(_c LIGHT_GRAY "${latest_image_id:0:19}...")"
   fi
 
   return 0
