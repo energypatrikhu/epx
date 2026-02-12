@@ -5,12 +5,60 @@
 EPX is a collection of shell scripts and utilities designed to simplify and automate common system administration tasks on Linux. It provides handy commands for working with Docker, Python environments, file management, firewall (ufw), and more.
 
 ## Features
-- Docker management helpers
-- Python virtual environment and package management
-- File operations (archive, copy, move, etc.)
-- UFW firewall rule management
-- Utility scripts for backup and updates
+
+**Container & Virtualization:**
+- Docker management (run, exec, logs, stats, compose generation, etc.)
+- Docker container operations (start, stop, restart, remove, attach, shell access)
 - Minecraft server management (For more details, checkout [minecraft-server](commands/game-servers/minecraft/README.md))
+- Linux Game Server Manager (LinuxGSM) integration
+
+**Python Development:**
+- Virtual environment creation and management
+- Package installation and management
+- Python environment activation and configuration
+- PM2 integration for Python applications
+
+**File System Operations:**
+- Archive creation and extraction (7z, tar, zst, tar.zst)
+- Disk usage analysis and management
+- Trash management (clear, list)
+- File creation utilities (dummy files)
+- Compression tools with lite options
+
+**Network & Firewall:**
+- UFW firewall rule management (add, delete, list, status)
+- Samba/SMB share management (add, delete, list, restart)
+- IP information lookup
+- Network utilities
+
+**IT Utilities:**
+- Base64 encoding/decoding
+- Hash generation (MD5, SHA1, SHA256, etc.)
+- HMAC generation
+- QR code generation (including WiFi QR codes)
+- Barcode generation
+- Regular expression testing and extraction
+- URL/HTML encoding and decoding
+- UUID generation
+- Random utilities (numbers, strings, ports)
+- Timestamp conversion and timezone info
+- User agent information
+
+**Shell & Editor:**
+- Fish shell configuration and setup
+- Micro editor integration and setup
+
+**System Utilities:**
+- Command shortcuts and aliases
+- Disk space utilities (du-all, gtop for system overview)
+- Process listing (lsp, lse)
+- File finding utilities (ff)
+- Docker compose utilities (automatic detection)
+- Autocompletion for bash and fish shells
+
+**EPX Management:**
+- Self-update functionality
+- Help system for all commands
 
 ## Installation
 ```bash
