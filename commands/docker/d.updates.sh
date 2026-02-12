@@ -51,7 +51,7 @@ _check_container_updates() {
   fi
 
   local manifest_output
-  manifest_output=$(docker manifest inspect "${image_name}" 2>/dev/null)
+  manifest_output=$(docker manifest inspect "${image_name}" 2>/dev/null || true)
 
   if [[ -z "${manifest_output}" ]]; then
     return 0
