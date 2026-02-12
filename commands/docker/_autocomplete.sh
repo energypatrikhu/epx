@@ -12,6 +12,7 @@ complete -F __epx_bash_d_containers d.i
 complete -F __epx_bash_d_containers d.logs
 complete -F __epx_bash_d_containers d.log
 complete -F __epx_bash_d_containers d.shell
+complete -F __epx_bash_d_containers d.sh
 
 __epx_bash_d_containers_with_all() {
   local containers
