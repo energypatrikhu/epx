@@ -31,6 +31,9 @@ source "${EPX_HOME}/commands/epx/utils/_net-test.sh"
 EPX_UTILS["net-traffic"]="Monitor real-time network traffic on a specified interface | [interface]"
 source "${EPX_HOME}/commands/epx/utils/_net-traffic.sh"
 
+EPX_UTILS["net-scan"]="Scan local network for devices and hostnames | [interface] [method] [max-threads]"
+source "${EPX_HOME}/commands/epx/utils/_net-scan.sh"
+
 EPX_UTILS["help"]="Display help information for EPX commands"
 source "${EPX_HOME}/commands/epx/utils/_help.sh"
 
