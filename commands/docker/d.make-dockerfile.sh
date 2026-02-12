@@ -7,7 +7,7 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Make")]"
   echo -e "[$(_c LIGHT_BLUE "Docker - Make")] Examples:"
   echo -e "[$(_c LIGHT_BLUE "Docker - Make")]   d.mk python"
-  echo -e "[$(_c LIGHT_BLUE "Docker - Make")]   d.mk node"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Make")]   d.make node"
 }
 
 opt_help=false
