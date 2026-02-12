@@ -121,7 +121,7 @@ EOF
 fi
 
 # Setup crontab for epx self-update
-CRON_FILE="/etc/cron.daily/epx-self-update"
+CRON_FILE="/etc/cron.hourly/epx-self-update"
 CRON_JOB="#!/bin/sh
 /usr/local/bin/epx self-update"
 
@@ -135,6 +135,12 @@ else
     echo "${CRON_JOB}" > "${CRON_FILE}"
     echo "Fixed ${CRON_FILE} content"
   fi
+  sudo chmod +x "${CRON_FILE}"
+fi
+
+# Remove old crontab entry if it exists
+if [[ -f "/etc/cron.daily/epx-self-update" ]]; then
+  rm -f "/etc/cron.daily/epx-self-update"
 fi
 
 # Run linking script if it exists
