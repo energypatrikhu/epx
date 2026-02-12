@@ -55,12 +55,14 @@ _check_container_updates() {
   manifest_verbose_output=$(docker manifest inspect --verbose "${image_name}" 2>/dev/null || true)
 
   if [[ -z "${manifest_verbose_output}" ]]; then
+    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Unable to retrieve manifest for") $(_c LIGHT_CYAN "${image_name}")"
     return 0
   fi
 
   latest_digest=$(printf "%s" "${manifest_verbose_output}" | jq -r '.OCIManifest.config.digest // empty' 2>/dev/null | sed 's/sha256://')
 
   if [[ -z "${latest_digest}" ]]; then
+    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Unable to retrieve latest digest for") $(_c LIGHT_CYAN "${image_name}")"
     return 0
   fi
 
