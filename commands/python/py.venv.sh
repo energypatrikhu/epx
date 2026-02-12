@@ -46,4 +46,8 @@ fi
 
 # activate virtual environment
 echo -e "[$(_c LIGHT_BLUE "Python - VENV")] To activate virtual environment"
-echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Run $(_c LIGHT_YELLOW "source .venv/bin/activate")"
+if [[ "${SHELL}" == *"fish" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Run $(_c LIGHT_YELLOW "source .venv/bin/activate.fish")"
+else
+  echo -e "[$(_c LIGHT_BLUE "Python - VENV")] Run $(_c LIGHT_YELLOW "source .venv/bin/activate")"
+fi
