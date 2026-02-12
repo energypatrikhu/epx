@@ -7,7 +7,7 @@ EPX is a collection of shell scripts and utilities designed to simplify and auto
 ## Features
 
 **Container & Virtualization:**
-- Docker management (run, exec, logs, stats, compose generation, network management, inspection, etc.)
+- Docker management (run, exec, logs, stats, compose generation, network management, inspection, update checking, etc.)
 - Docker container operations (start, stop, restart, remove, attach, shell access, pruning)
 - Docker Compose integration (automatic detection and service management)
 - Docker network inspection and management
