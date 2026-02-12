@@ -50,6 +50,8 @@ _check_container_updates() {
     return 0
   fi
 
+  echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] Checking updates for $(_c LIGHT_CYAN "${container}") (Image: $(_c LIGHT_YELLOW "${image_name}"))..."
+
   manifest_verbose_output=$(docker manifest inspect --verbose "${image_name}" 2>/dev/null || true)
 
   if [[ -z "${manifest_verbose_output}" ]]; then
@@ -61,8 +63,6 @@ _check_container_updates() {
   if [[ -z "${latest_digest}" ]]; then
     return 0
   fi
-
-  echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] Checking updates for $(_c LIGHT_CYAN "${container}") (Image: $(_c LIGHT_YELLOW "${image_name}"))..."
 
   if [[ "${current_digest}" == "${latest_digest}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c GREEN "No updates available")"
