@@ -7,7 +7,8 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")]"
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")] Examples:"
   echo -e "[$(_c LIGHT_BLUE "Python - Remove")]   py.remove numpy"
-  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]   py.remove requests"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]   py.rm requests"
+  echo -e "[$(_c LIGHT_BLUE "Python - Remove")]   py.uninstall pandas"
 }
 
 opt_help=false
