@@ -26,6 +26,12 @@ fi
 
 _cci pip
 
+# check if running in a virtual environment
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")] $(_c LIGHT_RED "Error: Not running in a virtual environment")"
+  exit 1
+fi
+
 # check if no arguments are provided
 if [[ -z $* ]]; then
   _help

@@ -26,6 +26,12 @@ fi
 
 _cci_pkg python3:python3-minimal
 
+# check if running in a virtual environment
+if [[ -z "${VIRTUAL_ENV}" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")] $(_c LIGHT_RED "Error: Not running in a virtual environment")"
+  exit 1
+fi
+
 # if no arguments are provided, install from requirements.txt
 if [[ -z $* ]]; then
   # check if requirements.txt exists
