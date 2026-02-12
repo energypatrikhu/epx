@@ -52,16 +52,14 @@ _check_container_updates() {
     return 1
   fi
 
-  echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] Checking updates for $(_c LIGHT_CYAN "${container}") (Image: $(_c LIGHT_YELLOW "${image_name}"))..."
-
   local manifest_output
   manifest_output=$(docker manifest inspect "${image_name}" 2>/dev/null)
 
   if [[ -z "${manifest_output}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Warning: Could not inspect manifest for ${image_name}")"
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "This may be a private image or the image does not exist in the registry")"
-    return 1
+    return 0
   fi
+
+  echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] Checking updates for $(_c LIGHT_CYAN "${container}") (Image: $(_c LIGHT_YELLOW "${image_name}"))..."
 
   local current_digest
   local manifest_digest
