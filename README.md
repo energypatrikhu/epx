@@ -7,10 +7,18 @@ EPX is a collection of shell scripts and utilities designed to simplify and auto
 ## Features
 
 **Container & Virtualization:**
-- Docker management (run, exec, logs, stats, compose generation, etc.)
-- Docker container operations (start, stop, restart, remove, attach, shell access)
+- Docker management (run, exec, logs, stats, compose generation, network management, inspection, etc.)
+- Docker container operations (start, stop, restart, remove, attach, shell access, pruning)
+- Docker Compose integration (automatic detection and service management)
+- Docker network inspection and management
 - Minecraft server management (For more details, checkout [minecraft-server](commands/game-servers/minecraft/README.md))
+  - Instance creation and removal
+  - Server lifecycle management (start, stop, restart)
+  - Console attachment and shell access
+  - Log viewing and project updates
 - Linux Game Server Manager (LinuxGSM) integration
+  - Server instance management
+  - Lifecycle operations (start, stop, restart)
 
 **Python Development:**
 - Virtual environment creation and management
@@ -24,6 +32,12 @@ EPX is a collection of shell scripts and utilities designed to simplify and auto
 - Trash management (clear, list)
 - File creation utilities (dummy files)
 - Compression tools with lite options
+- Beesd integration (deduplication daemon for Btrfs filesystems with automatic process management during backups)
+- Beesd installer and updater utility for easy installation and version management
+- File attribute management (immutable, append-only, freezing/unfreezing)
+- File operations with safety features (copy, move, remove with confirmation and verbose output)
+- Ownership and permission management
+- File and directory size calculations
 
 **Network & Firewall:**
 - UFW firewall rule management (add, delete, list, status)
@@ -50,14 +64,20 @@ EPX is a collection of shell scripts and utilities designed to simplify and auto
 
 **System Utilities:**
 - Command shortcuts and aliases
-- Disk space utilities (du-all, gtop for system overview)
-- Process listing (lsp, lse)
-- File finding utilities (ff)
-- Docker compose utilities (automatic detection)
+- Docker update utilities (du-all for updating all Docker containers)
+- Disk space utilities (gtop for GPU information with nvidia-smi)
+- Process and directory listing with enhanced output (lsp with permissions, lse basic listing)
+- File finding utilities (ff with fastfetch for system information)
+- Terminal clearing and navigation shortcuts
+- Docker Compose quick-start utility (dcu)
 - Autocompletion for bash and fish shells
 
 **EPX Management:**
 - Self-update functionality
+- Beesd installer/updater management
+- SSL certificate generation
+- Backup utilities with Beesd integration
+- Network monitoring and diagnostics
 - Help system for all commands
 
 ## Installation
