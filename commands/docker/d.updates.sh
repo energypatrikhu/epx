@@ -38,8 +38,7 @@ _check_container_updates() {
   image_name=$(docker inspect "${container}" --format='{{.Config.Image}}' 2>/dev/null)
 
   if [[ -z "${image_name}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] $(_c LIGHT_RED "Error: Container '${container}' not found")"
-    return 1
+    return 0
   fi
 
   local current_id
@@ -48,8 +47,7 @@ _check_container_updates() {
   current_id=$(docker inspect "${container}" --format='{{.Image}}' 2>/dev/null)
 
   if [[ -z "${current_id}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] $(_c LIGHT_RED "Error: Could not get image ID for '${container}'")"
-    return 1
+    return 0
   fi
 
   local manifest_output
@@ -73,8 +71,7 @@ _check_container_updates() {
   fi
 
   if [[ -z "${manifest_digest}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Could not determine latest image digest")"
-    return 1
+    return 0
   fi
 
   if [[ "${current_digest}" == "${manifest_digest}" ]]; then
