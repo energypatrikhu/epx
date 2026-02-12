@@ -59,7 +59,7 @@ _check_container_updates() {
     return 0
   fi
 
-  latest_digest=$(printf "%s" "${manifest_verbose_output}" | jq -r '.OCIManifest.config.digest // empty' 2>/dev/null | sed 's/sha256://')
+  latest_digest=$(printf "%s" "${manifest_verbose_output}" | jq -r '.[0].OCIManifest.config.digest // empty' 2>/dev/null | sed 's/sha256://')
 
   if [[ -z "${latest_digest}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Updates")]   $(_c LIGHT_YELLOW "Unable to retrieve latest digest for") $(_c LIGHT_CYAN "${image_name}")"
