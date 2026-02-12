@@ -7,7 +7,7 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "Python - Install")]"
   echo -e "[$(_c LIGHT_BLUE "Python - Install")] Examples:"
   echo -e "[$(_c LIGHT_BLUE "Python - Install")]   py.install numpy pandas"
-  echo -e "[$(_c LIGHT_BLUE "Python - Install")]   py.install requests"
+  echo -e "[$(_c LIGHT_BLUE "Python - Install")]   py.i requests"
 }
 
 opt_help=false
