@@ -18,4 +18,4 @@
   - Add it to `EPX_UTILS` array in `epx.sh`, with appropriate comments
   - Source the utility script
   - Add the command to the main _autocomplete.* scripts for both bash and fish
-- When creatuing new commands, make sure to add it to their respective *.help.sh files and add it to the README.md feature list, and ensure to follow the existing structure and style in those files for consistency
+- When creatuing new commands, make sure to add it to their respective *.help.sh files and add it to the README.md file's feature list section, and ensure to follow the existing structure and style in those files for consistency
