@@ -64,10 +64,10 @@ _check_container_updates() {
 
   current_digest=$(echo "${current_id}" | cut -d'@' -f2 2>/dev/null || echo "${current_id}")
 
-  manifest_digest=$(printf "%s" "${manifest_output}" | jq -r '.config.digest // empty' 2>/dev/null)
+  manifest_digest=$(printf "%s" "${manifest_output}" | jq -r '.config.digest // empty' 2>/dev/null) || true
 
   if [[ -z "${manifest_digest}" ]]; then
-    manifest_digest=$(printf "%s" "${manifest_output}" | jq -r '.manifests[0].digest // empty' 2>/dev/null)
+    manifest_digest=$(printf "%s" "${manifest_output}" | jq -r '.manifests[0].digest // empty' 2>/dev/null) || true
   fi
 
   if [[ -z "${manifest_digest}" ]]; then
@@ -92,18 +92,17 @@ else
 
   if [[ -z "${running_containers}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Updates")] $(_c LIGHT_YELLOW "No running containers found")"
-    exit
-  fi
-
-  first=true
-  while IFS= read -r container; do
-    if [[ -n "${container}" ]]; then
-      if [[ "${first}" == "true" ]]; then
-        first=false
-      else
-        echo
+  else
+    first=true
+    while IFS= read -r container; do
+      if [[ -n "${container}" ]]; then
+        if [[ "${first}" == "true" ]]; then
+          first=false
+        else
+          echo
+        fi
+        _check_container_updates "${container}"
       fi
-      _check_container_updates "${container}"
-    fi
-  done <<< "${running_containers}"
+    done <<< "${running_containers}"
+  fi
 fi
