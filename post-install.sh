@@ -121,33 +121,37 @@ EOF
 fi
 
 # Setup crontab for epx self-update
-CRON_DIR="/etc/cron.hourly"
-CRON_FILE="${CRON_DIR}/epx-self-update"
-CRON_JOB="#!/bin/sh
+if command -v crontab &> /dev/null; then
+  CRON_DIR="/etc/cron.hourly"
+  CRON_FILE="${CRON_DIR}/epx-self-update"
+  CRON_JOB="#!/bin/sh
 /usr/local/bin/epx self-update"
 
-if [[ -d "${CRON_DIR}" ]]; then
-  if [[ ! -f "${CRON_FILE}" ]]; then
-    echo "Creating ${CRON_FILE}"
-    echo "${CRON_JOB}" > "${CRON_FILE}"
-    chmod +x "${CRON_FILE}"
-  else
-    echo "${CRON_FILE} already exists, checking content..."
-    if ! cmp -s "${CRON_FILE}" <(echo "${CRON_JOB}"); then
+  if [[ -d "${CRON_DIR}" ]]; then
+    if [[ ! -f "${CRON_FILE}" ]]; then
+      echo "Creating ${CRON_FILE}"
       echo "${CRON_JOB}" > "${CRON_FILE}"
-      echo "Fixed ${CRON_FILE} content"
+      chmod +x "${CRON_FILE}"
+    else
+      echo "${CRON_FILE} already exists, checking content..."
+      if ! cmp -s "${CRON_FILE}" <(echo "${CRON_JOB}"); then
+        echo "${CRON_JOB}" > "${CRON_FILE}"
+        echo "Fixed ${CRON_FILE} content"
+      fi
+      chmod +x "${CRON_FILE}"
     fi
-    chmod +x "${CRON_FILE}"
+  else
+    echo "Installing to system crontab instead..."
+    (crontab -l 2>/dev/null | grep -Fv "/usr/local/bin/epx self-update"; echo "0 * * * * /usr/local/bin/epx self-update") | crontab -
+    echo "Added epx self-update to crontab"
+  fi
+
+  # Remove old crontab entry if it exists
+  if [[ -d "/etc/cron.daily" ]] && [[ -f "/etc/cron.daily/epx-self-update" ]]; then
+    rm -f "/etc/cron.daily/epx-self-update"
   fi
 else
-  echo "Installing to system crontab instead..."
-  (crontab -l 2>/dev/null | grep -Fv "/usr/local/bin/epx self-update"; echo "0 * * * * /usr/local/bin/epx self-update") | crontab -
-  echo "Added epx self-update to crontab"
-fi
-
-# Remove old crontab entry if it exists
-if [[ -d "/etc/cron.daily" ]] && [[ -f "/etc/cron.daily/epx-self-update" ]]; then
-  rm -f "/etc/cron.daily/epx-self-update"
+  echo "Cron not installed, skipping crontab setup"
 fi
 
 # Run linking script if it exists
