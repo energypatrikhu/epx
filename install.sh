@@ -9,8 +9,19 @@ fi
 
 # Check if git is installed
 if ! command -v git &>/dev/null; then
-  echo "Git is not installed. Please install Git to use EPX."
-  exit 1
+  echo "Git is not installed. Installing Git..."
+  if command -v apt-get &>/dev/null; then
+    sudo apt-get update && sudo apt-get install -y git
+  elif command -v yum &>/dev/null; then
+    sudo yum install -y git
+  elif command -v brew &>/dev/null; then
+    brew install git
+  elif command -v pacman &>/dev/null; then
+    sudo pacman -S --noconfirm git
+  else
+    echo "Unable to install Git automatically. Please install Git manually."
+    exit 1
+  fi
 fi
 
 # Check if EPX_HOME is set, if not, set it to /usr/local/epx
