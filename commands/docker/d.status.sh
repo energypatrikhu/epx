@@ -1,6 +1,6 @@
 _help() {
-  echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Usage: $(_c LIGHT_YELLOW "d.status <container / all>")"
-  echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Display detailed statistics for a specific Docker container or all containers"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Usage: $(_c LIGHT_YELLOW "d.status <container_name>")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Display detailed statistics for a specific Docker container"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")]"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Options:"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")]   -h, --help        Show this help message and exit"
