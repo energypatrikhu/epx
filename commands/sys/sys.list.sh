@@ -36,10 +36,10 @@ _cci_pkg systemctl:systemd
 
 if [[ -n "$opt_status" ]]; then
   # Filter services by the specified status
-  services=$(systemctl list-units --type=service --all --no-legend --plain --state="$opt_status")
+  services=$(systemctl list-units --type=service --all --plain --state="$opt_status")
 else
   # List all services without filtering by status
-  services=$(systemctl list-units --type=service --all --no-legend --plain)
+  services=$(systemctl list-units --type=service --all --plain)
 fi
 
 if [[ -z "$services" ]]; then
