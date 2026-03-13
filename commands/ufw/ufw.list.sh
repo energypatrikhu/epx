@@ -4,6 +4,7 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "UFW - List Rules")]"
   echo -e "[$(_c LIGHT_BLUE "UFW - List Rules")] Options:"
   echo -e "[$(_c LIGHT_BLUE "UFW - List Rules")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "UFW - List Rules")]   --in-used      List currently used ports with associated programs"
   echo -e "[$(_c LIGHT_BLUE "UFW - List Rules")]"
   echo -e "[$(_c LIGHT_BLUE "UFW - List Rules")] Examples:"
   echo -e "[$(_c LIGHT_BLUE "UFW - List Rules")]   ufw.list"
