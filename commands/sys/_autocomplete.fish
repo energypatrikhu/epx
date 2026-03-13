@@ -18,4 +18,4 @@ function __epx_fish_sys_status_list
   echo "active inactive failed activating deactivating"
 end
 
-complete -c sys.status -f -a '(__epx_fish_sys_status_list)'
+complete -c sys.list -f -a '(__epx_fish_sys_status_list)'
