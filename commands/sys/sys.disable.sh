@@ -23,7 +23,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci_pkg systemd:systemctl
+_cci_pkg systemctl:systemd
 
 if [[ -z "${1-}" ]]; then
   _help

@@ -32,7 +32,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci_pkg systemd:systemctl
+_cci_pkg systemctl:systemd
 
 # List all services
 services=$(systemctl list-units --type=service --all --no-legend --plain)
