@@ -23,7 +23,7 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
-_cci_pkg systemd:systemd
+_cci_pkg systemd:systemctl
 
 if ! command -v systemctl >/dev/null 2>&1; then
   echo -e "[$(_c LIGHT_RED "SYS - Reload")] Error: systemctl not found."
