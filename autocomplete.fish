@@ -7,7 +7,7 @@ function __epx_fish_load_autocomplete
 
     if test -f "$element"; and string match -q '*.fish' "$element"
       if string match -q '*_autocomplete.fish' "$element"
-        # echo "Loading autocomplete from $element"
+        echo "Loading autocomplete from $element"
         source "$element"
       end
     end
