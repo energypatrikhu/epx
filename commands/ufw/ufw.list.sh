@@ -10,10 +10,13 @@ _help() {
 }
 
 opt_help=false
+opt_list_inused=false
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
+    else if [[ "${arg}" == --in-used ]]; then
+      opt_list_inused=true
     fi
   fi
 done
@@ -24,5 +27,26 @@ if [[ "${opt_help}" == "true" ]]; then
 fi
 
 _cci_pkg ufw:ufw
+
+if [[ "${opt_list_inused}" == "true" ]]; then
+  # List currently used ports in a table: Proto | Port | Program
+  ss -tulnp | awk '
+    NR>1 {
+      proto=$1
+      split($5, a, ":")
+      port=a[length(a)]
+      gsub(/users:\(\("([^"]+).*/, "\\1", $NF)
+      program=($NF ~ /users:/ ? $NF : "-")
+      key = proto ":" port ":" program
+      if (!seen[key]++) {
+        printf "%-6s %-6s %s\n", proto, port, program
+      }
+    }
+  ' | sort -k2,2n | awk '
+    BEGIN { print "Proto  Port   Program"; print "--------------------------" }
+    { print }
+  '
+  exit
+fi
 
 ufw status numbered
