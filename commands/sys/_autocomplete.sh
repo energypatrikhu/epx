@@ -16,6 +16,6 @@ complete -F __epx_bash_sys_services sys.status
 complete -F __epx_bash_sys_services sys.stop
 
 __epx_bash_sys_status_list() {
-  echo "active inactive failed activating deactivating"
+  _autocomplete "active inactive failed activating deactivating"
 }
 complete -F __epx_bash_sys_status_list sys.list
