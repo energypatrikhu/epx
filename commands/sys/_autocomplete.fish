@@ -1,5 +1,9 @@
 function __epx_fish_sys_services
-  systemctl list-units --type=service --all --no-legend --plain | awk '{print $1}' | sed 's/\.service$//' | sort -u
+  if command -v systemctl &> /dev/null; then
+    systemctl list-units --type=service --all --no-legend --plain | awk '{print $1}' | sed 's/\.service$//' | sort -u
+  else
+    echo ""
+  fi
 end
 
 complete -c sys.disable -f -a '(__epx_fish_sys_services)'
