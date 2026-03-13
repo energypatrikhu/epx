@@ -1,5 +1,5 @@
 _help() {
-  echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Usage: $(_c LIGHT_YELLOW "d.stats <container / all>")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Usage: $(_c LIGHT_YELLOW "d.status <container / all>")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Display detailed statistics for a specific Docker container or all containers"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")]"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Options:"
@@ -7,7 +7,9 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")]   -a, --all         Display stats for all containers"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")]"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")] Examples:"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Status")]   d.status my_container"
   echo -e "[$(_c LIGHT_BLUE "Docker - Status")]   d.stats my_container"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Status")]   d.stat my_container"
 }
 
 opt_help=false
@@ -43,7 +45,7 @@ container_name="${1-}"
 if [[ -z "${container_name}" || "${opt_all}" == "true" ]]; then
   containers=$(docker ps -a --format "{{.Names}}")
   for container in ${containers}; do
-    d.stats "${container}"
+    d.status "${container}"
   done
 
   exit 0
