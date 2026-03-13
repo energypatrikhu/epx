@@ -34,12 +34,12 @@ fi
 
 _cci_pkg systemctl:systemd
 
-# List all services
-services=$(systemctl list-units --type=service --all --no-legend --plain)
-
 if [[ -n "$opt_status" ]]; then
-  # Only match lines where the 3rd column (state) matches the filter
-  services=$(echo "$services" | awk -v s="$opt_status" '$3 == s')
+  # Filter services by the specified status
+  services=$(systemctl list-units --type=service --all --no-legend --plain --state="$opt_status")
+else
+  # List all services without filtering by status
+  services=$(systemctl list-units --type=service --all --no-legend --plain)
 fi
 
 if [[ -z "$services" ]]; then
