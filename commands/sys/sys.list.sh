@@ -36,18 +36,8 @@ _cci_pkg systemctl:systemd
 
 if [[ -n "$opt_status" ]]; then
   # Filter services by the specified status
-  services=$(systemctl list-units --type=service --all --plain --state="$opt_status")
+  systemctl list-units --type=service --all --plain --state="$opt_status"
 else
   # List all services without filtering by status
-  services=$(systemctl list-units --type=service --all --plain)
+  systemctl list-units --type=service --all --plain
 fi
-
-if [[ -z "$services" ]]; then
-  echo -e "[$(_c LIGHT_BLUE "SYS - List")] No services found."
-  exit 0
-fi
-
-echo -e "[$(_c LIGHT_BLUE "SYS - List")] Listing services:"
-echo "$services" | awk '{printf "  %-40s %-10s %-10s %-10s %s\n", $1, $2, $3, $4, $5}'
-
-exit 0
