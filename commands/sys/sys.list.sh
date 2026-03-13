@@ -17,12 +17,12 @@ for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
-    else
-      opt_status="${arg,,}"
-      if [[ ! "${opt_status}" =~ ^(active|inactive|failed|activating|deactivating)$ ]]; then
-        echo -e "[$(_c LIGHT_RED "SYS - List")] Error: Invalid status filter '${arg}'. Valid options are: active, inactive, failed, activating, deactivating."
-        exit 1
-      fi
+    fi
+  else
+    opt_status="${arg,,}"
+    if [[ -n "${opt_status}" && ! "${opt_status}" =~ ^(active|inactive|failed|activating|deactivating)$ ]]; then
+      echo -e "[$(_c LIGHT_RED "SYS - List")] Error: Invalid status filter '${arg}'. Valid options are: active, inactive, failed, activating, deactivating."
+      exit 1
     fi
   fi
 done
