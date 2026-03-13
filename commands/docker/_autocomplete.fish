@@ -23,6 +23,7 @@ complete -c d.rm -f -a '(__epx_fish_d_containers_with_all)'
 complete -c d.restart -f -a '(__epx_fish_d_containers_with_all)'
 complete -c d.start -f -a '(__epx_fish_d_containers_with_all)'
 complete -c d.stop -f -a '(__epx_fish_d_containers_with_all)'
+complete -c d.status -f -a '(__epx_fish_d_containers_with_all)'
 complete -c d.stats -f -a '(__epx_fish_d_containers_with_all)'
 complete -c d.stat -f -a '(__epx_fish_d_containers_with_all)'
 

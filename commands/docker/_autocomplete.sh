@@ -25,6 +25,7 @@ complete -F __epx_bash_d_containers_with_all d.rm
 complete -F __epx_bash_d_containers_with_all d.restart
 complete -F __epx_bash_d_containers_with_all d.start
 complete -F __epx_bash_d_containers_with_all d.stop
+complete -F __epx_bash_d_containers_with_all d.status
 complete -F __epx_bash_d_containers_with_all d.stats
 complete -F __epx_bash_d_containers_with_all d.stat
 
