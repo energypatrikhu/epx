@@ -1,1 +1,1 @@
-source "${EPX_HOME}/commands/docker/d.stats.sh"
+source "${EPX_HOME}/commands/docker/d.status.sh"
