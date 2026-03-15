@@ -37,7 +37,7 @@ fi
 source "${EPX_HOME}/commands/game-servers/minecraft/_helpers.sh"
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Install")] Cloning repository..."
-if ! git clone https://github.com/energypatrikhu/minecraft-server "${MINECRAFT_DIR}/internals"; then
+if ! git clone https://git.ep24.hu/ephu/minecraft-server "${MINECRAFT_DIR}/internals"; then
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Install")] $(_c LIGHT_RED "Error:") Failed to clone the Minecraft server repository."
   exit 1
 fi

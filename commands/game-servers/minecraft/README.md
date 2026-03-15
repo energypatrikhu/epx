@@ -1,6 +1,6 @@
 # Minecraft Server Management Commands
 
-This collection of shell scripts provides an easy-to-use interface for managing Minecraft servers using Docker containers. The scripts integrate with the [minecraft-server](https://github.com/energypatrikhu/minecraft-server) project.
+This collection of shell scripts provides an easy-to-use interface for managing Minecraft servers using Docker containers. The scripts integrate with the [minecraft-server](https://git.ep24.hu/ephu/minecraft-server) project.
 
 ## Table of Contents
 
@@ -46,7 +46,7 @@ mc.install
 ```
 
 This will:
-- Clone the [minecraft-server](https://github.com/energypatrikhu/minecraft-server) repository
+- Clone the [minecraft-server](https://git.ep24.hu/ephu/minecraft-server) repository
 - Set up the project directory structure
 - Display next steps for configuration
 
@@ -457,7 +457,7 @@ echo 'MINECRAFT_DIR="/path/to/minecraft/servers"' > ${EPX_HOME}/.config/minecraf
 
 ## Additional Resources
 
-- [minecraft-server Project Repository](https://github.com/energypatrikhu/minecraft-server)
+- [minecraft-server Project Repository](https://git.ep24.hu/ephu/minecraft-server)
 - [itzg/minecraft-server Documentation](https://github.com/itzg/docker-minecraft-server)
 - [itzg/mc-backup Documentation](https://github.com/itzg/docker-mc-backup)
 - [CurseForge API](https://docs.curseforge.com/)
@@ -465,7 +465,7 @@ echo 'MINECRAFT_DIR="/path/to/minecraft/servers"' > ${EPX_HOME}/.config/minecraf
 
 ## Contributing
 
-If you find issues or have suggestions for improvements, please open an issue or pull request on the [minecraft-server repository](https://github.com/energypatrikhu/minecraft-server).
+If you find issues or have suggestions for improvements, please open an issue or pull request on the [minecraft-server repository](https://git.ep24.hu/ephu/minecraft-server).
 
 ## License
 
