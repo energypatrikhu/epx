@@ -162,11 +162,4 @@ else
   echo "Linking script not found, skipping."
 fi
 
-# Change .git origin to new repository if it exists
-if [[ -d "${EPX_HOME}/.git" ]]; then
-  echo "Updating git origin to new repository..."
-  cd "${EPX_HOME}" || exit
-  git remote set-url origin https://git.ep24.hu/ephu/epx.git
-fi
-
 echo "EPX setup complete, please restart your terminal to apply changes."
