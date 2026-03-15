@@ -51,7 +51,7 @@ __epx_self_update() {
     __epx_self_update_logging "Running post-install script"
     "${EPX_HOME}/post-install.sh" 2>&1 | while IFS= read -r line; do __epx_self_update_logging "$line"; done
   else
-    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "install.sh not found, skipping post-installation steps")"
+    echo -e "[$(_c LIGHT_BLUE "EPX - Self Update")] $(_c LIGHT_RED "post-install.sh not found, skipping post-installation steps")"
     __epx_self_update_logging "Post-install script not found, skipping"
   fi
 
