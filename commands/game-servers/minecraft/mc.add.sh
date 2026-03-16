@@ -98,17 +98,11 @@ touch "${server_directory}/ops.txt"
 touch "${server_directory}/whitelist.txt"
 
 platform_template_file_content=$(cat "${platform_template_file}")
-echo -e "platform_template_file_content\n${platform_template_file_content}\n"
 backup_template_file_content=$(cat "${backup_template_file}")
-echo -e "backup_template_file_content\n${backup_template_file_content}\n"
 properties_template_file_content=$(cat "${properties_template_file}")
-echo -e "properties_template_file_content\n${properties_template_file_content}\n"
 mods_curseforge_template_file_content=$(cat "${mods_curseforge_template_file}")
-echo -e "mods_curseforge_template_file_content\n${mods_curseforge_template_file_content}\n"
 mods_modrinth_template_file_content=$(cat "${mods_modrinth_template_file}")
-echo -e "mods_modrinth_template_file_content\n${mods_modrinth_template_file_content}\n"
 random_rcon_password=$(openssl rand -hex 32)
-echo "Generated random RCON password: ${random_rcon_password}"
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Populating configuration files from templates..."
 
