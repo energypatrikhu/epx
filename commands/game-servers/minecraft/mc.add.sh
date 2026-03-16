@@ -24,6 +24,8 @@ if [[ "${opt_help}" == "true" ]]; then
   exit
 fi
 
+_cci_pkg openssl:openssl
+
 if [[ ! -f "${EPX_HOME}/.config/minecraft.config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] $(_c LIGHT_RED "Error:") Minecraft configuration file not found. Please configure $(_c LIGHT_YELLOW "${EPX_HOME}/.config/minecraft.config") and run $(_c LIGHT_CYAN "mc.install")"
   exit 1
@@ -105,7 +107,7 @@ mods_curseforge_template_file_content=$(cat "${mods_curseforge_template_file}")
 echo -e "mods_curseforge_template_file_content\n${mods_curseforge_template_file_content}\n"
 mods_modrinth_template_file_content=$(cat "${mods_modrinth_template_file}")
 echo -e "mods_modrinth_template_file_content\n${mods_modrinth_template_file_content}\n"
-random_rcon_password=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 64)
+random_rcon_password=$(openssl rand -hex 32)
 echo "Generated random RCON password: ${random_rcon_password}"
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Add")] Populating configuration files from templates..."
