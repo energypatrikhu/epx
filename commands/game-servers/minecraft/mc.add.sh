@@ -96,15 +96,15 @@ touch "${server_directory}/ops.txt"
 touch "${server_directory}/whitelist.txt"
 
 platform_template_file_content=$(cat "${platform_template_file}")
-echo "platform_template_file_content\n${platform_template_file_content}\n"
+echo -e "platform_template_file_content\n${platform_template_file_content}\n"
 backup_template_file_content=$(cat "${backup_template_file}")
-echo "backup_template_file_content\n${backup_template_file_content}\n"
+echo -e "backup_template_file_content\n${backup_template_file_content}\n"
 properties_template_file_content=$(cat "${properties_template_file}")
-echo "properties_template_file_content\n${properties_template_file_content}\n"
+echo -e "properties_template_file_content\n${properties_template_file_content}\n"
 mods_curseforge_template_file_content=$(cat "${mods_curseforge_template_file}")
-echo "mods_curseforge_template_file_content\n${mods_curseforge_template_file_content}\n"
+echo -e "mods_curseforge_template_file_content\n${mods_curseforge_template_file_content}\n"
 mods_modrinth_template_file_content=$(cat "${mods_modrinth_template_file}")
-echo "mods_modrinth_template_file_content\n${mods_modrinth_template_file_content}\n"
+echo -e "mods_modrinth_template_file_content\n${mods_modrinth_template_file_content}\n"
 random_rcon_password=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 64)
 echo "Generated random RCON password: ${random_rcon_password}"
 
