@@ -39,6 +39,7 @@ if [[ ! -d "${EPX_HOME}/.git" ]]; then
 else
   echo "EPX repository already exists in ${EPX_HOME}. Pulling latest changes..."
   cd "${EPX_HOME}" || exit
+  git remote set-url origin https://github.com/energypatrikhu/epx.git
   git reset --hard HEAD
   git clean -f -d
   git pull
