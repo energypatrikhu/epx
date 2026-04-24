@@ -16,7 +16,7 @@ for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
-    else if [[ "${arg}" == --in-used ]]; then
+    elif [[ "${arg}" == --in-used ]]; then
       opt_list_inused=true
     fi
   fi
