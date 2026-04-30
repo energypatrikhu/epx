@@ -53,7 +53,7 @@ else
     if [[ -n $(docker ps -aq --filter "name=^${i}\$") ]]; then
       inputs+="${i}"
     else
-      echo -e "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_RED "Container ${i} does not exist")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_RED "Container") ${i} $(_c LIGHT_RED "does not exist")"
     fi
   done
   containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs}" | sed 's/, $//' | sed 's/,$//')
