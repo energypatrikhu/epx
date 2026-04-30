@@ -54,7 +54,7 @@ else
       inputs+="${i}"
     fi
   done
-  containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs}" | sed 's/, $//')
+  containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs}" | sed 's/, $//' | sed 's/,$//')
 
   echo -e "[$(_c LIGHT_BLUE "Docker - Restart")] ${container_text} ${containers} $(_c LIGHT_CYAN "restarting...")"
   docker container restart "${inputs}" >/dev/null 2>&1
