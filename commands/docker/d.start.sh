@@ -50,16 +50,16 @@ else
   inputs=""
   for i in "${@}"; do
     i=$(echo "${i}" | xargs) # trim spaces
-    if [[ -n $(docker ps -aq --filter "name=${i}") ]]; then
+    if [[ -n $(docker ps -aq --filter "name=^${i}\$") ]]; then
       inputs+="${i}"
     else
-      echo -e "[$(_c LIGHT_RED "Docker - Start")] $(_c LIGHT_RED "Container ${i} does not exist")"
+      echo -e "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_RED "Container ${i} does not exist")"
     fi
   done
   containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs}" | sed 's/, $//' | sed 's/,$//')
 
   if [[ -z "${inputs}" ]]; then
-    echo -e "[$(_c LIGHT_RED "Docker - Start")] $(_c LIGHT_RED "No containers to start")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_RED "No containers to start")"
     exit
   fi
 
