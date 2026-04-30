@@ -46,23 +46,18 @@ else
     container_text="Containers"
   fi
 
-  read -ra arr <<<$*
-  containers=""
-  for i in "${arr[@]}"; do
-    i=$(echo "${i}" | xargs) # trim spaces
 
-    # check if container exists
+  read -ra arr <<<$*
+  inputs=""
+  for i in "${@}"; do
+    i=$(echo "${i}" | xargs) # trim spaces
     if [[ -n $(docker ps -aq --filter "name=${i}") ]]; then
-      if [[ -n "${containers}" ]]; then
-        containers+=", "
-      else
-        echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_RED "Container ${i} not found")"
-      fi
-      containers+="$(_c LIGHT_BLUE "${i}")"
+      inputs+="${i}"
     fi
   done
+  containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs}" | sed 's/, $//')
 
-  echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] "${container_text}" $(_c LIGHT_BLUE "${containers}") $(_c LIGHT_RED "removing...")"
-  docker rm -f "${@}" >/dev/null 2>&1
-  echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] "${container_text}" $(_c LIGHT_BLUE "${containers}") $(_c LIGHT_RED "removed")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] "${container_text}" ${containers} $(_c LIGHT_RED "removing...")"
+  docker rm -f "${inputs}" >/dev/null 2>&1
+  echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] "${container_text}" ${containers} $(_c LIGHT_RED "removed")"
 fi
