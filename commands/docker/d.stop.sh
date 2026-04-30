@@ -51,7 +51,12 @@ else
   for i in "${arr[@]}"; do
     i=$(echo "${i}" | xargs) # trim spaces
     if [[ -n "${containers}" ]]; then
-      containers+=", "
+      # if container exists
+      if [[ -n $(docker ps -aq --filter "name=${i}") ]]; then
+        containers+=", "
+      else
+        echo -e "[$(_c LIGHT_BLUE "Docker - Stop")] $(_c LIGHT_RED "Container ${i} not found")"
+      end
     fi
     containers+="$(_c LIGHT_BLUE "${i}")"
   done

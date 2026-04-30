@@ -45,7 +45,21 @@ else
   else
     container_text="Containers"
   fi
-  containers=$(printf "%s, " "${@}" | sed 's/, $//')
+
+  read -ra arr <<<$*
+  containers=""
+  for i in "${arr[@]}"; do
+    i=$(echo "${i}" | xargs) # trim spaces
+    if [[ -n "${containers}" ]]; then
+      # if container exists
+      if [[ -n $(docker ps -aq --filter "name=${i}") ]]; then
+        containers+=", "
+      else
+        echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_RED "Container ${i} not found")"
+      end
+    fi
+    containers+="$(_c LIGHT_BLUE "${i}")"
+  done
 
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] "${container_text}" $(_c LIGHT_BLUE "${containers}") $(_c LIGHT_RED "removing...")"
   docker rm -f "${@}" >/dev/null 2>&1
