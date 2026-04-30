@@ -56,7 +56,7 @@ else
         containers+=", "
       else
         echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_RED "Container ${i} not found")"
-      end
+      fi
     fi
     containers+="$(_c LIGHT_BLUE "${i}")"
   done
