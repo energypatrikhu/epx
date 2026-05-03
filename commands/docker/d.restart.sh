@@ -47,7 +47,7 @@ else
   fi
 
   read -ra arr <<<$*
-  inputs=""
+  inputs=()
   for i in "${@}"; do
     i=$(echo "${i}" | xargs) # trim spaces
     if [[ -n $(docker ps -aq --filter "name=^${i}\$") ]]; then
