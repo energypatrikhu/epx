@@ -52,19 +52,19 @@ else
   for i in "${@}"; do
     i=$(echo "${i}" | xargs) # trim spaces
     if [[ -n $(docker ps -aq --filter "name=^${i}\$") ]]; then
-      inputs+="${i}"
+      inputs+=("${i}")
     else
       echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_RED "Container") ${i} $(_c LIGHT_RED "does not exist")"
     fi
   done
-  containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs}" | sed 's/, $//' | sed 's/,$//')
+  containers=$(printf "$(_c LIGHT_BLUE %s), " "${inputs[@]}" | sed 's/, $//')
 
-  if [[ -z "${inputs}" ]]; then
+  if [[ -z "${inputs[@]}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] $(_c LIGHT_RED "No containers to start")"
     exit
   fi
 
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] "${container_text}" ${containers} $(_c LIGHT_RED "removing...")"
-  docker rm -f "${inputs}" >/dev/null 2>&1
+  docker rm -f "${inputs[@]}" >/dev/null 2>&1
   echo -e "[$(_c LIGHT_BLUE "Docker - Remove")] "${container_text}" ${containers} $(_c LIGHT_RED "removed")"
 fi
