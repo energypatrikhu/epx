@@ -56,7 +56,7 @@ else
       echo -e "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_RED "Container") ${i} $(_c LIGHT_RED "does not exist")"
     fi
   done
-  containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs}" | sed 's/, $//' | sed 's/,$//')
+  containers=$(printf "$(_c LIGHT_BLUE %s)," "${inputs@}" | sed 's/, $//' | sed 's/,$//')
 
   if [[ -z "${inputs}" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Start")] $(_c LIGHT_RED "No containers to start")"
