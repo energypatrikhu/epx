@@ -114,7 +114,7 @@ _clear_trash_dir() {
 
   if [[ "$force" == true ]]; then
     echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] Clearing without confirmation (force mode)..."
-    rm -rf "${trash_path:?}"/*
+    rm -rf "${trash_path:?}"/* "${trash_path:?}"/.*
 
     if [[ $? -eq 0 ]]; then
       echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash cleared successfully")"
@@ -129,7 +129,7 @@ _clear_trash_dir() {
       read -r response < /dev/tty 2>/dev/null || read -r response
 
       if [[ "$response" =~ ^[Yy]$ ]]; then
-        rm -rf "${trash_path:?}"/*
+        rm -rf "${trash_path:?}"/* "${trash_path:?}"/.*
 
         if [[ $? -eq 0 ]]; then
           echo -e "[$(_c LIGHT_BLUE "FS - Clear Trash")] $(_c LIGHT_GREEN "Trash cleared successfully")"
