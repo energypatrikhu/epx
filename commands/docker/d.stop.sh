@@ -59,7 +59,7 @@ else
   containers=$(printf "$(_c LIGHT_BLUE %s), " "${inputs[@]}" | sed 's/, $//')
 
   if [[ -z "${inputs[@]}" ]]; then
-    echo -e "[$(_c LIGHT_BLUE "Docker - Stop")] $(_c LIGHT_RED "No containers to start")"
+    echo -e "[$(_c LIGHT_BLUE "Docker - Stop")] $(_c LIGHT_RED "No containers to stop")"
     exit
   fi
 
