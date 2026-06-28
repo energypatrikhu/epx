@@ -1,1 +1,1 @@
-TRASH_DIRS="/\$trash:/mnt/storage/\$trash"
+TRASH_DIRS="/.trash:/mnt/storage/.trash"
