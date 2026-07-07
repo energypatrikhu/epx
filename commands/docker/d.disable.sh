@@ -30,7 +30,7 @@ fi
 
 container_name="${1:-}"
 
-if [[ -n "${container_name}" ]]; then
+if [[ -z "${container_name}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] $(_c LIGHT_RED "Container name not provided!")"
   _help
   exit
