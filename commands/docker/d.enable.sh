@@ -41,6 +41,6 @@ if [[ ! -f "${CONTAINERS_DIR}/${container_name}/.ignore-update" ]]; then
   exit
 fi
 
-rm "${CONTAINERS_DIR}/${container_name}/.ignore-update"
+rm -rf "${CONTAINERS_DIR}/${container_name}/.ignore-update"
 
-echo "Removed .ignore-update from ${container_name}"
+echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] $(_c LIGHT_GREEN "Removed") .ignore-update $(_c LIGHT_GREEN "from") ${container_name}"

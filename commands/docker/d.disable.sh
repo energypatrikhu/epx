@@ -43,4 +43,4 @@ fi
 
 touch "${CONTAINERS_DIR}/${container_name}/.ignore-update"
 
-echo "Added .ignore-update to ${container_name}"
+echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] $(_c LIGHT_GREEN "Added") .ignore-update $(_c LIGHT_GREEN "to") ${container_name}"
