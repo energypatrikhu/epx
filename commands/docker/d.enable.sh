@@ -36,6 +36,12 @@ if [[ -z "${container_name}" ]]; then
   exit
 fi
 
+if [[ ! -d "${CONTAINERS_DIR}/${container_name}/" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "Docker - Enable Update")] $(_c LIGHT_RED "Container does not exists!")"
+  _help
+  exit
+fi
+
 if [[ ! -f "${CONTAINERS_DIR}/${container_name}/.ignore-update" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Enable Update")] .ignore-update $(_c LIGHT_RED "does not exist!")"
   exit
@@ -43,4 +49,4 @@ fi
 
 rm -rf "${CONTAINERS_DIR}/${container_name}/.ignore-update"
 
-echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] $(_c LIGHT_GREEN "Removed") .ignore-update $(_c LIGHT_GREEN "from") ${container_name}"
+echo -e "[$(_c LIGHT_BLUE "Docker - Enable Update")] $(_c LIGHT_GREEN "Removed") .ignore-update $(_c LIGHT_GREEN "from") ${container_name}"
