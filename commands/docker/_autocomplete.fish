@@ -12,6 +12,8 @@ complete -c d.logs -f -a '(__epx_fish_d_containers)'
 complete -c d.log -f -a '(__epx_fish_d_containers)'
 complete -c d.shell -f -a '(__epx_fish_d_containers)'
 complete -c d.updates -f -a '(__epx_fish_d_containers)'
+complete -c d.disable -f -a '(__epx_fish_d_containers)'
+complete -c d.enable -f -a '(__epx_fish_d_containers)'
 
 function __epx_fish_d_containers_with_all
   echo "all"
