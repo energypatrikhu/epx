@@ -3,7 +3,7 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] Add ignore file to disable 'd.up --all' global updates"
   echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")]"
   echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] Options:"
-  echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")]   -h, --help        Show this help message and exit"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")]   -h, --help        Show this _help message and exit"
 }
 
 opt_help=false
@@ -22,7 +22,7 @@ fi
 
 if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
-  help
+  _help
   exit
 fi
 
@@ -32,7 +32,7 @@ container_name="${1:-}"
 
 if [[ -n "${container_name}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Disable Update")] $(_c LIGHT_RED "Container name not provided!")"
-  help
+  _help
   exit
 fi
 
