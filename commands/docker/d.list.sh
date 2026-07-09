@@ -55,7 +55,7 @@ fi
 if [[ "${opt_small}" == "true" ]]; then
   sorted_data=$(printf "%s\n" "${data}" | sort -k2,2)
 
-  while IFS= read -r id names image status; do
+  while IFS=$'\t' read -r id names image status; do
     if printf "%s" "${status}" | grep -q "Up"; then
       bullet=$(_c GREEN "${EPX_BULLET}")
     else
