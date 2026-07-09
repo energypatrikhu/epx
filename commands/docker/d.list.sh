@@ -68,6 +68,8 @@ done <<EOF
 ${data}
 EOF
 
+names_width=$((names_width + 2))
+
 if [[ "${opt_small}" == "true" ]]; then
   sorted_data=$(printf "%s\n" "${data}" | sort -k2,2)
 
@@ -87,7 +89,6 @@ if [[ "${opt_small}" == "true" ]]; then
 ${sorted_data}
 EOF
 else
-  names_width=$((names_width + 2))
   separator=$(printf "+%-${id_width}s--+%-${names_width}s--+%-${image_width}s--+%-${status_width}s--+\n" | tr ' ' '-')
 
   echo -e "${separator}"
