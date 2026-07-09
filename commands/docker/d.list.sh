@@ -82,8 +82,7 @@ if [[ "${opt_small}" == "true" ]]; then
     visible_names_length=$(printf "%s" "${names}" | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
     padding=$((names_width - visible_names_length))
 
-    echo "${names} | ${status}"
-    printf "%s%-${padding}s | %-${status_width}s |\n" "${names}" "" "${status}"
+    printf "%s%-${padding}s | %-${status_width}s\n" "${names}" "" "${status}"
   done <<EOF
 ${sorted_data}
 EOF
