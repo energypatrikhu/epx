@@ -53,18 +53,21 @@ if [[ -z "${data}" ]]; then
 fi
 
 if [[ "${opt_small}" == "true" ]]; then
-  for line in ${data}; do
-    id=$(echo ${line} | cut -f1)
-    names=$(echo ${line} | cut -f2)
-    status=$(echo ${line} | cut -f4)
-  if printf "%s" "${status}" | grep -q "Up"; then
-    bullet=$(_c GREEN "${EPX_BULLET}")
-  else
-    bullet=$(_c RED "${EPX_BULLET}")
-  fi
+  sorted_data=$(printf "%s\n" "${data}" | sort -k2,2)
 
-    echo "| ${bullet} ${names}\t\t| ${status}"
-  done
+  while IFS= read -r id names image status; do
+    if printf "%s" "${status}" | grep -q "Up"; then
+      bullet=$(_c GREEN "${EPX_BULLET}")
+    else
+      bullet=$(_c RED "${EPX_BULLET}")
+    fi
+
+    names="${bullet} ${names}"
+
+    echo "${names} | ${status}"
+  done <<EOF
+${sorted_data}
+EOF
 else
   id_width=12
   names_width=5
@@ -83,15 +86,14 @@ EOF
   names_width=$((names_width + 2))
   separator=$(printf "+%-${id_width}s--+%-${names_width}s--+%-${image_width}s--+%-${status_width}s--+\n" | tr ' ' '-')
 
-echo -e "${separator}"
+  echo -e "${separator}"
   printf "| %-${id_width}s | %-${names_width}s | %-${image_width}s | %-${status_width}s |\n" "CONTAINER ID" "NAME" "IMAGE" "STATUS"
   echo -e "${separator}"
 
   # Sort data by the second column (names)
   sorted_data=$(printf "%s\n" "${data}" | sort -k2,2)
 
-while IFS=$'\t' read -r id names image status; do
-
+  while IFS=$'\t' read -r id names image status; do
     if printf "%s" "${status}" | grep -q "Up"; then
       bullet=$(_c GREEN "${EPX_BULLET}")
     else
@@ -107,5 +109,5 @@ while IFS=$'\t' read -r id names image status; do
 ${sorted_data}
 EOF
 
-echo -e "${separator}"
+  echo -e "${separator}"
 fi
