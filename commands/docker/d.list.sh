@@ -52,6 +52,22 @@ if [[ -z "${data}" ]]; then
   exit
 fi
 
+# Padding calc
+
+id_width=12
+names_width=5
+image_width=5
+status_width=7
+
+while IFS=$'\t' read -r id names image status; do
+  id_width=$((${#id} > id_width ? ${#id} : id_width))
+  names_width=$((${#names} > names_width ? ${#names} : names_width))
+  image_width=$((${#image} > image_width ? ${#image} : image_width))
+  status_width=$((${#status} > status_width ? ${#status} : status_width))
+done <<EOF
+${data}
+EOF
+
 if [[ "${opt_small}" == "true" ]]; then
   sorted_data=$(printf "%s\n" "${data}" | sort -k2,2)
 
@@ -63,26 +79,15 @@ if [[ "${opt_small}" == "true" ]]; then
     fi
 
     names="${bullet} ${names}"
+    visible_names_length=$(printf "%s" "${names}" | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
+    padding=$((names_width - visible_names_length))
 
     echo "${names} | ${status}"
+    printf "%s%-${padding}s | %-${status_width}s |\n" "${names}" "" "${status}"
   done <<EOF
 ${sorted_data}
 EOF
 else
-  id_width=12
-  names_width=5
-  image_width=5
-  status_width=7
-
-  while IFS=$'\t' read -r id names image status; do
-    id_width=$((${#id} > id_width ? ${#id} : id_width))
-    names_width=$((${#names} > names_width ? ${#names} : names_width))
-    image_width=$((${#image} > image_width ? ${#image} : image_width))
-    status_width=$((${#status} > status_width ? ${#status} : status_width))
-done <<EOF
-${data}
-EOF
-
   names_width=$((names_width + 2))
   separator=$(printf "+%-${id_width}s--+%-${names_width}s--+%-${image_width}s--+%-${status_width}s--+\n" | tr ' ' '-')
 
