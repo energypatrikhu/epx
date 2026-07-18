@@ -46,7 +46,7 @@ c_up()  {
 
   local before after changed_services=()
   if [[ -n "${pull_services}" ]]; then
-    before="$(docker compose --file "${c_file}" images -q ${pull_services} 2>/dev/null)"
+    before="$(docker compose --file "${c_file}" config --images ${pull_services} 2>/dev/null | sort -u | xargs -I{} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
   fi
 
   docker compose --file "${c_file}" pull || true
@@ -56,7 +56,7 @@ c_up()  {
   fi
 
   if [[ -n "${pull_services}" ]]; then
-    after="$(docker compose --file "${c_file}" images -q ${pull_services} 2>/dev/null)"
+    after="$(docker compose --file "${c_file}" config --images ${pull_services} 2>/dev/null | sort -u | xargs -I{} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
     if [[ "${before}" != "${after}" ]]; then
       changed_services=(${pull_services})
     fi
@@ -64,7 +64,6 @@ c_up()  {
 
   if [[ ${#changed_services[@]} -gt 0 ]]; then
     docker compose --file "${c_file}" up --pull never --detach --no-build --yes --force-recreate "${changed_services[@]}" || true
-    # bring up the rest normally (build-based / unchanged services)
     docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
   else
     docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
