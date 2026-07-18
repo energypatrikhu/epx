@@ -1,4 +1,4 @@
-help() {
+_help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Usage:") d.up $(_c LIGHT_YELLOW "[<options>] [container1, container2, ...]")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -a | --all") $(_c LIGHT_GREEN "Start all containers defined in the config file")"
@@ -24,7 +24,7 @@ for arg in "$@"; do
 done
 
 if [[ "${opt_help}" == "true" ]]; then
-  help
+  _help
   exit
 fi
 
@@ -33,7 +33,7 @@ _cci_pkg docker:docker-ce-cli
 source "${EPX_HOME}/helpers/check-compose-file.sh"
 source "${EPX_HOME}/helpers/get-compose-filename.sh"
 
-c_up()  {
+c_up() {
   local c_file="${1}"
 
   # get list of services that do NOT have a build: directive
@@ -46,7 +46,7 @@ c_up()  {
 
   local before after changed_services=()
   if [[ -n "${pull_services}" ]]; then
-    before="$(docker compose --file "${c_file}" config --images ${pull_services} 2>/dev/null | sort -u | xargs -I{} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
+    before="$(docker compose --file "${c_file}" config --images "${pull_services}" 2>/dev/null | sort -u | xargs -I {} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
   fi
 
   docker compose --file "${c_file}" pull || true
@@ -56,9 +56,9 @@ c_up()  {
   fi
 
   if [[ -n "${pull_services}" ]]; then
-    after="$(docker compose --file "${c_file}" config --images ${pull_services} 2>/dev/null | sort -u | xargs -I{} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
+    after="$(docker compose --file "${c_file}" config --images "${pull_services}" 2>/dev/null | sort -u | xargs -I {} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
     if [[ "${before}" != "${after}" ]]; then
-      changed_services=(${pull_services})
+      changed_services=("${pull_services}")
     fi
   fi
 
@@ -74,7 +74,7 @@ c_up()  {
 if [[ "${opt_all}" == "true" ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
-    help
+    _help
     exit
   fi
 
@@ -119,7 +119,8 @@ fi
 if [[ -n $* ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
-    help
+        _help
+
     exit
   fi
 
@@ -162,7 +163,7 @@ c_file="$(get_compose_filename)"
 # if nothing is provided, just start compose file in current directory
 if [[ -z "${c_file}" ]]; then
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] compose file $(_c LIGHT_RED "not found in current directory")"
-  help
+  _help
   exit
 fi
 
