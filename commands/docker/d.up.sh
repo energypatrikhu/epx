@@ -36,13 +36,39 @@ source "${EPX_HOME}/helpers/get-compose-filename.sh"
 c_up()  {
   local c_file="${1}"
 
+  # get list of services that do NOT have a build: directive
+  local pull_services
+  pull_services="$(docker compose --file "${c_file}" config --services 2>/dev/null | while read -r svc; do
+    if ! docker compose --file "${c_file}" config "${svc}" 2>/dev/null | grep -q "^\s*build:"; then
+      echo "${svc}"
+    fi
+  done)"
+
+  local before after changed_services=()
+  if [[ -n "${pull_services}" ]]; then
+    before="$(docker compose --file "${c_file}" images -q ${pull_services} 2>/dev/null)"
+  fi
+
   docker compose --file "${c_file}" pull || true
 
   if grep -q "build:" "${c_file}"; then
     docker compose --file "${c_file}" build "${opt_args[@]}" || true
   fi
 
-  docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
+  if [[ -n "${pull_services}" ]]; then
+    after="$(docker compose --file "${c_file}" images -q ${pull_services} 2>/dev/null)"
+    if [[ "${before}" != "${after}" ]]; then
+      changed_services=(${pull_services})
+    fi
+  fi
+
+  if [[ ${#changed_services[@]} -gt 0 ]]; then
+    docker compose --file "${c_file}" up --pull never --detach --no-build --yes --force-recreate "${changed_services[@]}" || true
+    # bring up the rest normally (build-based / unchanged services)
+    docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
+  else
+    docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
+  fi
 }
 
 # if all option is provided, start all containers defined in the config file
