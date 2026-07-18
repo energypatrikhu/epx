@@ -36,17 +36,16 @@ source "${EPX_HOME}/helpers/get-compose-filename.sh"
 c_up() {
   local c_file="${1}"
 
-  # get list of services that do NOT have a build: directive
   local pull_services
   pull_services="$(docker compose --file "${c_file}" config --services 2>/dev/null | while read -r svc; do
     if ! docker compose --file "${c_file}" config "${svc}" 2>/dev/null | grep -q "^\s*build:"; then
       echo "${svc}"
     fi
-  done)"
+  done)" || true
 
   local before after changed_services=()
   if [[ -n "${pull_services}" ]]; then
-    before="$(docker compose --file "${c_file}" config --images "${pull_services}" 2>/dev/null | sort -u | xargs -I {} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
+    before="$(docker compose --file "${c_file}" config --images "${pull_services}" 2>/dev/null | sort -u | xargs -I{} docker image inspect --format '{{.Id}}' {} 2>/dev/null)" || true
   fi
 
   docker compose --file "${c_file}" pull || true
@@ -56,7 +55,7 @@ c_up() {
   fi
 
   if [[ -n "${pull_services}" ]]; then
-    after="$(docker compose --file "${c_file}" config --images "${pull_services}" 2>/dev/null | sort -u | xargs -I {} docker image inspect --format '{{.Id}}' {} 2>/dev/null)"
+    after="$(docker compose --file "${c_file}" config --images "${pull_services}" 2>/dev/null | sort -u | xargs -I{} docker image inspect --format '{{.Id}}' {} 2>/dev/null)" || true
     if [[ "${before}" != "${after}" ]]; then
       changed_services=("${pull_services}")
     fi
