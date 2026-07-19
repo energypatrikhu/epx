@@ -55,7 +55,7 @@ c_up() {
 
   docker compose --file "${c_file}" pull || true
 
-  if grep -q "build:" "${c_file}"; then
+  if docker compose --file "${c_file}" config 2>/dev/null | grep -q "^\s*build:"; then
     docker compose --file "${c_file}" build "${opt_args[@]}" || true
   fi
 
