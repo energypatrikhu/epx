@@ -51,9 +51,8 @@ c_up() {
   local before="" after="" changed_services=()
   if [[ ${#pull_services[@]} -gt 0 ]]; then
     before="$(docker compose --file "${c_file}" config --images "${pull_services[@]}" 2>/dev/null | sort -u | xargs -I{} docker image inspect --format '{{.Id}}' {} 2>/dev/null)" || true
+    docker compose --file "${c_file}" pull || true
   fi
-
-  docker compose --file "${c_file}" pull || true
 
   if docker compose --file "${c_file}" config 2>/dev/null | grep -q "^\s*build:"; then
     docker compose --file "${c_file}" build "${opt_args[@]}" || true
