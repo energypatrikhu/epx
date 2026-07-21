@@ -3,16 +3,20 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]"
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] Options:"
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]   -h, --help     Show this help message"
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]   -f, --force    Force update"
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]"
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] Examples:"
   echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")]   mc.update"
 }
 
 opt_help=false
+opt_force=false
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
     if [[ "${arg}" =~ ^-*h(elp)?$ ]]; then
       opt_help=true
+    elif [[ "${arg}" =~ ^-*f(orce)?$ ]]; then
+      opt_force=true
     fi
   fi
 done
@@ -42,9 +46,18 @@ fi
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] Updating project..."
 cd "${MINECRAFT_DIR}/internals" || exit
-if ! git pull; then
-  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] $(_c LIGHT_RED "Error:") Failed to update the Minecraft project."
-  exit 1
+
+if [[ "${opt_force}" == "true" ]]; then
+  echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] $(_c LIGHT_BLUE "Force updating minecraft project!")"
+  git reset --hard HEAD
+  git clean -f -d
+  git pull
+else
+  if ! git pull; then
+    echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] $(_c LIGHT_RED "Error:") Failed to update the Minecraft project."
+    exit 1
+  fi
 fi
+
 
 echo -e "[$(_c LIGHT_BLUE "Minecraft - Update")] $(_c LIGHT_GREEN "Minecraft project updated successfully.")"
