@@ -1,6 +1,6 @@
 # Minecraft Server Management Commands
 
-This collection of shell scripts provides an easy-to-use interface for managing Minecraft servers using Docker containers. The scripts integrate with the [minecraft-server](https://git.ep24.hu/ephu/minecraft-server) project.
+This collection of shell scripts provides an easy-to-use interface for managing Minecraft servers using Docker containers. The scripts integrate with the [minecraft-server](https://github.com/energypatrikhu/minecraft-server) project.
 
 ## Table of Contents
 
