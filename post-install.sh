@@ -7,6 +7,35 @@ if [[ "${TRACE-0}" == "1" ]]; then
   set -o xtrace
 fi
 
+# Packages setup
+ESSENTIAL_PACKAGES=(
+  "git"
+  "curl"
+  "wget"
+  "jq"
+)
+
+MISSING_PACKAGES=()
+for pkg in "${ESSENTIAL_PACKAGES[@]}"; do
+  command -v "$pkg" &>/dev/null || MISSING_PACKAGES+=("$pkg")
+done
+
+if [ "${#MISSING_PACKAGES[@]}" -gt 0 ]; then
+  echo "Missing packages: ${MISSING_PACKAGES[*]}"
+  echo "Installing..."
+
+  if command -v apt-get &>/dev/null; then
+    sudo apt-get update && sudo apt-get install -y "${MISSING_PACKAGES[@]}"
+  elif command -v yum &>/dev/null; then
+    sudo yum install -y "${MISSING_PACKAGES[@]}"
+  elif command -v pacman &>/dev/null; then
+    sudo pacman -S --noconfirm "${MISSING_PACKAGES[@]}"
+  else
+    echo "Unable to install packages automatically. Please install manually: ${MISSING_PACKAGES[*]}"
+    exit 1
+  fi
+fi
+
 # Setup environment
 PROFILE_DIR="/etc/profile.d"
 ENV_FILE="/etc/environment"

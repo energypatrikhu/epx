@@ -14,8 +14,6 @@ if ! command -v git &>/dev/null; then
     sudo apt-get update && sudo apt-get install -y git
   elif command -v yum &>/dev/null; then
     sudo yum install -y git
-  elif command -v brew &>/dev/null; then
-    brew install git
   elif command -v pacman &>/dev/null; then
     sudo pacman -S --noconfirm git
   else
