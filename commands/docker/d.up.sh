@@ -36,16 +36,24 @@ source "${EPX_HOME}/helpers/get-compose-filename.sh"
 c_up() {
   local c_file="${1}"
 
-  # get array of services that do NOT have a build: directive
+  local full_config
+  full_config="$(docker compose --file "${c_file}" config --format json 2>/dev/null)" || true
+
   local all_services=()
-  mapfile -t all_services < <(docker compose --file "${c_file}" config --services 2>/dev/null) || true
+  mapfile -t all_services < <(jq -r '.services | keys[]' <<<"${full_config}") || true
+
+  local build_services=()
+  mapfile -t build_services < <(jq -r '.services | to_entries[] | select(.value.build != null) | .key' <<<"${full_config}") || true
 
   local pull_services=()
-  local svc
+  local svc is_build
   for svc in "${all_services[@]}"; do
-    if ! docker compose --file "${c_file}" config "${svc}" 2>/dev/null | grep -q "^\s*build:"; then
-      pull_services+=("${svc}")
-    fi
+    is_build=0
+    local b
+    for b in "${build_services[@]}"; do
+      [[ "${svc}" == "${b}" ]] && { is_build=1; break; }
+    done
+    [[ ${is_build} -eq 0 ]] && pull_services+=("${svc}")
   done
 
   local before="" after="" changed_services=()
@@ -54,7 +62,7 @@ c_up() {
     docker compose --file "${c_file}" pull || true
   fi
 
-  if docker compose --file "${c_file}" config 2>/dev/null | grep -q "^\s*build:"; then
+  if [[ ${#build_services[@]} -gt 0 ]]; then
     docker compose --file "${c_file}" build "${opt_args[@]}" || true
   fi
 
