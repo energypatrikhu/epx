@@ -3,6 +3,7 @@ _help() {
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "Options:")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -a | --all") $(_c LIGHT_GREEN "Start all containers defined in the config file")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -h | --help") $(_c LIGHT_GREEN "Show this help message")"
+  echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  -s | --stop_exited") $(_c LIGHT_GREEN "Stop containers that are in exited state after starting the specified containers")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  [container1, container2, ...]") $(_c LIGHT_GREEN "Start specific containers by name")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If no arguments are provided, it will start the compose file in the current directory")"
   echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_YELLOW "  If the config file is not found, it is necessary to create one at") ${EPX_HOME}/.config/docker.config"
@@ -10,6 +11,7 @@ _help() {
 
 opt_help=false
 opt_all=false
+opt_stop_exited=false
 opt_args=()
 for arg in "$@"; do
   if [[ "${arg}" == -* ]]; then
@@ -17,6 +19,8 @@ for arg in "$@"; do
       opt_help=true
     elif [[ "${arg}" =~ ^-*a(ll)?$ ]]; then
       opt_all=true
+    elif [[ "${arg}" =~ ^-*s(top_exited)?$ ]]; then
+      opt_stop_exited=true
     else
       opt_args+=("${arg}")
     fi
@@ -44,6 +48,9 @@ c_up() {
 
   local build_services=()
   mapfile -t build_services < <(jq -r '.services | to_entries[] | select(.value.build != null) | .key' <<<"${full_config}") || true
+
+  local stop_services=()
+  mapfile -t stop_services < <(docker compose --file "${c_file}" ps --services --filter "status=exited" 2>/dev/null) || true
 
   local pull_services=()
   local svc is_build
@@ -78,6 +85,10 @@ c_up() {
     docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
   else
     docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
+  fi
+
+  if [[ ${#stop_services[@]} -gt 0 && "${opt_stop_exited}" == "true" ]]; then
+    docker compose --file "${c_file}" stop "${stop_services[@]}" || true
   fi
 }
 
