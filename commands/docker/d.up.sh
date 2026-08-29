@@ -87,8 +87,10 @@ c_up() {
     docker compose --file "${c_file}" up --pull never --detach --no-build --no-start --yes || true
   fi
 
-  if [[ ${#running_services[@]} -gt 0 && "${opt_stop_exited}" == "true" ]]; then
-    docker compose --file "${c_file}" start "${running_services[@]}" || true
+  if [[ "${opt_stop_exited}" == "true" ]]; then
+    if [[ ${#running_services[@]} -gt 0 ]]; then
+      docker compose --file "${c_file}" start "${running_services[@]}" || true
+    fi
   else
     docker compose --file "${c_file}" start || true
   fi
