@@ -49,8 +49,8 @@ c_up() {
   local build_services=()
   mapfile -t build_services < <(jq -r '.services | to_entries[] | select(.value.build != null) | .key' <<<"${full_config}") || true
 
-  local stop_services=()
-  mapfile -t stop_services < <(docker compose --file "${c_file}" ps --services --filter "status=exited" 2>/dev/null) || true
+  local running_services=()
+  mapfile -t running_services < <(docker compose --file "${c_file}" ps --services --filter "status=running" 2>/dev/null) || true
 
   local pull_services=()
   local svc is_build
@@ -81,14 +81,14 @@ c_up() {
   fi
 
   if [[ ${#changed_services[@]} -gt 0 ]]; then
-    docker compose --file "${c_file}" up --pull never --detach --no-build --yes --force-recreate "${changed_services[@]}" || true
-    docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
+    docker compose --file "${c_file}" up --pull never --detach --no-build --no-start --yes --force-recreate "${changed_services[@]}" || true
+    docker compose --file "${c_file}" up --pull never --detach --no-build --no-start --yes || true
   else
-    docker compose --file "${c_file}" up --pull never --detach --no-build --yes || true
+    docker compose --file "${c_file}" up --pull never --detach --no-build --no-start --yes || true
   fi
 
-  if [[ ${#stop_services[@]} -gt 0 && "${opt_stop_exited}" == "true" ]]; then
-    docker compose --file "${c_file}" stop "${stop_services[@]}" || true
+  if [[ ${#running_services[@]} -gt 0 && "${opt_stop_exited}" == "false" ]]; then
+    docker compose --file "${c_file}" start "${running_services[@]}" || true
   fi
 }
 
@@ -141,8 +141,7 @@ fi
 if [[ -n $* ]]; then
   if [[ ! -f "${EPX_HOME}/.config/docker.config" ]]; then
     echo -e "[$(_c LIGHT_BLUE "Docker - Up")] $(_c LIGHT_RED "Config file not found, please create one at") ${EPX_HOME}/.config/docker.config"
-        _help
-
+    _help
     exit
   fi
 
