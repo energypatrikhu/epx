@@ -6,28 +6,21 @@ end
 
 complete -c d.attach -f -a '(__epx_fish_d_containers)'
 complete -c d.exec -f -a '(__epx_fish_d_containers)'
-complete -c d.inspect -f -a '(__epx_fish_d_containers)'
 complete -c d.i -f -a '(__epx_fish_d_containers)'
-complete -c d.logs -f -a '(__epx_fish_d_containers)'
+complete -c d.inspect -f -a '(__epx_fish_d_containers)'
 complete -c d.log -f -a '(__epx_fish_d_containers)'
+complete -c d.logs -f -a '(__epx_fish_d_containers)'
+complete -c d.remove -f -a '(__epx_fish_d_containers)'
+complete -c d.restart -f -a '(__epx_fish_d_containers)'
+complete -c d.rm -f -a '(__epx_fish_d_containers)'
+complete -c d.sh -f -a '(__epx_fish_d_containers)'
 complete -c d.shell -f -a '(__epx_fish_d_containers)'
+complete -c d.start -f -a '(__epx_fish_d_containers)'
+complete -c d.stat -f -a '(__epx_fish_d_containers)'
+complete -c d.stats -f -a '(__epx_fish_d_containers)'
+complete -c d.status -f -a '(__epx_fish_d_containers)'
+complete -c d.stop -f -a '(__epx_fish_d_containers)'
 complete -c d.updates -f -a '(__epx_fish_d_containers)'
-complete -c d.disable -f -a '(__epx_fish_d_containers)'
-complete -c d.enable -f -a '(__epx_fish_d_containers)'
-
-function __epx_fish_d_containers_with_all
-  echo "all"
-  docker ps -a --format '{{.Names}}'
-end
-
-complete -c d.remove -f -a '(__epx_fish_d_containers_with_all)'
-complete -c d.rm -f -a '(__epx_fish_d_containers_with_all)'
-complete -c d.restart -f -a '(__epx_fish_d_containers_with_all)'
-complete -c d.start -f -a '(__epx_fish_d_containers_with_all)'
-complete -c d.stop -f -a '(__epx_fish_d_containers_with_all)'
-complete -c d.status -f -a '(__epx_fish_d_containers_with_all)'
-complete -c d.stats -f -a '(__epx_fish_d_containers_with_all)'
-complete -c d.stat -f -a '(__epx_fish_d_containers_with_all)'
 
 complete -c d.list -f -a 'created restarting running removing paused exited dead'
 complete -c d.ls -f -a 'created restarting running removing paused exited dead'
@@ -38,8 +31,8 @@ function __epx_fish_d_container_templates
   find "$EPX_HOME"/.templates/docker/dockerfile -maxdepth 1 -type f -name '*.template' -exec basename {} .template \;
 end
 
-complete -c d.make -f -a '(__epx_fish_d_container_templates)'
-complete -c d.mk -f -a '(__epx_fish_d_container_templates)'
+complete -c d.make-dockerfile -f -a '(__epx_fish_d_container_templates)'
+complete -c d.mkd -f -a '(__epx_fish_d_container_templates)'
 
 if test -f "$EPX_HOME/.config/docker.config"
   function __epx_fish_d_container_directories
@@ -54,5 +47,8 @@ if test -f "$EPX_HOME/.config/docker.config"
   end
 
   complete -c d.up -f -a '(__epx_fish_d_container_directories)'
+  complete -c d.down -f -a '(__epx_fish_d_container_directories)'
   complete -c d.pull -f -a '(__epx_fish_d_container_directories)'
+  complete -c d.disable -f -a '(__epx_fish_d_container_directories)'
+  complete -c d.enable -f -a '(__epx_fish_d_container_directories)'
 end

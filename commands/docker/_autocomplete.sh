@@ -7,29 +7,21 @@ __epx_bash_d_containers() {
 }
 complete -F __epx_bash_d_containers d.attach
 complete -F __epx_bash_d_containers d.exec
-complete -F __epx_bash_d_containers d.inspect
 complete -F __epx_bash_d_containers d.i
-complete -F __epx_bash_d_containers d.logs
+complete -F __epx_bash_d_containers d.inspect
 complete -F __epx_bash_d_containers d.log
-complete -F __epx_bash_d_containers d.shell
+complete -F __epx_bash_d_containers d.logs
+complete -F __epx_bash_d_containers d.remove
+complete -F __epx_bash_d_containers d.restart
+complete -F __epx_bash_d_containers d.rm
 complete -F __epx_bash_d_containers d.sh
+complete -F __epx_bash_d_containers d.shell
+complete -F __epx_bash_d_containers d.start
+complete -F __epx_bash_d_containers d.stat
+complete -F __epx_bash_d_containers d.stats
+complete -F __epx_bash_d_containers d.status
+complete -F __epx_bash_d_containers d.stop
 complete -F __epx_bash_d_containers d.updates
-complete -F __epx_bash_d_containers d.disable
-complete -F __epx_bash_d_containers d.enable
-
-__epx_bash_d_containers_with_all() {
-  local containers
-  containers="$(docker ps -a --format '{{.Names}}')"
-  _autocomplete "all ${containers}"
-}
-complete -F __epx_bash_d_containers_with_all d.remove
-complete -F __epx_bash_d_containers_with_all d.rm
-complete -F __epx_bash_d_containers_with_all d.restart
-complete -F __epx_bash_d_containers_with_all d.start
-complete -F __epx_bash_d_containers_with_all d.stop
-complete -F __epx_bash_d_containers_with_all d.status
-complete -F __epx_bash_d_containers_with_all d.stats
-complete -F __epx_bash_d_containers_with_all d.stat
 
 __epx_bash_d_containers_list() {
   _autocomplete "created restarting running removing paused exited dead"
@@ -47,8 +39,8 @@ __epx_bash_d_container_templates() {
   available_templates="$(find "${EPX_HOME}"/.templates/docker/dockerfile -maxdepth 1 -type f -name '*.template' -exec basename {} .template \; | tr '\n' ' ')"
   _autocomplete "${available_templates}"
 }
-complete -F __epx_bash_d_container_templates d.make
-complete -F __epx_bash_d_container_templates d.mk
+complete -F __epx_bash_d_container_templates d.make-dockerfile
+complete -F __epx_bash_d_container_templates d.mkd
 
 __epx_bash_d_container_directories() {
   . "${EPX_HOME}/.config/docker.config"
@@ -67,7 +59,10 @@ __epx_bash_d_container_directories() {
 }
 if [[ -f "${EPX_HOME}/.config/docker.config" ]]; then
   complete -F __epx_bash_d_container_directories d.up
+  complete -F __epx_bash_d_container_directories d.down
   complete -F __epx_bash_d_container_directories d.pull
+  complete -F __epx_bash_d_container_directories d.disable
+  complete -F __epx_bash_d_container_directories d.enable
 fi
 
 if [ -f "/usr/share/bash-completion/completions/docker" ]; then
